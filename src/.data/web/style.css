@@ -1,0 +1,70 @@
+
+body {
+    padding: 0px;
+    margin: 0px;
+    background-color: #232935 !important;
+    margin-right: 5px;
+}
+
+::-webkit-scrollbar-corner { background: #232935; } 
+
+pre {
+    min-height: 100vh;
+    border: 0px !important;
+}
+
+/* desert scheme ported from vim to google prettify */
+pre.prettyprint { display: block; background-color: #232935 !important; }
+pre .nocode { background-color: none; color: #000 !important; }
+pre .str { color: #ffa0a0 !important; } /* string  - pink */
+pre .kwd { color: #f0e68c !important; font-weight: bold }
+pre .com { color: #87ceeb !important; } /* comment - skyblue */
+pre .typ { color: #98fb98 !important; } /* type    - lightgreen */
+pre .lit { color: #cd5c5c !important; } /* literal - darkred */
+pre .pun { color: #fff    !important; } /* punctuation */
+pre .pln { color: #fff    !important; } /* plaintext */
+pre .tag { color: #f0e68c !important; font-weight: bold } /* html/xml tag    - lightyellow */
+pre .atn { color: #bdb76b !important; font-weight: bold } /* attribute name  - khaki */
+pre .atv { color: #ffa0a0 !important; } /* attribute value - pink */
+pre .dec { color: #98fb98 !important; } /* decimal         - lightgreen */
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 30px;
+    color: #AEAEAE !important;
+} /* IE indents via margin-left */
+
+@media print {
+  pre.prettyprint { background-color: none }
+  pre .str, code .str { color: #060 !important; }
+  pre .kwd, code .kwd { color: #006 !important; font-weight: bold }
+  pre .com, code .com { color: #600 !important; font-style: italic }
+  pre .typ, code .typ { color: #404 !important; font-weight: bold }
+  pre .lit, code .lit { color: #044 !important; }
+  pre .pun, code .pun { color: #440 !important; }
+  pre .pln, code .pln { color: #000 !important; }
+  pre .tag, code .tag { color: #006; font-weight: bold }
+  pre .atn, code .atn { color: #404 !important; }
+  pre .atv, code .atv { color: #060 !important; }
+}
+
+ul {
+    margin: 10px;
+}
+
+li.L0, li.L1, li.L2, li.L3, li.L4,
+li.L5, li.L6, li.L7, li.L8, li.L9 {
+    list-style-type: decimal !important;
+    background-color: #232935 !important;
+    user-select: none !important;
+}
+
+::-moz-selection {
+  background: #697080;
+}
+
+::selection {
+  background: #697080;
+}

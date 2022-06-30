@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?import javafx.scene.*?><?import javafx.collections.*?><?import javafx.scene.layout.*?><?import javafx.scene.control.*?><?import javafx.scene.text.*?><?import javafx.scene.image.*?><?import javafx.scene.shape.*?><?import javafx.scene.paint.*?><?import javafx.scene.web.*?><?import javafx.geometry.*?><?import java.lang.*?><?import org.develnext.jphp.ext.javafx.classes.data.*?><?import org.develnext.jphp.ext.javafx.support.*?><?import org.develnext.jphp.ext.javafx.support.control.*?><?import org.develnext.jphp.ext.game.support.*?><AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" focusTraversable="false" id="" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="488" prefWidth="904" styleClass="">
+  <children>
+    <TreeView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="24" editable="false" fixedCellSize="-1" focusTraversable="true" id="tree" layoutX="0" layoutY="24" prefHeight="464" prefWidth="256" showRoot="true" styleClass="tree-view "/>
+    <Data cursor="DEFAULT" enabled="1" id="data-tree" visible="1"/>
+    <TabPaneEx AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="256" AnchorPane.rightAnchor="8" AnchorPane.topAnchor="32" focusTraversable="true" id="tabPane" layoutX="256" layoutY="32" prefHeight="456" prefWidth="640" styleClass="tab-pane " tabClosingPolicy="UNAVAILABLE">
+      <tabs>
+        <Tab text="Исходный код,">
+          <content>
+            <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="434" prefWidth="640" styleClass="">
+              <children>
+                <WebView AnchorPane.bottomAnchor="3" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" focusTraversable="true" id="browser" layoutX="0" layoutY="0" prefHeight="404" prefWidth="640"/>
+                <Data contextMenuEnabled="" cursor="DEFAULT" enabled="1" id="data-browser" visible=""/>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Внешний вид">
+          <content>
+            <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="439" prefWidth="640" styleClass="">
+              <children>
+                <ImageViewEx AnchorPane.bottomAnchor="2" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" autoSize="false" centered="true" focusTraversable="false" height="437" id="image" layoutX="0" layoutY="0" mosaic="false" mosaicGap="0" proportional="true" stretch="true" styleClass="" textFill="#000000" width="640">
+                  <font>
+                    <Font name="System Regular" size="12"/>
+                  </font>
+                </ImageViewEx>
+                <Data cursor="DEFAULT" enabled="1" id="data-image" tooltipText="" visible="1"/>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPaneEx>
+    <Data cursor="DEFAULT" draggable="NONE" enabled="1" id="data-tabPane" visible="1"/>
+    <ToggleButton AnchorPane.rightAnchor="10" AnchorPane.topAnchor="32" alignment="CENTER" contentDisplay="LEFT" ellipsisString="..." focusTraversable="true" graphicTextGap="4" id="toggleButton" layoutX="864" layoutY="32" prefHeight="30" prefWidth="30" styleClass="toggle-button " text="i" textAlignment="LEFT" textFill="#ffffff" underline="false" wrapText="false">
+      <font>
+        <Font name="System Bold Italic" size="14"/>
+      </font>
+    </ToggleButton>
+    <Data cursor="DEFAULT" enabled="1" id="data-toggleButton" tooltipText="" visible="1"/>
+    <Panel AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="-256" AnchorPane.topAnchor="72" backgroundColor="#ffffff" borderColor="#c0c0c0" borderRadius="0" borderStyle="SOLID" borderWidth="2" focusTraversable="false" id="fileInfo" layoutX="912" layoutY="72" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="415" prefWidth="248" styleClass="" title="Инфорация о файле" titleColor="#333333" titleOffset="15" titlePosition="TOP_CENTER">
+      <children>
+        <ScrollPane AnchorPane.bottomAnchor="6" AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" AnchorPane.topAnchor="296" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="container" layoutX="8" layoutY="298" prefHeight="120" prefWidth="192" styleClass="scroll-pane " vbarPolicy="AS_NEEDED" vvalue="0">
+          <content>
+            <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="104" prefWidth="224" styleClass="">
+              <children>
+                <FlowPane alignment="TOP_LEFT" columnHalignment="LEFT" focusTraversable="false" hgap="5" id="flowPane" layoutX="0" layoutY="0" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" orientation="HORIZONTAL" prefHeight="24" prefWidth="224" rowValignment="TOP" styleClass="" vgap="5">
+                  <padding>
+                    <Insets bottom="3" left="3" right="3" top="3"/>
+                  </padding>
+                  <children/>
+                </FlowPane>
+                <Data cursor="DEFAULT" enabled="1" id="data-flowPane" visible="1"/>
+              </children>
+            </AnchorPane>
+          </content>
+        </ScrollPane>
+        <Data cursor="DEFAULT" enabled="1" id="data-container" visible="1"/>
+        <ImageViewEx autoSize="false" centered="false" focusTraversable="false" height="64" id="fileImage" layoutX="92" layoutY="16" mosaic="false" mosaicGap="0" proportional="false" stretch="true" styleClass="" textFill="#000000" width="64">
+          <font>
+            <Font name="System Regular" size="12"/>
+          </font>
+        </ImageViewEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-fileImage" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="filePath" layoutX="8" layoutY="88" prefHeight="17" prefWidth="184" styleClass="label " text="-" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Bold" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-filePath" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="createdAtLabel" layoutX="8" layoutY="112" prefHeight="17" prefWidth="192" styleClass="label " text="Дата создания:" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Bold" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-createdAtLabel" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="createdAt" layoutX="8" layoutY="136" prefHeight="17" prefWidth="192" styleClass="label " text="-" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Italic" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-createdAt" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="modifiedAtLabel" layoutX="8" layoutY="168" prefHeight="17" prefWidth="192" styleClass="label " text="Дата изменения:" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Bold" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-modifiedAtLabel" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="modifiedAt" layoutX="8" layoutY="192" prefHeight="17" prefWidth="192" styleClass="label " text="-" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Italic" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-modifiedAt" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSizeLabel" layoutX="8" layoutY="224" prefHeight="17" prefWidth="192" styleClass="label " text="Размер:" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Bold" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-fileSizeLabel" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSize" layoutX="8" layoutY="248" prefHeight="17" prefWidth="192" styleClass="label " text="-" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+          <font>
+            <Font name="System Italic" size="12"/>
+          </font>
+        </LabelEx>
+        <Data cursor="DEFAULT" enabled="1" id="data-fileSize" visible="1"/>
+      </children>
+      <titleFont>
+        <Font name="System Regular" size="12"/>
+      </titleFont>
+    </Panel>
+    <Data cursor="DEFAULT" enabled="1" id="data-fileInfo" visible="1"/>
+  </children>
+</AnchorPane>

@@ -1,0 +1,21 @@
+[
+	{
+		"name": "Windows",
+		"link": "https://github.com/TsSaltan/jphp-windows-ext"
+	}, {
+		"name": "jURL",
+		"link": "https://github.com/TsSaltan/DevelNext-jURL"
+	}, {
+		"name": "Preg",
+		"link": "https://github.com/TsSaltan/jphp-preg-ext"
+	}, {
+		"name": "ChartsBundle",
+		"link": "https://github.com/jphp-group/jphp-charts-ext"
+	}, {
+		"name": "LoggerWrapper",
+		"link": "https://github.com/silentdeath76/JPHP-LoggerWrapper-ext"
+	}, {
+		"name": "ID3Tag",
+		"link": "https://github.com/silentdeath76/jphp-Id3Tag-ext"
+	}
+]
