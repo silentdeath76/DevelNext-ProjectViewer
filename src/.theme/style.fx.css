@@ -115,6 +115,8 @@
 
 // tree item
 .tree-view .tree-cell {
+    -fx-font-size: 1.1em;
+    -fx-padding: 0.5em 0em 0.5em 0em ;
     -fx-background-color: -main-color-dark;
 }
 
@@ -130,7 +132,8 @@
 
 // tree item arrow container
 .tree-disclosure-node {
-    -fx-padding: 7;
+    -fx-padding: 5;
+    -fx-padding-left: 10;
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {

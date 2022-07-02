@@ -67,7 +67,6 @@ class MainForm extends AbstractForm
             
             try {
                 $reg->add('ProjectDirectory', $this->projectDir);
-                // $reg->add('author', 'https://vk.com/silentrs');
             } catch (Exception $ex) {
                 $this->errorAlert($ex);
             }
@@ -81,6 +80,12 @@ class MainForm extends AbstractForm
             }
         });
         
+        $bar->menus->add($menu = new UXMenu());
+        $menu->graphic = new UXLabel("О программе");
+        $menu->graphic->on("click", function () {
+            $this->form("About")->showAndWait();
+        });
+        
         $this->add($bar);
         
         $this->toggleButton->toFront();
@@ -89,7 +94,7 @@ class MainForm extends AbstractForm
             $this->projectDir = $reg->read('ProjectDirectory');
         } catch (Exception $ignore) { }
         
-        $this->tree->fixedCellSize = 28;
+        // $this->tree->fixedCellSize = 28;
         $this->tree->rootVisible = false;
         
         // if ($this->projectDir != null) {
@@ -162,21 +167,8 @@ class MainForm extends AbstractForm
                             if ($ext == 'zip') {
                                 $output = "Binary";
                             }
-                            
-                            /* $output = str_replace(['<', '>'], ['&lt;', '&gt;'], $output); 
-                            
-                            $this->browser->engine->loadContent(
-                                str_replace(['${lang}', '${code}'], [$ext, $output], Stream::of('res://.data/web/highlight.html'))
-                            ); */
-                            
-                            
+ 
                             $this->showCodeInBrowser($output, $ext);
-                            
-                            /* try {
-                                $this->browser->engine->executeScript(Stream::of('res://.data/web/run_prettify.js'));
-                            } catch (Exception $ex) {
-                                $this->errorAlert($ex, true);
-                            } */
                         });
                     } else if ($provider->isDirectory($zipPath)) {
                         $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
@@ -195,9 +187,6 @@ class MainForm extends AbstractForm
         // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 1 скунду чтобы не мелькало
         timer::after(1000, function () { $this->browser->show(); });
         
-        /* $this->browser->engine->loadContent(str_replace(['${lang}', '${code}'], [
-            'html', ''
-        ], Stream::of('res://.data/web/highlight.html'))); */
         $this->showCodeInBrowser('', 'html');
         
         $this->centerOnScreen();
@@ -288,7 +277,6 @@ class MainForm extends AbstractForm
             $helper->addItem("Сохранить как", [ContextMenuEvents::getInstance($this), "saveAs"], $helper->makeIcon('res://.data/img/context-menu-icons/save.png'));
             $helper->addItem("Переименовать", [ContextMenuEvents::getInstance($this), "rename"], $helper->makeIcon('res://.data/img/context-menu-icons/edit.png'));
             $helper->addItem("Удалить", [ContextMenuEvents::getInstance($this), "delete"], $helper->makeIcon('res://.data/img/context-menu-icons/delete.png'));
-            // $helper->addItem("Информация о файле", [ContextMenuEvents::getInstance($this), "fullInfo"], $helper->makeIcon('res://.data/img/context-menu-icons/info.png'));
         }
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
