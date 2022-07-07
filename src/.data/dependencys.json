@@ -1,21 +1,36 @@
 [
-	{
-		"name": "Windows",
-		"link": "https://github.com/TsSaltan/jphp-windows-ext"
-	}, {
-		"name": "jURL",
-		"link": "https://github.com/TsSaltan/DevelNext-jURL"
-	}, {
-		"name": "Preg",
-		"link": "https://github.com/TsSaltan/jphp-preg-ext"
-	}, {
-		"name": "ChartsBundle",
-		"link": "https://github.com/jphp-group/jphp-charts-ext"
-	}, {
-		"name": "LoggerWrapper",
-		"link": "https://github.com/silentdeath76/JPHP-LoggerWrapper-ext"
-	}, {
-		"name": "ID3Tag",
-		"link": "https://github.com/silentdeath76/jphp-Id3Tag-ext"
-	}
+    {
+        "name": "Windows",
+        "link": "https://github.com/TsSaltan/jphp-windows-ext"
+    }, {
+        "name": "jURL",
+        "link": "https://github.com/TsSaltan/DevelNext-jURL"
+    }, {
+        "name": "Preg",
+        "link": "https://github.com/TsSaltan/jphp-preg-ext"
+    }, {
+        "name": "ChartsBundle",
+        "link": "https://github.com/jphp-group/jphp-charts-ext"
+    }, {
+        "name": "LoggerWrapper",
+        "link": "https://github.com/silentdeath76/JPHP-LoggerWrapper-ext"
+    }, {
+        "name": "ID3Tag",
+        "link": "https://github.com/silentdeath76/jphp-Id3Tag-ext"
+    }, {
+        "name": "DFFI",
+        "link": "https://github.com/jphp-group/jphp-dffi-ext"
+    }, {
+        "name": "Webcam",
+        "link": "https://github.com/jphp-group/jphp-webcam-ext"
+    }, {
+        "name": "UDPSocket",
+        "link": "https://github.com/jphp-group/jphp-udpsocket-ext"
+    }, {
+        "name": "Size Real Time",
+        "link": "https://github.com/brend32/Size-Real-Time"
+    }, {
+        "name": "AnimateFX",
+        "link": "https://github.com/jphp-group/jphp-animatefx-ext"
+    }
 ]
