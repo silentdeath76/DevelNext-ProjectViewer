@@ -32,5 +32,20 @@
     }, {
         "name": "AnimateFX",
         "link": "https://github.com/jphp-group/jphp-animatefx-ext"
+    }, {
+        "name": "NativeHook",
+        "link": "https://github.com/jphp-group/jphp-nativehook-ext"
+    }, {
+        "name": "Jediterm",
+        "link": "https://github.com/jphp-group/jphp-gui-jediterm-ext"
+    }, {
+        "name": "RichTextFX",
+        "link": "https://github.com/jphp-group/jphp-richtextfx-ext"
+    }, {
+        "name": "WebSocket Client",
+        "link": "https://github.com/jphp-group/jphp-websocket-client"
+    }, {
+        "name": "AudioBundle",
+        "link": "https://github.com/MWGuy/jphp-voice-recorder-ext"
     }
 ]
