@@ -1,6 +1,7 @@
 <?php
 namespace app\forms;
 
+use php\intellij\ui\JediTermWidget;
 use bundle\windows\Registry;
 use Exception;
 use php\compress\ZipFile;
@@ -9,8 +10,7 @@ use std, gui, framework, app;
 
 class MainForm extends AbstractForm
 {
-    
-    const TREE_ROOT_ELEMENT_TITLE = 'Projects';
+
     const REGISTRY_PATH = 'HKCU\SOFTWARE\ProjectView';
     
     /**
@@ -24,29 +24,34 @@ class MainForm extends AbstractForm
     public $projectDir;
     
     private $lastFileSelected;
+    
+    /**
+     * @var Registry
+     */
+    private $reg;
 
     /**
      * @event construct 
      */
     function doConstruct(UXEvent $e = null)
     {    
-        $reg = Registry::of(self::REGISTRY_PATH);
+        $this->reg = Registry::of(self::REGISTRY_PATH);
         
         // сохраняем состояния окна в реестр
-        $this->formSizeSaver($reg);
+        $this->formSizeSaver($this->reg);
         
         try {
-            if ($reg->read("maximized")->getValue() == '0x1') {
+            if ($this->reg->read("maximized")->getValue() == '0x1') {
                 $this->maximized = true;
             } else {
-                $this->width = $reg->read("width")->getValue();
-                $this->height = $reg->read("height")->getValue();
+                $this->width = $this->reg->read("width")->getValue();
+                $this->height = $this->reg->read("height")->getValue();
             }
         } catch (Exception $ignore) {}
         
         // ----------------------------------------
         
-        $this->tree->root = new UXTreeItem(MainForm::TREE_ROOT_ELEMENT_TITLE);
+        $this->tree->root = new UXTreeItem();
         $this->tree->root->expanded = true;
         
         $this->fsTree = new FSTreeProvider($this->tree->root);
@@ -58,7 +63,7 @@ class MainForm extends AbstractForm
         $bar->menus->add($menu = new UXMenu());
         $menu->graphic = new UXLabel("Выбрать директорию");
         $menu->graphic->padding = 1;
-        $menu->graphic->on("click", function () use ($reg) {
+        $menu->graphic->on("click", function () {
             $dc = new UXDirectoryChooser();
             
             if (($path = $dc->showDialog($this)) == null) return;
@@ -66,7 +71,7 @@ class MainForm extends AbstractForm
             $this->projectDir = $path;
             
             try {
-                $reg->add('ProjectDirectory', $this->projectDir);
+                $this->reg->add('ProjectDirectory', $this->projectDir);
             } catch (Exception $ex) {
                 $this->errorAlert($ex);
             }
@@ -91,98 +96,93 @@ class MainForm extends AbstractForm
         $this->toggleButton->toFront();
         
         try {
-            $this->projectDir = $reg->read('ProjectDirectory');
+            $this->projectDir = $this->reg->read('ProjectDirectory');
         } catch (Exception $ignore) { }
         
-        // $this->tree->fixedCellSize = 28;
         $this->tree->rootVisible = false;
         
-        // if ($this->projectDir != null) {
-            try {
-                $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
-                    $this->filePath->text = $path;
-                    
-                    if ($provider->isFile($path)) {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/archive-60.png');
-                    } else if ($provider->isDirectory($path)) {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
-                    } else {
-                        Logger::warn('WTF?');
-                    }
-                    
-                    $this->createdAt->text = $provider->createdAt($path);
-                    $this->modifiedAt->text = $provider->modifiedAt($path);
-                    $this->showMeta(["size" => filesize($path)]);
-                });
+        try {
+            $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
+                $this->filePath->text = $path;
                 
-                $this->fsTree->onZipFileSystem(function (ZipFileSystem $provider, $zipPath, $path) {
-                    $this->filePath->text = $zipPath;
+                if ($provider->isFile($path)) {
+                    $this->fileImage->image = new UXImage('res://.data/img/ui/archive-60.png');
+                } else if ($provider->isDirectory($path)) {
+                    $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
+                }
+                    
+                $this->createdAt->text = $provider->createdAt($path);
+                $this->modifiedAt->text = $provider->modifiedAt($path);
+                $this->showMeta(["size" => filesize($path)]);
+            });
+            
+            $this->fsTree->onZipFileSystem(function (ZipFileSystem $provider, $zipPath, $path) {
+                $this->filePath->text = $zipPath;
+                
+                if (!$provider->getZipInstance()->has($zipPath)) {
+                    $zipPath = str_replace('\\', '/', $zipPath);
                     
                     if (!$provider->getZipInstance()->has($zipPath)) {
-                        $zipPath = str_replace('\\', '/', $zipPath);
+                        $zipPath = str_replace('/', '\\', $zipPath);
                         
                         if (!$provider->getZipInstance()->has($zipPath)) {
-                            $zipPath = str_replace('/', '\\', $zipPath);
-                            
-                            if (!$provider->getZipInstance()->has($zipPath)) {
-                                if ($provider->isDirectory($zipPath)) {
-                                    // Logger::info('Selected directory ' . $focusedItem);
-                                }
+                            if ($provider->isDirectory($zipPath)) {
+                                // Logger::info('Selected directory ' . $focusedItem);
                             }
                         }
                     }
-                    
-                    if ($provider->isFile($zipPath)) {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/file-60.png');
-                        
-                        $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
-                            $this->showMeta($stat);
-                            switch (fs::ext($zipPath)) {
-                                case 'axml':
-                                case 'fxml': {
-                                    $ext = 'xml';
-                                    $output = (string) $output;
-                                    if (fs::ext($this->tree->focusedItem->value) === 'fxml') {
-                                        $this->_showForm($output, $this->image);
-                                    }
-                                    
-                                    break;
-                                }
-                                case 'php': $ext = 'php'; break;
-                                case 'css': $ext = 'css'; break;
-                                case 'ico':
-                                case 'png':
-                                case 'jpg':
-                                case 'jpeg':$ext = 'image'; break;
-                                case 'zip': $ext = 'zip'; break;
-                                
-                                default:    $ext = 'config';
-                            }
-                            
-                            if ($ext == 'image') {
-                                $this->image->image = new UXImage($output);
-                                $output = "Binary";
-                            }
-                            
-                            if ($ext == 'zip') {
-                                $output = "Binary";
-                            }
- 
-                            $this->showCodeInBrowser($output, $ext);
-                        });
-                    } else if ($provider->isDirectory($zipPath)) {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
-                    }
-                    
-                    $this->createdAt->text = $provider->createdAt($zipPath);
-                    $this->modifiedAt->text = $provider->modifiedAt($zipPath);
-                });
+                }
                 
-                $this->fsTree->setDirectory($this->projectDir);
-            } catch (Exception $ex) {
-                $this->errorAlert($ex);
-            }
-        // }
+                if ($provider->isFile($zipPath)) {
+                    $this->fileImage->image = new UXImage('res://.data/img/ui/file-60.png');
+                    
+                    $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
+                        $this->showMeta($stat);
+                        switch (fs::ext($zipPath)) {
+                            case 'axml':
+                            case 'fxml': {
+                                $ext = 'xml';
+                                $output = (string) $output;
+                                if (fs::ext($this->tree->focusedItem->value) === 'fxml') {
+                                    $this->_showForm($output, $this->image);
+                                }
+                                
+                                break;
+                            }
+                            case 'php': $ext = 'php'; break;
+                            case 'css': $ext = 'css'; break;
+                            case 'ico':
+                            case 'png':
+                            case 'jpg':
+                            case 'jpeg':$ext = 'image'; break;
+                            case 'zip': $ext = 'zip'; break;
+                            
+                            default:    $ext = 'config';
+                        }
+                        
+                        if ($ext == 'image') {
+                            $this->image->image = new UXImage($output);
+                            $output = "Binary";
+                        }
+                        
+                        if ($ext == 'zip') {
+                            $output = "Binary";
+                        }
+        
+                        $this->showCodeInBrowser($output, $ext);
+                    });
+                } else if ($provider->isDirectory($zipPath)) {
+                    $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
+                }
+                
+                $this->createdAt->text = $provider->createdAt($zipPath);
+                $this->modifiedAt->text = $provider->modifiedAt($zipPath);
+            });
+            
+            $this->fsTree->setDirectory($this->projectDir);
+        } catch (Exception $ex) {
+            $this->errorAlert($ex);
+        }
         
         // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 1 скунду чтобы не мелькало
         timer::after(1000, function () { $this->browser->show(); });
@@ -200,7 +200,7 @@ class MainForm extends AbstractForm
      */
     function doTreeClickLeft(UXMouseEvent $e = null)
     {    
-        if ($this->tree->focusedItem->value === self::TREE_ROOT_ELEMENT_TITLE) return;
+        if (count($this->tree->selectedIndexes) < 1) return;
         
         // чтобы не пререотрисовывать по новой данные если кликнули второй раз по элементу
         if ($this->lastFileSelected === $this->tree->focusedItem->value) {
@@ -217,7 +217,6 @@ class MainForm extends AbstractForm
         }
         
         $this->lastFileSelected = $this->tree->focusedItem->value;
-        
         
         $this->fsTree->getFileInfo($this->tree->focusedItem);
     }
@@ -260,7 +259,7 @@ class MainForm extends AbstractForm
      */
     function doTreeClickRight(UXMouseEvent $e = null)
     {    
-        if ($this->tree->focusedItem->value === self::TREE_ROOT_ELEMENT_TITLE) return;
+        if (count($this->tree->selectedIndexes) < 1) return;
         
         static $context = new UXContextMenu(),
                $contextRoot = new UXContextMenu();
@@ -280,11 +279,10 @@ class MainForm extends AbstractForm
         }
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
-            // чтобы контексттоное меню не появлялось на директориях
             if ($this->tree->focusedItem->children->count() == 0) {
                 $context->showByNode($e->sender, $e->x, $e->y);
             }
-            return;
+            return; // чтобы контексттоное меню не появлялось на директориях
         }
         
         if ($contextRoot->items->isEmpty()) {
@@ -304,16 +302,14 @@ class MainForm extends AbstractForm
      */
     function doToggleButtonClickLeft(UXMouseEvent $e = null)
     {    
-        $reg = Registry::of(self::REGISTRY_PATH);
-        
         if ($this->toggleButton->selected) {
             $this->tabPane->rightAnchor = $this->fileInfo->width + 16;
             $this->fileInfo->rightAnchor = 8;
-            $reg->add('panel_file_information_show', 1);
+            $this->reg->add('panel_file_information_show', 1);
         } else {
             $this->tabPane->rightAnchor = 8;
             $this->fileInfo->rightAnchor -= $this->fileInfo->width + 8;
-            $reg->add('panel_file_information_show', 0);
+            $this->reg->add('panel_file_information_show', 0);
         }
     }
 
@@ -322,10 +318,8 @@ class MainForm extends AbstractForm
      */
     function doToggleButtonConstruct(UXEvent $e = null)
     {    
-        $reg = Registry::of(self::REGISTRY_PATH);
-        
         try {
-            if ($reg->read('panel_file_information_show')->getValue() == 1) {
+            if ($this->reg->read('panel_file_information_show')->getValue() == 1) {
                 $this->toggleButton->selected = true;
                 $this->doToggleButtonClickLeft();
             }

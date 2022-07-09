@@ -86,7 +86,6 @@ class Dependency
                 app()->form("MainForm")->flowPane->children->addAll($l);
             } catch (Exception $ignore) {}
         }
-        #app()->form("MainForm")->flowPane->children->addAll(array_reverse($panels));
     }
 
     
