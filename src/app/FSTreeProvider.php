@@ -233,6 +233,10 @@ class FSTreeProvider implements IEvents
     
     protected function createTreeItem (UXTreeItem $root, $items) {
         foreach ($items as $key => $value) {
+            $value = trim($value);
+            
+            if (empty($value)) continue;
+            
             if ($root->children->count() > 0) {
                 foreach ($root->children->toArray() as $child) {
                     if ($child->value === $value) {

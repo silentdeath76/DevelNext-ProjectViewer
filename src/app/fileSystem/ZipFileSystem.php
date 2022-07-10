@@ -40,8 +40,8 @@ class ZipFileSystem extends AbstractFileSystem implements IZipInstance
      * Размер файла
      */
     public function size($path) {
-        $path = $this->normalizePath($path);
-        return $this->zip->stat($this->normalizePath($path, $this->zip))["size"];
+        $path = $this->normalizePath($path, $this->zip);
+        return $this->zip->stat($path)["size"];
     }
 
     /**

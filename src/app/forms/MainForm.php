@@ -110,10 +110,8 @@ class MainForm extends AbstractForm
                 } else if ($provider->isDirectory($path)) {
                     $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
                 }
-                    
-                $this->createdAt->text = $provider->createdAt($path);
-                $this->modifiedAt->text = $provider->modifiedAt($path);
-                $this->showMeta(["size" => filesize($path)]);
+                
+                $this->updateFileinfo($provider, $path);
             });
             
             $this->fsTree->onZipFileSystem(function (ZipFileSystem $provider, $zipPath, $path) {
@@ -124,12 +122,6 @@ class MainForm extends AbstractForm
                     
                     if (!$provider->getZipInstance()->has($zipPath)) {
                         $zipPath = str_replace('/', '\\', $zipPath);
-                        
-                        if (!$provider->getZipInstance()->has($zipPath)) {
-                            if ($provider->isDirectory($zipPath)) {
-                                // Logger::info('Selected directory ' . $focusedItem);
-                            }
-                        }
                     }
                 }
                 
@@ -138,45 +130,27 @@ class MainForm extends AbstractForm
                     
                     $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
                         $this->showMeta($stat);
-                        switch (fs::ext($zipPath)) {
-                            case 'axml':
-                            case 'fxml': {
-                                $ext = 'xml';
-                                $output = (string) $output;
-                                if (fs::ext($this->tree->focusedItem->value) === 'fxml') {
-                                    $this->_showForm($output, $this->image);
-                                }
-                                
-                                break;
-                            }
-                            case 'php': $ext = 'php'; break;
-                            case 'css': $ext = 'css'; break;
-                            case 'ico':
-                            case 'png':
-                            case 'jpg':
-                            case 'jpeg':$ext = 'image'; break;
-                            case 'zip': $ext = 'zip'; break;
-                            
-                            default:    $ext = 'config';
-                        }
                         
-                        if ($ext == 'image') {
+                        $ext = $this->getHighlightType(fs::ext($zipPath));
+                        
+                        if (fs::ext($zipPath) === 'fxml') {
+                            $output = (string) $output;
+                            $this->_showForm($output, $this->image);
+                        } else if ($ext == 'image') {
                             $this->image->image = new UXImage($output);
                             $output = "Binary";
-                        }
-                        
-                        if ($ext == 'zip') {
+                        } else if ($ext == 'zip') {
                             $output = "Binary";
                         }
         
                         $this->showCodeInBrowser($output, $ext);
                     });
+                    
+                    $this->updateFileinfo($provider, $zipPath);
                 } else if ($provider->isDirectory($zipPath)) {
                     $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
+                    $this->fileSize->text = "unknown";
                 }
-                
-                $this->createdAt->text = $provider->createdAt($zipPath);
-                $this->modifiedAt->text = $provider->modifiedAt($zipPath);
             });
             
             $this->fsTree->setDirectory($this->projectDir);
@@ -279,10 +253,12 @@ class MainForm extends AbstractForm
         }
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
+            // чтобы контексттоное меню не появлялось на директориях
             if ($this->tree->focusedItem->children->count() == 0) {
                 $context->showByNode($e->sender, $e->x, $e->y);
             }
-            return; // чтобы контексттоное меню не появлялось на директориях
+            
+            return;
         }
         
         if ($contextRoot->items->isEmpty()) {
@@ -342,6 +318,33 @@ class MainForm extends AbstractForm
         $this->doBrowserRunning($e);
     }
 
+    
+    public function getHighlightType ($zipPath) {
+        switch ($zipPath) {
+            case 'axml':
+            case 'fxml': {
+                $ext = 'xml';
+                break;
+            }
+            case 'php': $ext = 'php'; break;
+            case 'css': $ext = 'css'; break;
+            case 'ico':
+            case 'png':
+            case 'jpg':
+            case 'jpeg':$ext = 'image'; break;
+            case 'zip': $ext = 'zip'; break;
+            
+            default:    $ext = 'config';
+        }
+        
+        return $ext;
+    }
+    
+    public function updateFileinfo ($provider, $path) {
+        $this->createdAt->text = $provider->createdAt($path);
+        $this->modifiedAt->text = $provider->modifiedAt($path);
+        $this->showMeta(["size" => $provider->size($path)]);
+    }
     
     private function showCodeInBrowser ($output, $ext = 'config') {
         $output = str_replace(['<', '>'], ['&lt;', '&gt;'], $output); 
