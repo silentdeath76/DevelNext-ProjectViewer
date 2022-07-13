@@ -203,6 +203,10 @@ class FSTreeProvider implements IEvents
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
                     $file = 'res://.data/img/ui/archive-16.png'; break;
+                case 'php':
+                    $file = 'res://.data/img/ui/php-file-16.png'; break;
+                case 'fxml':
+                    $file = 'res://.data/img/ui/fxml-file-16.png'; break;
                             
                 default: $file = 'res://.data/img/ui/file-16.png';
             }

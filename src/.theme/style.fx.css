@@ -116,7 +116,7 @@
 // tree item
 .tree-view .tree-cell {
     -fx-font-size: 1.1em;
-    -fx-padding: 0.5em 0em 0.5em 0em ;
+    -fx-padding: 0.5em 0em 0.5em 1em ;
     -fx-background-color: -main-color-dark;
 }
 
@@ -127,7 +127,8 @@
 }
 
 .tree-view .tree-cell:filled:selected {
-    -fx-background-color: derive(-main-color-dark, -25%);
+    -fx-background-color: derive(-main-color-dark, -15%);
+    -fx-font-weight: bold;
 }
 
 // tree item arrow container

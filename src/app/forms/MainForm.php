@@ -53,6 +53,7 @@ class MainForm extends AbstractForm
         
         $this->tree->root = new UXTreeItem();
         $this->tree->root->expanded = true;
+        $this->tree->rootVisible = false;
         
         $this->fsTree = new FSTreeProvider($this->tree->root);
         
@@ -99,8 +100,6 @@ class MainForm extends AbstractForm
             $this->projectDir = $this->reg->read('ProjectDirectory');
         } catch (Exception $ignore) { }
         
-        $this->tree->rootVisible = false;
-        
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
                 $this->filePath->text = $path;
@@ -126,7 +125,11 @@ class MainForm extends AbstractForm
                 }
                 
                 if ($provider->isFile($zipPath)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/file-60.png');
+                    if (fs::ext($zipPath) == 'php') {
+                        $this->fileImage->image = new UXImage('res://.data/img/ui/php-file-60.png');
+                    } else {
+                        $this->fileImage->image = new UXImage('res://.data/img/ui/file-60.png');
+                    }
                     
                     $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
                         $this->showMeta($stat);
