@@ -12,6 +12,8 @@ class About extends AbstractForm
      */
     function doVboxConstruct(UXEvent $e = null)
     {    
+        $this->label->text = AppModule::APP_TITLE;
+        
         $style = '-fx-font-size: 16px';
         
         $e->sender->add($container = new UXHBox([new UXLabel("Сайт: "), $link = new UXHyperlink("GitHub")]));
@@ -28,7 +30,7 @@ class About extends AbstractForm
             open('https://vk.com/silentrs');
         });
         
-        $e->sender->add($container = new UXHBox([new UXLabel("Версия: "), new UXLabel("1.1.2")]));
+        $e->sender->add($container = new UXHBox([new UXLabel("Версия: "), new UXLabel(AppModule::APP_VERSION)]));
         $container->style = $style;
     }
 

@@ -224,7 +224,6 @@ class MainForm extends AbstractForm
             
             $e->sender->engine->executeScript(Stream::of('res://.data/web/run_prettify.js'));
             
-            // $e->sender->engine->userStyleSheetLocation = new ResourceStream('/.data/web/prettify.css')->toExternalForm();
             $e->sender->engine->userStyleSheetLocation = new ResourceStream('/.data/web/style.css')->toExternalForm();
         } catch (Exception $ex) {
             $this->errorAlert($ex, true);

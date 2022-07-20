@@ -6,6 +6,8 @@ use std, gui, framework, app;
 
 class AppModule extends AbstractModule
 {
+    const APP_VERSION = '1.1.3';
+    const APP_TITLE = 'DevelNext ProjectView';
 
     /**
      * @event construct 
@@ -26,6 +28,7 @@ class AppModule extends AbstractModule
         $form->minWidth = 900;
         $form->minHeight = 450;
         $form->opacity = 0;
+        $form->title = AppModule::APP_TITLE;
         
         $form->show();
     }

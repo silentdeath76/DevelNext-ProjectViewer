@@ -202,29 +202,25 @@ class FSTreeProvider implements IEvents
                 case 'ico': 
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
-                    $file = 'res://.data/img/ui/archive-16.png'; break;
+                    $file = 'res://.data/img/ui/archive-60.png'; break;
                 case 'php':
-                    $file = 'res://.data/img/ui/php-file-16.png'; break;
+                    $file = 'res://.data/img/ui/php-file-60.png'; break;
                 case 'fxml':
-                    $file = 'res://.data/img/ui/fxml-file-16.png'; break;
+                    $file = 'res://.data/img/ui/fxml-file-24.png'; break;
                             
-                default: $file = 'res://.data/img/ui/file-16.png';
+                default: $file = 'res://.data/img/ui/file-60.png';
             }
         } else {
-            $file = 'res://.data/img/ui/folder-16.png';
+            $file = 'res://.data/img/ui/folder-60.png';
         }
         
         if (!($item instanceof UXTreeItem || $item instanceof UXLabel)) {
-            throw new IllegalArgumentException('wtf?');
+            throw new IllegalArgumentException('$item must be instance UXTreeItem or UXLabel');
         }
         
-        if (!($image instanceof UXImage)) {
-            $image = new UXImage($file);
-        }
-        
-        $item->graphic = new UXImageView($image);
-        $item->graphic->width = 16;
-        $item->graphic->height = 16;
+        $item->graphic = new UXImageView(new UXImage($file));
+        $item->graphic->width = 20;
+        $item->graphic->height = 20;
     }
     
     protected function createTreeItemOfZip (UXTreeItem $root, $stat) {
