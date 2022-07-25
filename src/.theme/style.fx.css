@@ -116,7 +116,7 @@
 // tree item
 .tree-view .tree-cell {
     -fx-font-size: 1.1em;
-    -fx-padding: 0.5em 0em 0.5em 1em ;
+    -fx-padding: 0.5em 0em 0.5em 0.7em ;
     -fx-background-color: -main-color-dark;
 }
 
