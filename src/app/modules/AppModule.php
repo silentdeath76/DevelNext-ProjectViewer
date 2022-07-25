@@ -1,13 +1,14 @@
 <?php
 namespace app\modules;
 
+use httpclient;
 use std, gui, framework, app;
 
 
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
-    const APP_VERSION = '1.1.2';
+    const APP_VERSION = '1.1.3';
     const APP_TITLE = 'DevelNext ProjectView';
     
     /**
