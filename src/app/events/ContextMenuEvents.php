@@ -35,9 +35,7 @@ class ContextMenuEvents
             $saveDialog = new UXFileChooser();
             $saveDialog->initialFileName = fs::name($innerPath);
             if (($file = $saveDialog->showSaveDialog($this->form)) instanceof File) {
-                $fstream = new FileStream($file, 'w+');
-                $fstream->write($stream);
-                $fstream->close();
+                fs::copy($stream, $file);
             }
         });
     }
