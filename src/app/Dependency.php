@@ -1,6 +1,7 @@
 <?php
 namespace app;
 
+use app;
 use Exception;
 use framework;
 use gui;
@@ -34,58 +35,73 @@ class Dependency
             }
         }
         
-        /* uasort($panels, function ($a, $b) {
-            $a = $a->children->offsetGet(1)->font->calculateTextWidth($a->children->offsetGet(1)->text) + 16;
-            $b = $b->children->offsetGet(1)->font->calculateTextWidth($b->children->offsetGet(1)->text) + 16;
-            
-            return str::compare($a, $b);
-        }); */
         
         $sort = [];
-        $pWidt = app()->form("MainForm")->fileInfo->width - 10;
-        
-        $panels = array_reverse($panels);
-        
+        $pWidth = app()->form("MainForm")->container->width - 10; // 10 - padding 5px
+
         foreach ($panels as $panel) {
-            $width = $panel->children->offsetGet(1)->font->calculateTextWidth($panel->children->offsetGet(1)->text) + 16;
+            $panelWidth = $this->getPanelWidth($panel);
             
-            if ($panel->children->count() > 2) { // if have link on github
-                $width += 16;
+            if ($panel->children->count() > 2) {
+                $panelWidth += 42;
+            } else {
+                $panelWidth += 25;
             }
             
-            
-            foreach ($sort as $key => $_panel) {
-                if (count($_panel) >= 1) {
-                    $lWidth = 0;
-                    
-                    foreach ($_panel as $item) {
-                        $lWidth += $item->children->offsetGet(1)->font->calculateTextWidth($item->children->offsetGet(1)->text) + 16;
-                        
-                        if ($item->children->count() > 2) {
-                            $lwidth += 16;
+            if (count($sort) === 0) {
+                $sort[] = [
+                    [
+                        "width" => $panelWidth,
+                        "panel" => $panel
+                    ]
+                ];
+            } else {
+                foreach ($sort as $key => $sortPanels) {
+                    if (count($sortPanels) === 1) {
+                        if (($sortPanels[0]["width"] + $panelWidth) < $pWidth) {
+                            $sort[$key][] = [
+                                "width" => $panelWidth,
+                                "panel" => $panel
+                            ];
+                            continue 2;
+                        } 
+                    } else {
+                        $sWidth = 0;
+                        foreach ($sortPanels as $s_panel) {
+                            $sWidth += $s_panel["width"];
                         }
                         
-                    }
-                    
-                    if (($width + $lWidth) < $pWidt) {
-                        $sort[$key][] = $panel;
-                        continue 2;
-                    } else {
-                        $sort[] = [$panel];
+                        if (($sWidth + $panelWidth) < $pWidth) {
+                            $sort[$key][] = [
+                                "width" => $panelWidth,
+                                "panel" => $panel
+                            ];
+                            continue 2;
+                        }
                     }
                 }
+                
+                $sort[] = [
+                    [
+                        "width" => $panelWidth,
+                        "panel" => $panel
+                    ]
+                ];
             }
-            
-            $sort[] = [$panel];
         }
         
-        
-        
-        foreach (array_reverse($sort) as $l) {
-            try {
-                app()->form("MainForm")->flowPane->children->addAll($l);
-            } catch (Exception $ignore) {}
+        foreach ($sort as $l) {
+            $c = 0;
+            foreach ($l as $panel) {
+                try {
+                    app()->form("MainForm")->flowPane->children->add($panel["panel"]);
+                } catch (Exception $ignore) {}
+            }
         }
+    }
+    
+    private function getPanelWidth ($panel) {
+        return $panel->children->offsetGet(1)->font->calculateTextWidth($panel->children->offsetGet(1)->text) + 16;
     }
 
     
