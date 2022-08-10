@@ -30,6 +30,7 @@ class AppModule extends AbstractModule
      */
     function doAction(ScriptEvent $e = null)
     {    
+        $theme = app()->module("MainModule")->ini->get("theme") ?: 'light';
         // Чтобы форма не мелькала при ресайзе окна
         $form = $this->form("MainForm");
         $form->minWidth = 900;
