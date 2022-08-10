@@ -1,0 +1,65 @@
+
+body {
+    padding: 0px;
+    margin: 0px;
+    background-color: #f0f0f0 !important;
+    margin-right: 5px;
+}
+
+pre {
+    min-height: 100vh;
+    border: 0px !important;
+}
+
+/* desert scheme ported from vim to google prettify */
+pre.prettyprint { display: block; background-color: #f0f0f0 !important; }
+pre .nocode { background-color: none; color: #000 !important; }
+pre .str { color: #925959 !important; } /* string  - pink */
+pre .kwd { color: #7f7948 !important; font-weight: bold }
+pre .com { color: #87ceeb !important; } /* comment - skyblue */
+pre .typ { color: #249324 !important; } /* type    - lightgreen */
+pre .lit { color: #b03b3b !important; } /* literal - darkred */
+pre .pun { color: #000    !important; } /* punctuation */
+pre .pln { color: #000    !important; } /* plaintext */
+pre .tag { color: #c5ba57 !important; font-weight: bold } /* html/xml tag    - lightyellow */
+pre .atn { color: #9a9344 !important; font-weight: bold } /* attribute name  - khaki */
+pre .atv { color: #925959 !important; } /* attribute value - pink */
+pre .dec { color: #249324 !important; } /* decimal         - lightgreen */
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 30px;
+    color: #444 !important;
+} /* IE indents via margin-left */
+
+@media print {
+  pre.prettyprint { background-color: none }
+  pre .str, code .str { color: #060 !important; }
+  pre .kwd, code .kwd { color: #006 !important; font-weight: bold }
+  pre .com, code .com { color: #600 !important; font-style: italic }
+  pre .typ, code .typ { color: #404 !important; font-weight: bold }
+  pre .lit, code .lit { color: #044 !important; }
+  pre .pun, code .pun { color: #440 !important; }
+  pre .pln, code .pln { color: #000 !important; }
+  pre .tag, code .tag { color: #006; font-weight: bold }
+  pre .atn, code .atn { color: #404 !important; }
+  pre .atv, code .atv { color: #060 !important; }
+}
+
+ul {
+    margin: 10px;
+}
+
+li.L0, li.L1, li.L2, li.L3, li.L4,
+li.L5, li.L6, li.L7, li.L8, li.L9 {
+    list-style-type: decimal !important;
+    background-color: #f0f0f0 !important;
+    user-select: none !important;
+}
+
+
+::-webkit-scrollbar-corner { background: #f0f0f0 !important; } 
+::-moz-selection { background: #f0f0f0 !important; }
+::selection { background: #f0f0f0 !important; }

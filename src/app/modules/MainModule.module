@@ -1,4 +1,15 @@
 {
   "props": [],
-  "components": []
+  "components": {
+    "ini": {
+      "type": "script\\storage\\IniStorage",
+      "x": 32,
+      "y": 16,
+      "props": {
+        "path": "config.ini",
+        "autoSave": "1",
+        "multiLineValues": "1"
+      }
+    }
+  }
 }

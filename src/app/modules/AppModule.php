@@ -8,7 +8,7 @@ use std, gui, framework, app;
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
-    const APP_VERSION = '1.1.3';
+    const APP_VERSION = '1.1.4';
     const APP_TITLE = 'DevelNext ProjectView';
     
     /**
@@ -36,17 +36,48 @@ class AppModule extends AbstractModule
         $form->minHeight = 450;
         $form->opacity = 0;
         $form->title = AppModule::APP_TITLE;
+        $form->data('theme', $theme);
         
         $form->show();
         
         $this->executer = new Thread(function () {
             Thread::sleep(AppModule::SELF_UPDATE_DELAY);
             $this->update();
+            return;
+            uiLater(function () {
+                $notify = new UXHBox();
+                $notify->spacing = 5;
+                $notify->fillHeight = true;
+                $notify->add($button = new UXFlatButton("🗙"));
+                $button->textColor = "white";
+                $button->hoverColor = 'red';
+                $notify->rightAnchor = 10;
+                $notify->topAnchor = 5;
+                $notify->y = 5;
+                
+                $notify->add($text = new UXLabel("Есть новая версия программы."));
+                $notify->add($updateButton = new UXFlatButton("Обновить"));
+                $updateButton->hoverColor = '#FFFFFF1c';
+                $updateButton->textColor = "white";
+                $updateButton->paddingLeft = 5;
+                $updateButton->paddingRight = 5;
+                app()->form("MainForm")->add($notify);
+                
+                $notify->x = app()->form("MainForm")->width;
+                $width = UXFont::getDefault()->calculateTextWidth($button->text) +
+                    UXFont::getDefault()->calculateTextWidth($text->text) +
+                    UXFont::getDefault()->calculateTextWidth($updateButton->text) + $notify->spacing * 4;
+                
+                Animation::displace($notify, 1000, $width * -1 - 10, 0, function () use ($notify) {
+                    
+                });
+            });
         });
         
         $this->executer->setDaemon(true);
         $this->executer->start();
     }
+
     
     
     public function update () {

@@ -1,0 +1,19 @@
+@font-face {
+    -fx-font-family: 'Open Sans';
+    src: url('/.theme/font/OpenSans-Regular.ttf');
+}
+
+@font-face {
+    -fx-font-family: 'Open Sans Italic';
+    src: url('/.theme/font/OpenSans-Italic.ttf');
+}
+
+@font-face {
+    -fx-font-family: 'Open Sans Lighter';
+    src: url('/.theme/font/OpenSans-Light.ttf');
+}
+
+@font-face {
+    -fx-font-family: 'Open Sans Bold';
+    src: url('/.theme/font/OpenSans-Bold.ttf');
+}

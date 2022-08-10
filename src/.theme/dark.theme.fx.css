@@ -1,0 +1,13 @@
+* {
+    -base-color: #222222;
+    -second-base-color: #313131;
+    -text-color: #f1f1f1;
+    -second-text-color: #d7d7d7;
+    -tab-selected-border-color: skyblue;
+    -tree-arrow-color: #f1f1f1;
+    -scroll-bar-color: #444;
+}
+
+.DependencyItem .link > .viewport {
+    -fx-background-image: url( '/.data/img/ui/openLinkLight.png');
+}

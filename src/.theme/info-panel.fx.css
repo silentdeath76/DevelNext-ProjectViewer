@@ -1,0 +1,52 @@
+#infoPanelSwitcher {
+    -fx-border-radius: 50;
+    -fx-background-radius: 50;
+    -fx-background-color: -second-base-color;
+    -fx-text-fill: -text-color;
+    
+    -fx-font: 12 "Open Sans";
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+}
+
+#infoPanelSwitcher:hover {
+    -fx-background-color: -base-color;
+    -fx-border-width: 1;
+    -fx-border-color: #0000002F;
+}
+
+/* panel */
+#fileInfo {
+    -fx-background-color: -second-base-color;
+    -fx-text-fill: -text-color;
+    -fx-border-color: -base-color;
+}
+
+#fileInfo > .panel-title {
+    -fx-background-color: -second-base-color;
+    -fx-border: 1 1 1 1 !important;
+    -fx-border-color: -base-color;
+}
+
+#fileInfo * {
+    -fx-text-fill: -text-color;
+}
+
+
+.DependencyItem {
+    -fx-border-width: 1;
+    -fx-border-color: -second-base-color;
+    -fx-text-fill: -text-color;
+    -fx-background-color: -base-color;
+    -fx-padding: 2;
+}
+
+.DependencyItem .link > .viewport {
+    -fx-background-image: url( '/.data/img/ui/openLinkDark.png');
+    -fx-background-size: 10 20;
+    -fx-background-repeat: no-repeat;
+}
+
+.DependencyItem .link:hover > .viewport {
+    -fx-background-position: 0 -10;
+}

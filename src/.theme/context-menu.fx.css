@@ -1,0 +1,19 @@
+.context-menu {
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+    -fx-border-color: -second-base-color;
+    -fx-min-width: 100px;
+    -fx-padding: 0;
+}
+
+.menu-item {
+    -fx-background-color: -base-color;
+}
+
+.menu-item .label {
+    -fx-text-fill: -text-color;
+}
+
+.menu-item:hover {
+    -fx-background-color: -second-base-color;
+}

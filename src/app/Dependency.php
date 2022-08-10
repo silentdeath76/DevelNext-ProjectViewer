@@ -43,9 +43,9 @@ class Dependency
             $panelWidth = $this->getPanelWidth($panel);
             
             if ($panel->children->count() > 2) {
-                $panelWidth += 42;
+                $panelWidth += 42; // 3 * 2 + 5 * 2 + 16 + 10
             } else {
-                $panelWidth += 25;
+                $panelWidth += 27; // 3 * 2 + 5 + 16
             }
             
             if (count($sort) === 0) {
@@ -131,8 +131,13 @@ class Dependency
             $width = 10;
             $height = 10;
             
-            $panel->add($link = new UXImageView(new UXImage('res://.data/img/ui/external-link-16.png', $width, $height)));
+            $panel->add($link = new UXScrollPane); /// UXImageView(new UXImage('res://.data/img/ui/external-link-16.png', $width, $height)));
+            $link->classes->add("link");
             $link->cursor = 'HAND';
+            $link->maxWidth = $width;
+            $link->maxHeight = $height;
+            $link->minWidth = $width;
+            $link->minHeight = $height;
             
             $link->on("click", function () use ($url) {
                 if (uiConfirm('Открыть ссылку в браузере?')) {
