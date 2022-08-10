@@ -50,7 +50,7 @@ class AppModule extends AbstractModule
                 $notify->fillHeight = true;
                 $notify->add($button = new UXFlatButton("🗙"));
                 $button->textColor = "white";
-                $button->hoverColor = 'red';
+                $button->hoverColor = 'gray';
                 $notify->rightAnchor = 10;
                 $notify->topAnchor = 5;
                 $notify->y = 5;
