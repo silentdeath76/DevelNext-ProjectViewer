@@ -254,7 +254,7 @@ class MainForm extends AbstractForm
             
             $e->sender->engine->executeScript(Stream::of('res://.data/web/run_prettify.js'));
             
-            $theme = $this->data('theme');
+            $theme = $this->data('theme') ?: 'light';
 
             $e->sender->engine->userStyleSheetLocation = new ResourceStream('/.data/web/' . $theme . '.css')->toExternalForm();
         } catch (Exception $ex) {
