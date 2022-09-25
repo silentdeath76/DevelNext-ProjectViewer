@@ -14,7 +14,7 @@ class MainMenuEvents
         app()->form("MainForm")->projectDir = $path;
             
         try {
-            app()->form("MainForm")->reg->add('ProjectDirectory', $path);
+            app()->form("MainForm")->ini->set('ProjectDirectory', $path);
         } catch (Exception $ex) {
             app()->form("MainForm")->errorAlert($ex);
         }

@@ -36,16 +36,19 @@ class MainForm extends AbstractForm
     function doConstruct(UXEvent $e = null)
     {    
         $this->reg = Registry::of(self::REGISTRY_PATH);
+        try {
+            $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
+        } catch (Exception $ignore) {}
         
-        // сохраняем состояния окна в реестр
-        $this->formSizeSaver($this->reg);
+        // сохраняем состояния окна в ini
+        $this->formSizeSaver($this->ini);
         
         try {
-            if ($this->reg->read("maximized")->getValue() == '0x1') {
+            if ($this->ini->get("maximized") == 1) {
                 $this->maximized = true;
             } else {
-                $this->width = $this->reg->read("width")->getValue();
-                $this->height = $this->reg->read("height")->getValue();
+                $this->width = $this->ini->get("width");
+                $this->height = $this->ini->get("height");
             }
         } catch (Exception $ignore) {}
         
@@ -127,7 +130,7 @@ class MainForm extends AbstractForm
         $this->infoPanelSwitcher->toFront();
         
         try {
-            $this->projectDir = $this->reg->read('ProjectDirectory');
+            $this->projectDir = $this->ini->get('ProjectDirectory');
         } catch (Exception $ignore) { }
         
         try {
@@ -315,11 +318,11 @@ class MainForm extends AbstractForm
         if ($this->infoPanelSwitcher->selected) {
             $this->tabPane->rightAnchor = $this->fileInfo->width + 16;
             $this->fileInfo->rightAnchor = 8;
-            $this->reg->add('panel_file_information_show', 1);
+            $this->ini->set('panel_file_information_show', 1);
         } else {
             $this->tabPane->rightAnchor = 8;
             $this->fileInfo->rightAnchor -= $this->fileInfo->width + 8;
-            $this->reg->add('panel_file_information_show', 0);
+            $this->ini->set('panel_file_information_show', 0);
         }
     }
 
@@ -329,7 +332,7 @@ class MainForm extends AbstractForm
     function doInfoPanelSwitcherConstruct(UXEvent $e = null)
     {    
         try {
-            if ($this->reg->read('panel_file_information_show')->getValue() == 1) {
+            if ($this->ini->get('panel_file_information_show') == 1) {
                 $this->infoPanelSwitcher->selected = true;
                 $this->doInfoPanelSwitcherClickLeft();
             }
