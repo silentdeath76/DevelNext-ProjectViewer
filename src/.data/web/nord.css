@@ -2,7 +2,7 @@
 body {
     padding: 0px;
     margin: 0px;
-    background-color: #232935 !important;
+    background-color: #202631 !important;
     margin-right: 5px;
 }
 
@@ -12,7 +12,7 @@ pre {
 }
 
 /* desert scheme ported from vim to google prettify */
-pre.prettyprint { display: block; background-color: #232935 !important; }
+pre.prettyprint { display: block; background-color: #202631 !important; }
 pre .nocode { background-color: none; color: #000 !important; }
 pre .str { color: #ffa0a0 !important; } /* string  - pink */
 pre .kwd { color: #f0e68c !important; font-weight: bold }
@@ -55,11 +55,10 @@ ul {
 li.L0, li.L1, li.L2, li.L3, li.L4,
 li.L5, li.L6, li.L7, li.L8, li.L9 {
     list-style-type: decimal !important;
-    background-color: #232935 !important;
     user-select: none !important;
 }
 
 
-::-webkit-scrollbar-corner { background: #232935 !important;} 
-::-moz-selection { background: #697080 !important; }
-::selection { background: #697080 !important; }
+::-webkit-scrollbar-corner { background: #202631 !important; } 
+::-moz-selection { background: #282e38 !important; }
+::selection { background: #282e38 !important; }
