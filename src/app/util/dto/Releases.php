@@ -18,7 +18,7 @@ class Releases {
         }
         
         if (!isset($obj["tag_name"]) || !isset($obj["assets"])) {
-            throw new Exception("Broken array object"); // need created runtime exception
+            throw new RuntimeException("Broken array object");
         }
     
         return new self($obj);
