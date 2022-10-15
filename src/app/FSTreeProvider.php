@@ -1,6 +1,7 @@
 <?php
 namespace app;
 
+use Exception;
 use framework;
 use php\compress\ZipFile;
 use std;
@@ -104,7 +105,20 @@ class FSTreeProvider implements IEvents
             call_user_func_array($this->events["onFileSystem"], [$fs, $filePath]);
         } else { // если выбранный елемент является файлом в zip архиве
             list($fsPath, $zipPath) = $this->getPaths($filePath);
-            call_user_func_array($this->events["onZipFileSystem"], [$this->zipFiles[$fsPath], $zipPath, $fsPath]);
+            
+            try {
+                if (!($this->zipFiles[$fsPath] instanceof ZipFileSystem)) {
+                    $message = sprintf("Instance: %s ZipPath: %s FsPath: %s", get_class($this->zipFiles[$fsPath]) ?: "null", $zipPath, $fsPath);
+                    app()->form("MainForm")->logger->console("Error is incorrect instance type", LoggerReporter::ERROR)->show();
+                    app()->form("MainForm")->logger->discord($message, LoggerReporter::WARNING)->send();
+                    return;
+                }
+                
+                call_user_func_array($this->events["onZipFileSystem"], [$this->zipFiles[$fsPath], $zipPath, $fsPath]);
+            } catch (Exception $ex) {
+                app()->form("MainForm")->logger->console($ex->getMessage(), LoggerReporter::ERROR)->show();
+                app()->form("MainForm")->logger->discord($ex->getMessage(), LoggerReporter::ERROR)->send();
+            }
         }
         
         if (isset($fsPath)) {
@@ -218,9 +232,12 @@ class FSTreeProvider implements IEvents
             throw new IllegalArgumentException('$item must be instance UXTreeItem or UXLabel');
         }
         
-        $item->graphic = new UXImageView(new UXImage($file));
-        $item->graphic->width = 20;
-        $item->graphic->height = 20;
+        $item->graphic = new UXImageView(new UXImage($file ?: "res://.data/img/ui/empty.png"));
+        
+        if ($file !== null) {
+            $item->graphic->width = 20;
+            $item->graphic->height = 20;
+        }
     }
     
     protected function createTreeItemOfZip (UXTreeItem $root, $stat) {

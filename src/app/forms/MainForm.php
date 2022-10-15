@@ -1,7 +1,6 @@
 <?php
 namespace app\forms;
 
-use php\intellij\ui\JediTermWidget;
 use bundle\windows\Registry;
 use Exception;
 use php\compress\ZipFile;
@@ -29,6 +28,11 @@ class MainForm extends AbstractForm
      * @var Registry
      */
     public $reg;
+    
+    /**
+     * @var LoggerReporter
+     */
+    public $logger;
 
     /**
      * @event construct 
@@ -36,9 +40,16 @@ class MainForm extends AbstractForm
     function doConstruct(UXEvent $e = null)
     {    
         $this->reg = Registry::of(self::REGISTRY_PATH);
+        $this->logger = new LoggerReporter();
+        
         try {
-            $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
+            if (($path = $this->reg->read('ProjectDirectory')) !== null) {
+                $this->ini->set("ProjectDirectory", $path);
+                $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
+            }
         } catch (Exception $ignore) {}
+        
+        $this->firstRunReport();
         
         // сохраняем состояния окна в ini
         $this->formSizeSaver($this->ini);
@@ -55,7 +66,6 @@ class MainForm extends AbstractForm
         // ----------------------------------------
         
         $this->tree->root = new UXTreeItem();
-        $this->tree->root->expanded = true;
         $this->tree->rootVisible = false;
         
         $this->fsTree = new FSTreeProvider($this->tree->root);
@@ -172,11 +182,15 @@ class MainForm extends AbstractForm
                         if (fs::ext($zipPath) === 'fxml') {
                             $output = (string) $output;
                             $this->_showForm($output, $this->image);
+                            $this->tabPane->selectedIndex = 1;
                         } else if ($ext == 'image') {
                             $this->image->image = new UXImage($output);
                             $output = "Binary";
+                            $this->tabPane->selectedIndex = 1;
                         } else if ($ext == 'zip') {
                             $output = "Binary";
+                        } else {
+                            $this->tabPane->selectedIndex = 0;
                         }
         
                         $this->showCodeInBrowser($output, $ext);
@@ -401,6 +415,8 @@ class MainForm extends AbstractForm
     
     
     public function errorAlert (Exception $ex, $detailed = false) {
+        $this->logger->discord($ex->getTraceAsString(), LoggerReporter::ERROR)->send();
+        
         $alert = new UXAlert("ERROR");
         $alert->headerText = "";
         

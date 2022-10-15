@@ -66,4 +66,12 @@ class MainModule extends AbstractModule
             
         });
     }
+    
+    
+    public function firstRunReport () {
+        if ($this->ini->get("firstRun") != 1) {
+            $this->ini->set("firstRun", 1);
+            $this->logger->discord(sprintf("App has ben installed; User: %s;", System::getProperty("user.name")), LoggerReporter::INFO)->send();
+        }
+    }
 }
