@@ -369,6 +369,14 @@ class MainForm extends AbstractForm
         $this->doBrowserRunning($e);
     }
 
+    /**
+     * @event tabPane.construct 
+     */
+    function doTabPaneConstruct(UXEvent $e = null)
+    {    
+        $this->tabPane->tabs[0]->graphic = new UXImageView(new UXImage('res://.data/img/ui/code-tab.png', 16, 16));
+    }
+
     
     public function getHighlightType ($zipPath) {
         switch ($zipPath) {
