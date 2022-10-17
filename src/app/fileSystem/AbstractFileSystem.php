@@ -7,6 +7,9 @@ use gui;
 
 abstract class AbstractFileSystem 
 {
+    const DATE_FORMAT = 'dd/MM/YYYY HH:mm:ss';
+    
+    
     /**
      * Дата создания файла
      * @param $path

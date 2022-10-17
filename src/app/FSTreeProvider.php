@@ -167,7 +167,6 @@ class FSTreeProvider implements IEvents
         }
         
         $zipPath = substr($zipPath, 0, -1);
-        // var_dump($fsPath);
         
         $zipPath = str_replace('\\', '/', $zipPath);
         
@@ -268,7 +267,7 @@ class FSTreeProvider implements IEvents
         }
         
         
-       $this->applyIcon($root, $value);
+        $this->applyIcon($root, $value);
     }
     
     public function backTrace(UXTreeItem $item, $path = null) {

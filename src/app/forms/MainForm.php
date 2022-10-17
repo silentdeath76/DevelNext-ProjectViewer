@@ -50,8 +50,6 @@ class MainForm extends AbstractForm
         } catch (Exception $ignore) {}
         
         $this->firstRunReport();
-        
-        // сохраняем состояния окна в ini
         $this->formSizeSaver($this->ini);
         
         try {
