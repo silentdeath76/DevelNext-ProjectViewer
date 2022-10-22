@@ -33,6 +33,11 @@ class MainForm extends AbstractForm
      * @var LoggerReporter
      */
     public $logger;
+    
+    /**
+     * @var MainMenuEvents
+     */
+    public $mainMenuEvents;
 
     /**
      * @event construct 
@@ -41,6 +46,7 @@ class MainForm extends AbstractForm
     {    
         $this->reg = Registry::of(self::REGISTRY_PATH);
         $this->logger = new LoggerReporter();
+        $this->mainMenuEvents = new MainMenuEvents();
         
         try {
             if (($path = $this->reg->read('ProjectDirectory')) !== null) {
@@ -76,8 +82,7 @@ class MainForm extends AbstractForm
         $menu->graphic = new UXLabel("Выбрать директорию");
         $menu->graphic->padding = 1;
         $menu->graphic->on("click", function () {
-            $c = new MainMenuEvents();
-            $c->selectedFolder();
+            $this->mainMenuEvents->selectedFolder();
         });
         
         $bar->menus->add($menu = new UXMenu());
@@ -98,29 +103,7 @@ class MainForm extends AbstractForm
             }
             
             $node->graphic->on("action", function ($ev) use ($menu, $themeList) {
-                foreach ($menu->items as $menuItem) {
-                    $name = array_search($themeList, $menuItem->graphic->text, false);
-                    
-                    if ($ev->sender === $menuItem->graphic) {
-                        $this->ini->set('theme', $name);
-                        $this->data('theme', $name);
-                        try {
-                            $this->browser->engine->userStyleSheetLocation = new ResourceStream('/.data/web/' . $name . '.css')->toExternalForm();
-                        } catch (Exception $ex) {
-                            $this->errorAlert($ex);
-                        }
-                        $menuItem->graphic->enabled = false;
-                        $this->addStylesheet('.theme/' . $name . '.theme.fx.css');
-                        continue;
-                    }
-                    
-                    $menuItem->graphic->enabled = true;
-                    $menuItem->graphic->selected = false;
-                    
-                    if ($this->hasStylesheet('.theme/' . $name . '.theme.fx.css')) {
-                        $this->removeStylesheet('.theme/' . $name . '.theme.fx.css');
-                    }
-                }
+                $this->mainMenuEvents->changeTheme($ev, $menu, $themeList);
             });
         }
         
@@ -137,9 +120,7 @@ class MainForm extends AbstractForm
         
         $this->infoPanelSwitcher->toFront();
         
-        try {
-            $this->projectDir = $this->ini->get('ProjectDirectory');
-        } catch (Exception $ignore) { }
+        $this->projectDir = $this->ini->get('ProjectDirectory');
         
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
@@ -255,7 +236,6 @@ class MainForm extends AbstractForm
             $e->sender->engine->addSimpleBridge('injections', function (string $text) {
                 $alert = new UXAlert("ERROR");
                 $alert->headerText = "";
-                
                 
                 $alert->expanded = false;
                 $alert->expandableContent = new UXScrollPane(new UXAnchorPane);

@@ -66,10 +66,7 @@ class FSTreeProvider implements IEvents
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
         
-        if ($fs->isFile($filePath)) {
-            
-            // show by explorer
-        } else {
+        if (!$fs->isFile($filePath)) {
             if (!$fs->isDirectory($filePath)) {
                 list($fsPath, $zipPath) = $this->getPaths($filePath);
                 
@@ -231,12 +228,7 @@ class FSTreeProvider implements IEvents
             throw new IllegalArgumentException('$item must be instance UXTreeItem or UXLabel');
         }
         
-        $item->graphic = new UXImageView(new UXImage($file ?: "res://.data/img/ui/empty.png"));
-        
-        if ($file !== null) {
-            $item->graphic->width = 20;
-            $item->graphic->height = 20;
-        }
+        $item->graphic = new UXImageView(new UXImage($file, 20, 20));
     }
     
     protected function createTreeItemOfZip (UXTreeItem $root, $stat) {
