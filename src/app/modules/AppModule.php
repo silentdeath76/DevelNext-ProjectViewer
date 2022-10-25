@@ -9,7 +9,7 @@ use std, gui, framework, app;
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
-    const APP_VERSION = '1.1.4';
+    const APP_VERSION = '1.1.5';
     const APP_TITLE = 'DevelNext ProjectView';
     
     const UPDATE_TEMP_PATH = '\AppData\Local\Temp';

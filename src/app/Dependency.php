@@ -96,7 +96,6 @@ class Dependency
         }
         
         foreach ($sort as $l) {
-            $c = 0;
             foreach ($l as $panel) {
                 try {
                     app()->form("MainForm")->flowPane->children->add($panel["panel"]);

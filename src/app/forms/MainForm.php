@@ -58,14 +58,12 @@ class MainForm extends AbstractForm
         $this->firstRunReport();
         $this->formSizeSaver($this->ini);
         
-        try {
-            if ($this->ini->get("maximized") == 1) {
-                $this->maximized = true;
-            } else {
-                $this->width = $this->ini->get("width");
-                $this->height = $this->ini->get("height");
-            }
-        } catch (Exception $ignore) {}
+        if ($this->ini->get("maximized") == 1) {
+            $this->maximized = true;
+        } else {
+            $this->width = $this->ini->get("width");
+            $this->height = $this->ini->get("height");
+        }
         
         // ----------------------------------------
         
@@ -166,7 +164,7 @@ class MainForm extends AbstractForm
                             $this->image->image = new UXImage($output);
                             $output = "Binary";
                             $this->tabPane->selectedIndex = 1;
-                        } else if ($ext == 'zip') {
+                        } else if ($ext == 'zip' || $ext == 'exe') {
                             $output = "Binary";
                         } else {
                             $this->tabPane->selectedIndex = 0;
@@ -359,10 +357,7 @@ class MainForm extends AbstractForm
     public function getHighlightType ($zipPath) {
         switch ($zipPath) {
             case 'axml':
-            case 'fxml': {
-                $ext = 'xml';
-                break;
-            }
+            case 'fxml': $ext = 'xml'; break;
             case 'php': $ext = 'php'; break;
             case 'css': $ext = 'css'; break;
             case 'ico':
@@ -370,6 +365,7 @@ class MainForm extends AbstractForm
             case 'jpg':
             case 'jpeg':$ext = 'image'; break;
             case 'zip': $ext = 'zip'; break;
+            case 'exe': $ext = 'exe'; break;
             
             default:    $ext = 'config';
         }
