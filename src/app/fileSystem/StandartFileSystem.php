@@ -12,14 +12,14 @@ class StandartFileSystem extends AbstractFileSystem
      * Дата создания файла
      */
     public function createdAt($path) {
-        return new Time(filectime($path) * 1000)->toString('dd/MM/YYYY HH:mm:ss');
+        return new Time(filectime($path) * 1000)->toString(AbstractFileSystem::DATE_FORMAT);
     }
 
     /**
      * Дата модификации файла
      */
     public function modifiedAt($path) {
-        return new Time(filemtime($path) * 1000)->toString('dd/MM/YYYY HH:mm:ss');
+        return new Time(filemtime($path) * 1000)->toString(AbstractFileSystem::DATE_FORMAT);
     }
 
     /**

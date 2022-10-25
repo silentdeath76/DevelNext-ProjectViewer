@@ -1,7 +1,6 @@
 <?php
 namespace app\forms;
 
-use php\intellij\ui\JediTermWidget;
 use bundle\windows\Registry;
 use Exception;
 use php\compress\ZipFile;
@@ -29,6 +28,16 @@ class MainForm extends AbstractForm
      * @var Registry
      */
     public $reg;
+    
+    /**
+     * @var LoggerReporter
+     */
+    public $logger;
+    
+    /**
+     * @var MainMenuEvents
+     */
+    public $mainMenuEvents;
 
     /**
      * @event construct 
@@ -36,23 +45,29 @@ class MainForm extends AbstractForm
     function doConstruct(UXEvent $e = null)
     {    
         $this->reg = Registry::of(self::REGISTRY_PATH);
-        
-        // сохраняем состояния окна в реестр
-        $this->formSizeSaver($this->reg);
+        $this->logger = new LoggerReporter();
+        $this->mainMenuEvents = new MainMenuEvents();
         
         try {
-            if ($this->reg->read("maximized")->getValue() == '0x1') {
-                $this->maximized = true;
-            } else {
-                $this->width = $this->reg->read("width")->getValue();
-                $this->height = $this->reg->read("height")->getValue();
+            if (($path = $this->reg->read('ProjectDirectory')) !== null) {
+                $this->ini->set("ProjectDirectory", $path);
+                $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
             }
         } catch (Exception $ignore) {}
+        
+        $this->firstRunReport();
+        $this->formSizeSaver($this->ini);
+        
+        if ($this->ini->get("maximized") == 1) {
+            $this->maximized = true;
+        } else {
+            $this->width = $this->ini->get("width");
+            $this->height = $this->ini->get("height");
+        }
         
         // ----------------------------------------
         
         $this->tree->root = new UXTreeItem();
-        $this->tree->root->expanded = true;
         $this->tree->rootVisible = false;
         
         $this->fsTree = new FSTreeProvider($this->tree->root);
@@ -65,8 +80,7 @@ class MainForm extends AbstractForm
         $menu->graphic = new UXLabel("Выбрать директорию");
         $menu->graphic->padding = 1;
         $menu->graphic->on("click", function () {
-            $c = new MainMenuEvents();
-            $c->selectedFolder();
+            $this->mainMenuEvents->selectedFolder();
         });
         
         $bar->menus->add($menu = new UXMenu());
@@ -87,29 +101,7 @@ class MainForm extends AbstractForm
             }
             
             $node->graphic->on("action", function ($ev) use ($menu, $themeList) {
-                foreach ($menu->items as $menuItem) {
-                    $name = array_search($themeList, $menuItem->graphic->text, false);
-                    
-                    if ($ev->sender === $menuItem->graphic) {
-                        $this->ini->set('theme', $name);
-                        $this->data('theme', $name);
-                        try {
-                            $this->browser->engine->userStyleSheetLocation = new ResourceStream('/.data/web/' . $name . '.css')->toExternalForm();
-                        } catch (Exception $ex) {
-                            $this->errorAlert($ex);
-                        }
-                        $menuItem->graphic->enabled = false;
-                        $this->addStylesheet('.theme/' . $name . '.theme.fx.css');
-                        continue;
-                    }
-                    
-                    $menuItem->graphic->enabled = true;
-                    $menuItem->graphic->selected = false;
-                    
-                    if ($this->hasStylesheet('.theme/' . $name . '.theme.fx.css')) {
-                        $this->removeStylesheet('.theme/' . $name . '.theme.fx.css');
-                    }
-                }
+                $this->mainMenuEvents->changeTheme($ev, $menu, $themeList);
             });
         }
         
@@ -126,9 +118,7 @@ class MainForm extends AbstractForm
         
         $this->infoPanelSwitcher->toFront();
         
-        try {
-            $this->projectDir = $this->reg->read('ProjectDirectory');
-        } catch (Exception $ignore) { }
+        $this->projectDir = $this->ini->get('ProjectDirectory');
         
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
@@ -169,11 +159,15 @@ class MainForm extends AbstractForm
                         if (fs::ext($zipPath) === 'fxml') {
                             $output = (string) $output;
                             $this->_showForm($output, $this->image);
+                            $this->tabPane->selectedIndex = 1;
                         } else if ($ext == 'image') {
                             $this->image->image = new UXImage($output);
                             $output = "Binary";
-                        } else if ($ext == 'zip') {
+                            $this->tabPane->selectedIndex = 1;
+                        } else if ($ext == 'zip' || $ext == 'exe') {
                             $output = "Binary";
+                        } else {
+                            $this->tabPane->selectedIndex = 0;
                         }
         
                         $this->showCodeInBrowser($output, $ext);
@@ -240,7 +234,6 @@ class MainForm extends AbstractForm
             $e->sender->engine->addSimpleBridge('injections', function (string $text) {
                 $alert = new UXAlert("ERROR");
                 $alert->headerText = "";
-                
                 
                 $alert->expanded = false;
                 $alert->expandableContent = new UXScrollPane(new UXAnchorPane);
@@ -315,11 +308,11 @@ class MainForm extends AbstractForm
         if ($this->infoPanelSwitcher->selected) {
             $this->tabPane->rightAnchor = $this->fileInfo->width + 16;
             $this->fileInfo->rightAnchor = 8;
-            $this->reg->add('panel_file_information_show', 1);
+            $this->ini->set('panel_file_information_show', 1);
         } else {
             $this->tabPane->rightAnchor = 8;
             $this->fileInfo->rightAnchor -= $this->fileInfo->width + 8;
-            $this->reg->add('panel_file_information_show', 0);
+            $this->ini->set('panel_file_information_show', 0);
         }
     }
 
@@ -329,7 +322,7 @@ class MainForm extends AbstractForm
     function doInfoPanelSwitcherConstruct(UXEvent $e = null)
     {    
         try {
-            if ($this->reg->read('panel_file_information_show')->getValue() == 1) {
+            if ($this->ini->get('panel_file_information_show') == 1) {
                 $this->infoPanelSwitcher->selected = true;
                 $this->doInfoPanelSwitcherClickLeft();
             }
@@ -352,14 +345,19 @@ class MainForm extends AbstractForm
         $this->doBrowserRunning($e);
     }
 
+    /**
+     * @event tabPane.construct 
+     */
+    function doTabPaneConstruct(UXEvent $e = null)
+    {    
+        $this->tabPane->tabs[0]->graphic = new UXImageView(new UXImage('res://.data/img/ui/code-tab.png', 16, 16));
+    }
+
     
     public function getHighlightType ($zipPath) {
         switch ($zipPath) {
             case 'axml':
-            case 'fxml': {
-                $ext = 'xml';
-                break;
-            }
+            case 'fxml': $ext = 'xml'; break;
             case 'php': $ext = 'php'; break;
             case 'css': $ext = 'css'; break;
             case 'ico':
@@ -367,6 +365,7 @@ class MainForm extends AbstractForm
             case 'jpg':
             case 'jpeg':$ext = 'image'; break;
             case 'zip': $ext = 'zip'; break;
+            case 'exe': $ext = 'exe'; break;
             
             default:    $ext = 'config';
         }
@@ -398,6 +397,8 @@ class MainForm extends AbstractForm
     
     
     public function errorAlert (Exception $ex, $detailed = false) {
+        $this->logger->discord($ex->getTraceAsString(), LoggerReporter::ERROR)->send();
+        
         $alert = new UXAlert("ERROR");
         $alert->headerText = "";
         

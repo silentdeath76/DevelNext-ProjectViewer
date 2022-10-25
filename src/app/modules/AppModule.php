@@ -1,6 +1,7 @@
 <?php
 namespace app\modules;
 
+use Exception;
 use httpclient;
 use std, gui, framework, app;
 
@@ -8,8 +9,14 @@ use std, gui, framework, app;
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
-    const APP_VERSION = '1.1.4';
+    const APP_VERSION = '1.1.5';
     const APP_TITLE = 'DevelNext ProjectView';
+    
+    const UPDATE_TEMP_PATH = '\AppData\Local\Temp';
+    const FOUND_NEW_VERSION = -1;
+    
+    const WINDOW_MIN_WIDTH = 900;
+    const WINDOW_MIN_HEIGHT = 450;
     
     /**
      * @var Thread
@@ -33,8 +40,8 @@ class AppModule extends AbstractModule
         $theme = app()->module("MainModule")->ini->get("theme") ?: 'light';
         // Чтобы форма не мелькала при ресайзе окна
         $form = $this->form("MainForm");
-        $form->minWidth = 900;
-        $form->minHeight = 450;
+        $form->minWidth = AppModule::WINDOW_MIN_WIDTH;
+        $form->minHeight = AppModule::WINDOW_MIN_HEIGHT;
         $form->opacity = 0;
         $form->title = AppModule::APP_TITLE;
         $form->data('theme', $theme);
@@ -44,7 +51,8 @@ class AppModule extends AbstractModule
         $this->executer = new Thread(function () {
             Thread::sleep(AppModule::SELF_UPDATE_DELAY);
             $this->update();
-            return;
+            
+            /* 
             uiLater(function () {
                 $notify = new UXHBox();
                 $notify->spacing = 5;
@@ -73,6 +81,8 @@ class AppModule extends AbstractModule
                     
                 });
             });
+            
+            */
         });
         
         $this->executer->setDaemon(true);
@@ -82,37 +92,45 @@ class AppModule extends AbstractModule
     
     
     public function update () {
-        $temp = fs::normalize(System::getProperty('user.home') . '\AppData\Local\Temp');
+        $temp = fs::normalize(System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
         
         Logger::info('Checking updates...');
 
         $selfUpdate = new Selfupdate('silentdeath76', 'DevelNext-ProjectViewer');
-        $response = $selfUpdate->getLatest();
         
-        if (str::compare(AppModule::APP_VERSION, $response->getVersion()) == -1) {
-            Logger::info('Have new version');
-            Logger::info(sprintf("Current version %s new version %s", AppModule::APP_VERSION, $response->getVersion()));
+        try {
+            $response = $selfUpdate->getLatest();
             
-            $tempFile = fs::normalize($temp . '/' . $response->getName());
-            
-            $http = new HttpClient();
-            $stream = $http->get($response->getLink())->body();
-            $outputStream = new FileStream($tempFile, "w+");
-            $outputStream->write($stream);
-            $outputStream->close();
-
-            fs::copy($tempFile, './' . $response->getName());
-
-            if (File::of('./' . $response->getName())->exists()) {
-                execute(fs::abs('./' . $response->getName()));
+            if (str::compare(AppModule::APP_VERSION, $response->getVersion()) == AppModule::FOUND_NEW_VERSION) {
+                Logger::info('Have new version');
+                Logger::info(sprintf("Current version %s new version %s", AppModule::APP_VERSION, $response->getVersion()));
+                
+                $tempFile = fs::normalize($temp . '/' . $response->getName());
+                
+                $http = new HttpClient();
+                $stream = $http->get($response->getLink())->body();
+                $outputStream = new FileStream($tempFile, "w+");
+                $outputStream->write($stream);
+                $outputStream->close();
+    
+                fs::copy($tempFile, './' . $response->getName());
+    
+                if (File::of('./' . $response->getName())->exists()) {
+                    execute(fs::abs('./' . $response->getName()));
+                }
+    
+                app()->shutdown();
             }
-
-            app()->shutdown();
-        }
         
-        unset($selfUpdate);
-        unset($response);
-        unset($this->executer);
+        } catch (Exception $ex) {
+            uiLater(function () use ($ex) {
+                app()->form("MainForm")->errorAlert($ex, true);
+            });
+        } finally {
+            unset($selfUpdate);
+            unset($response);
+            unset($this->executer);
+        }
     }
 
 }

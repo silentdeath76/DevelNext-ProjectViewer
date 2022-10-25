@@ -25,7 +25,7 @@ class ZipFileSystem extends AbstractFileSystem implements IZipInstance
         $path = $this->normalizePath($path, $this->zip);
             
         if ($this->zip->has($path)) {
-            return new Time($this->zip->stat($path)["time"])->toString('dd/MM/YYYY HH:mm:ss');
+            return new Time($this->zip->stat($path)["time"])->toString(AbstractFileSystem::DATE_FORMAT);
         }
     }
 

@@ -13,6 +13,11 @@ class Dependency
     const DEFAULT_DEPENDENCY_PATH = '\DevelNextLibrary\bundles\\';
     const DEPENDENCY_ICON_PATH = '.data/img/develnext/bundle/';
     
+    /**
+     * @var ObjectStorage
+     */
+    private $imageCache;
+    
     public function getDependencys (ZipFile $zip) {
         app()->form("MainForm")->flowPane->children->clear();
         
@@ -91,7 +96,6 @@ class Dependency
         }
         
         foreach ($sort as $l) {
-            $c = 0;
             foreach ($l as $panel) {
                 try {
                     app()->form("MainForm")->flowPane->children->add($panel["panel"]);
@@ -131,7 +135,7 @@ class Dependency
             $width = 10;
             $height = 10;
             
-            $panel->add($link = new UXScrollPane); /// UXImageView(new UXImage('res://.data/img/ui/external-link-16.png', $width, $height)));
+            $panel->add($link = new UXScrollPane);
             $link->classes->add("link");
             $link->cursor = 'HAND';
             $link->maxWidth = $width;
@@ -143,14 +147,6 @@ class Dependency
                 if (uiConfirm('Открыть ссылку в браузере?')) {
                     open($url);
                 }
-            });
-            $link->on("mouseEnter", function () use ($link, $width, $height) {
-                static $image =  new UXImage('res://.data/img/ui/external-link-16 hover.png', $width, $height);
-                $link->image = $image;
-            });
-            $link->on("mouseExit", function () use ($link, $width, $height) {
-                static $image = new UXImage('res://.data/img/ui/external-link-16.png', $width, $height);;
-                $link->image = $image;
             });
         }
         
@@ -179,7 +175,7 @@ class Dependency
                 case 'ZIP': return false;
             }
             
-            Logger::info($name);
+            Logger::info("Unknown dependency: " . $name);
             
             return false;
         }
@@ -216,9 +212,18 @@ class Dependency
     }
     
     /**
-     * Иконки пользовательских пакетов, елси они были устанволенны в студии
+     * Иконки пользовательских пакетов, елси они были установленны в студии
      */
     public function getBundleIcon ($bundleName) {
+    
+        if (!($this->imageCache instanceof ObjectStorage)) {
+            $this->imageCache = new ObjectStorage();
+        }
+        
+        if ($this->imageCache->exists($bundleName)) {
+            return $this->imageCache->get($bundleName);
+        }
+        
         $extensions = [];
         $path = System::getProperty('user.home') . self::DEFAULT_DEPENDENCY_PATH;
         
@@ -234,6 +239,8 @@ class Dependency
                             $zip->read($stat["name"], function ($stat, MiscStream $stream) use ($lab, &$image) {
                                 $image = new UXImage($stream);
                             });
+                            
+                            $this->imageCache->set($bundleName, $image);
                             
                             return $image;
                         }

@@ -41,7 +41,7 @@
 
 .tab-pane .tab-header-area .tab {
     -fx-font-size: 1.05em;
-    -fx-padding: 4;
+    -fx-padding: 4 8 4 4 !important;
     -fx-background-insets: 0 0 0 0;
 }
 

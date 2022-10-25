@@ -1,6 +1,7 @@
 <?php
 namespace app\util\dto;
 
+use Exception;
 use app, std;
 
 class Releases {
@@ -12,6 +13,14 @@ class Releases {
      * @return Releases
      */
     public static function of ($obj) {
+        if (!is_array($obj)) {
+            throw new IllegalArgumentException("Argument must be array");
+        }
+        
+        if (!isset($obj["tag_name"]) || !isset($obj["assets"])) {
+            throw new RuntimeException("Broken array object");
+        }
+    
         return new self($obj);
     }
     
