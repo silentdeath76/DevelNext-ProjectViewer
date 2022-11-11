@@ -6,6 +6,11 @@
     -fx-background-color: -base-color;
 }
 
+.tree-view {
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: derive(-second-base-color, -10%);
+}
+
 .tree-cell {
     -fx-background-color: -base-color;
     -fx-text-fill: -text-color;

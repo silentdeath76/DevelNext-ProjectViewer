@@ -12,6 +12,7 @@ class MainForm extends AbstractForm
 
     const REGISTRY_PATH = 'HKCU\SOFTWARE\ProjectView';
     
+    
     /**
      * @var FSTreeProvider
      */
@@ -39,16 +40,18 @@ class MainForm extends AbstractForm
      */
     public $mainMenuEvents;
 
+
     /**
      * @event construct 
      */
     function doConstruct(UXEvent $e = null)
     {    
-        $this->reg = Registry::of(self::REGISTRY_PATH);
         $this->logger = new LoggerReporter();
         $this->mainMenuEvents = new MainMenuEvents();
         
         try {
+            $this->reg = Registry::of(self::REGISTRY_PATH);
+            
             if (($path = $this->reg->read('ProjectDirectory')) !== null) {
                 $this->ini->set("ProjectDirectory", $path);
                 $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
@@ -196,6 +199,7 @@ class MainForm extends AbstractForm
         $this->show();
     }
     
+    
     /**
      * @event tree.click-Left 
      */
@@ -222,8 +226,6 @@ class MainForm extends AbstractForm
         $this->fsTree->getFileInfo($this->tree->focusedItem);
     }
     
-
-
 
     /**
      * @event browser.running 
@@ -254,6 +256,7 @@ class MainForm extends AbstractForm
             $this->errorAlert($ex, true);
         }
     }
+
 
     /**
      * @event tree.click-Right 
@@ -299,6 +302,7 @@ class MainForm extends AbstractForm
         
         $contextRoot->showByNode($e->sender, $e->x, $e->y);
     }
+    
 
     /**
      * @event infoPanelSwitcher.click-Left 
@@ -315,6 +319,7 @@ class MainForm extends AbstractForm
             $this->ini->set('panel_file_information_show', 0);
         }
     }
+    
 
     /**
      * @event infoPanelSwitcher.construct 
@@ -328,6 +333,7 @@ class MainForm extends AbstractForm
             }
         } catch (Exception $ignore) {}
     }
+    
 
     /**
      * @event fileInfo.construct 
@@ -336,6 +342,7 @@ class MainForm extends AbstractForm
     {    
         $e->sender->lookup('.panel-title')->topAnchor = -14;
     }
+    
 
     /**
      * @event browser.load 
@@ -344,6 +351,7 @@ class MainForm extends AbstractForm
     {    
         $this->doBrowserRunning($e);
     }
+
 
     /**
      * @event tabPane.construct 
@@ -373,11 +381,13 @@ class MainForm extends AbstractForm
         return $ext;
     }
     
+    
     public function updateFileinfo ($provider, $path) {
         $this->createdAt->text = $provider->createdAt($path);
         $this->modifiedAt->text = $provider->modifiedAt($path);
         $this->showMeta(["size" => $provider->size($path)]);
     }
+    
     
     private function showCodeInBrowser ($output, $ext = 'config') {
         $output = str_replace(['<', '>'], ['&lt;', '&gt;'], $output); 
@@ -385,6 +395,7 @@ class MainForm extends AbstractForm
             str_replace(['${lang}', '${code}'], [$ext, $output], Stream::of('res://.data/web/highlight.html'))
         );
     }
+    
     
     private function showMeta ($meta) {
         $meta = $meta["size"];
@@ -413,6 +424,7 @@ class MainForm extends AbstractForm
         $alert->contentText = $ex->getMessage();
         $alert->show();
     }
+    
     
     public function _showForm ($formData, $outputImage) {
         $n = new Environment();

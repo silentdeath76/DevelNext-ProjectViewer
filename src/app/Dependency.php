@@ -13,10 +13,12 @@ class Dependency
     const DEFAULT_DEPENDENCY_PATH = '\DevelNextLibrary\bundles\\';
     const DEPENDENCY_ICON_PATH = '.data/img/develnext/bundle/';
     
+    
     /**
      * @var ObjectStorage
      */
     private $imageCache;
+    
     
     public function getDependencys (ZipFile $zip) {
         app()->form("MainForm")->flowPane->children->clear();
@@ -104,6 +106,7 @@ class Dependency
         }
     }
     
+    
     private function getPanelWidth ($panel) {
         return $panel->children->offsetGet(1)->font->calculateTextWidth($panel->children->offsetGet(1)->text) + 16;
     }
@@ -153,6 +156,7 @@ class Dependency
         return $panel;
     }
     
+    
     private function getLink($name) {
         static $json = json_decode(FileStream::of('res://.data/dependencys.json'), true);
         
@@ -183,6 +187,7 @@ class Dependency
         return $found[$name]["link"];
     }
     
+    
     /**
      * Иконки стандартных пакетов DN
      * 
@@ -210,6 +215,7 @@ class Dependency
         
         return new UXImage($name, 16, 16);
     }
+    
     
     /**
      * Иконки пользовательских пакетов, елси они были установленны в студии

@@ -2,7 +2,7 @@
 body {
     padding: 0px;
     margin: 0px;
-    background-color: #FFFFFF !important;
+    background-color: #fafbfc !important;
     margin-right: 5px;
 }
 
@@ -12,7 +12,7 @@ pre {
 }
 
 /* desert scheme ported from vim to google prettify */
-pre.prettyprint { display: block; background-color: #FFFFFF !important; }
+pre.prettyprint { display: block; background-color: #fafbfc !important; }
 pre .nocode { background-color: none; color: #000 !important; }
 pre .str { color: #925959 !important; } /* string  - pink */
 pre .kwd { color: #7f7948 !important; font-weight: bold }
@@ -30,7 +30,8 @@ pre .dec { color: #249324 !important; } /* decimal         - lightgreen */
 ol.linenums {
     margin-top: 0;
     margin-bottom: 0;
-    width: 30px;
+    margin-left: 20px;
+    min-width: 30px;
     color: #444 !important;
 } /* IE indents via margin-left */
 
@@ -55,11 +56,11 @@ ul {
 li.L0, li.L1, li.L2, li.L3, li.L4,
 li.L5, li.L6, li.L7, li.L8, li.L9 {
     list-style-type: decimal !important;
-    background-color: #FFFFFF !important;
+    background-color: #fafbfc !important;
     user-select: none !important;
 }
 
 
-::-webkit-scrollbar-corner { background: #FFFFFF !important; } 
+::-webkit-scrollbar-corner { background: #fafbfc !important; } 
 ::-moz-selection { background: #F2F2F2 !important; }
 ::selection { background: #F2F2F2 !important; }
