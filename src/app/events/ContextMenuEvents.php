@@ -123,7 +123,7 @@ class ContextMenuEvents
     }
     
     private function getPath () {
-        $path = $this->form->fsTree->backTrace($this->form->tree->focusedItem);
+        $path = $this->form->fsTree->treeHelper->getPath($this->form->tree->focusedItem);
         return $this->form->fsTree->getPaths($path);
     }
 }

@@ -27,6 +27,11 @@ class FSTreeProvider implements IEvents
      */
     private $rootItem;
     
+    /**
+     * @var TreeHelper
+     */
+    public $treeHelper;
+    
     private $lastSelectedProject;
     
     private $selectedDirectory;
@@ -36,6 +41,7 @@ class FSTreeProvider implements IEvents
         $this->rootItem = $rootTreeItem;
         $this->dependency = new Dependency();
         $this->imageCache = new ObjectStorage();
+        $this->treeHelper = new TreeHelper();
     }
     
     
@@ -48,11 +54,13 @@ class FSTreeProvider implements IEvents
             $items = explode('\\', $filePath);
             
             if ($file->isFile()) {
-                $this->createTreeItem($this->rootItem, $items);
+                $this->treeHelper->makeTree($this->rootItem, $items, function ($node, bool $isDir) use ($filePath) {
+                    $this->applyIcon($node, ($isDir) ? FSTreeProvider::EMPTY_PATH_ELEMENT : $filePath);
+                });
             }
         }]);
         
-        $this->sort($this->rootItem);
+        $this->treeHelper->sort($this->rootItem);
     }
     
     
@@ -107,7 +115,7 @@ class FSTreeProvider implements IEvents
                 $this->createTreeItemOfZip($item, $zipFile->statAll());
                 
                 // сортируем по алфавиту и чтобы сначала шли директории
-                $this->sort($item);
+                $this->treeHelper->sort($item);
             }
             
             call_user_func_array($this->events["onFileSystem"], [$fs, $filePath]);
@@ -184,41 +192,8 @@ class FSTreeProvider implements IEvents
         return [$fsPath, $zipPath];
     }
     
-    
-    protected function sort ($node) {
-        if ($node->children->isNotEmpty()) {
-            $notempty = [];
-            $empty = [];
-            
-            // грубая сортировка с разделением на пустые и с под элементами ноды
-            foreach ($node->children as $key => $children) {
-                if ($children->children->isNotEmpty()) {
-                    $notempty[] = $children;
-                } else {
-                    $empty[] = $children;
-                }
-            }
-            
-            uasort($notempty, function ($a, $b) {
-                return str::compare($a->value, $b->value);
-            });
-            
-            uasort($empty, function ($a, $b) {
-                return str::compare($a->value, $b->value);
-            });
-            
-            $node->children->clear();
-            $node->children->addAll($notempty);
-            $node->children->addAll($empty);
-            
-            foreach ($node->children as $children) {
-                $this->sort($children);
-            }
-        }
-    }
-    
-    
     protected function applyIcon ($item, $path) {
+
         if (!($item instanceof UXTreeItem || $item instanceof UXLabel)) {
             throw new IllegalArgumentException('$item must be instance UXTreeItem or UXLabel');
         }
@@ -268,45 +243,17 @@ class FSTreeProvider implements IEvents
             if ($stat[$path]["crc"] == 0) continue; // fix bug with archive downloaded from githhub (draws wrong icons, all dirs was as file)
             
             $path = str_replace('\\', '/', $path);
-            $path = explode('/', $path);
-            $this->createTreeItem($root, $path);
+            $_path = explode('/', $path);
+            
+            $this->treeHelper->makeTree($root, $_path, function ($node, bool $isDir) use ($path) {
+                $this->applyIcon($node, ($isDir) ? FSTreeProvider::EMPTY_PATH_ELEMENT : $path);
+            });
         }
+                
     }
     
     
-    protected function createTreeItem (UXTreeItem $root, $items) {
-        foreach ($items as $key => $value) {
-            $value = trim($value);
-            
-            if (empty($value)) continue;
-            
-            if ($root->children->count() > 0) {
-                foreach ($root->children->toArray() as $child) {
-                    if ($child->value === $value) {
-                        $this->createTreeItem($child, array_slice($items, 1));
-                        return;
-                    }
-                }
-            }
-            
-            $root->children->add($root = new UXTreeItem($value));
-            $this->applyIcon($root, FSTreeProvider::EMPTY_PATH_ELEMENT);
-        }
-        
-        $this->applyIcon($root, $value);
-    }
+
     
-    
-    public function backTrace(UXTreeItem $item, $path = null) {
-        
-        if ($item->parent instanceof UXTreeItem) {
-            if (fs::name($this->path) === $item->parent->value) {
-                return $path . $item->parent->value;
-            }
-            
-            return $this->backTrace($item->parent, $path) . '\\' . $item->value;
-        }
-        
-        return $path;
-    }
+
 }
