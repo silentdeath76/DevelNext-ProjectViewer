@@ -1,6 +1,7 @@
 <?php
 namespace app\util;
 
+use framework;
 use app;
 use std, httpclient;
 
@@ -26,7 +27,13 @@ class Selfupdate
      */
     public function getLatest () {
         $url = str_replace(["{OWNER}", "{REPO}"], [$this->owner, $this->repos], $this->url);
-        $array = json_decode($this->http->get($url)->body(), true);
+        $http = $this->http->get($url);
+        
+        if ($http->statusCode() !== 200) {
+            return Releases::of(["error" => "cant connected to github.com"]);
+        }
+        
+        $array = json_decode($http->body(), true);
         
         return Releases::of($array);
     }

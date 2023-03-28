@@ -96,7 +96,12 @@ class AppModule extends AbstractModule
         
         Logger::info('Checking updates...');
 
-        $selfUpdate = new Selfupdate('silentdeath76', 'DevelNext-ProjectViewer');
+        try {
+            $selfUpdate = new Selfupdate('silentdeath76', 'DevelNext-ProjectViewer');
+        } catch (Exception $ex) {
+            Logger::error($ex->getMessage());
+            return;
+        }
         
         try {
             $response = $selfUpdate->getLatest();
