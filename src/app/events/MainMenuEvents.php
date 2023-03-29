@@ -44,6 +44,7 @@ class MainMenuEvents
                 }
                 
                 $menuItem->graphic->enabled = false;
+                $menuItem->graphic->selected = true;
                 
                 app()->form("MainForm")->addStylesheet('.theme/' . $name . '.theme.fx.css');
                 
