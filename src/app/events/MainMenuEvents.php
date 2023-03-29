@@ -33,7 +33,7 @@ class MainMenuEvents
         foreach ($menu->items as $menuItem) {
             $name = array_search($themeList, $menuItem->graphic->text, false);
             
-            if ($ev->sender === $menuItem->graphic) {
+            if ($ev->sender->graphic === $menuItem->graphic) {
                 app()->form("MainForm")->ini->set('theme', $name);
                 app()->form("MainForm")->data('theme', $name);
                 

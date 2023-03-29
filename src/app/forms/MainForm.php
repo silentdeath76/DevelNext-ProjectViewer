@@ -79,43 +79,29 @@ class MainForm extends AbstractForm
         $bar->classes->add("menu-bar");
         $bar->leftAnchor = $bar->rightAnchor = 0;
         
-        $bar->menus->add($menu = new UXMenu());
-        $menu->graphic = new UXLabel("Выбрать директорию");
-        $menu->graphic->padding = 1;
-        $menu->graphic->on("click", function () {
-            $this->mainMenuEvents->selectedFolder();
-        });
         
-        $bar->menus->add($menu = new UXMenu());
-        $menu->graphic = new UXLabel("Цветовая схема");
+        ContextMenuHelper::of($bar)->addCategory("Выбрать директорию", [$this->mainMenuEvents, 'selectedFolder']);
         
+        $themeCategory = ContextMenuHelper::of($bar)->addCategory("Цветовая схема");
         
         $themeList = ["light" => "Светлая", "dark" => "Темная", "nord" => "Nord"];
         
-        
         foreach ($themeList as $theme => $text) {
-            $menu->items->add($node = new UXMenuItem());
-            $node->graphic = new UXCheckbox($text);
+            $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList) {
+                $this->mainMenuEvents->changeTheme($ev, $themeCategory->getTarget(), $themeList);
+            }, $node = new UXCheckbox($text));
             
             if ($theme === $this->data('theme')) {
-                $node->graphic->selected = true;
-                $node->graphic->enabled = false;
+                $node->selected = true;
+                $node->enabled = false;
                 $this->addStylesheet('.theme/' . $theme. '.theme.fx.css');
             }
-            
-            $node->graphic->on("action", function ($ev) use ($menu, $themeList) {
-                $this->mainMenuEvents->changeTheme($ev, $menu, $themeList);
-            });
         }
         
-        
-        
-        $bar->menus->add($menu = new UXMenu());
-        $menu->graphic = new UXLabel("О программе");
-        $menu->graphic->padding = 1;
-        $menu->graphic->on("click", function () {
+        ContextMenuHelper::of($bar)->addCategory("О программе", function () {
             $this->form("About")->showAndWait();
         });
+        
         
         $this->add($bar);
         
@@ -309,13 +295,15 @@ class MainForm extends AbstractForm
      */
     function doInfoPanelSwitcherClickLeft(UXMouseEvent $e = null)
     {    
+        $padding = 8;
+        
         if ($this->infoPanelSwitcher->selected) {
-            $this->tabPane->rightAnchor = $this->fileInfo->width + 16;
-            $this->fileInfo->rightAnchor = 8;
+            $this->tabPane->rightAnchor = $this->fileInfo->width + $padding * 2;
+            $this->fileInfo->rightAnchor = $padding;
             $this->ini->set('panel_file_information_show', 1);
         } else {
-            $this->tabPane->rightAnchor = 8;
-            $this->fileInfo->rightAnchor -= $this->fileInfo->width + 8;
+            $this->tabPane->rightAnchor = $padding;
+            $this->fileInfo->rightAnchor -= $this->fileInfo->width + $padding;
             $this->ini->set('panel_file_information_show', 0);
         }
     }
@@ -405,41 +393,4 @@ class MainForm extends AbstractForm
         
         $this->fileSize->text = round($meta / pow(1024, $index), 2) . $types[$index];
     }
-    
-    
-    public function errorAlert (Exception $ex, $detailed = false) {
-        $this->logger->discord($ex->getTraceAsString(), LoggerReporter::ERROR)->send();
-        
-        $alert = new UXAlert("ERROR");
-        $alert->headerText = "";
-        
-        if ($detailed) {
-            $alert->expanded = false;
-            $alert->expandableContent = new UXScrollPane(new UXAnchorPane);
-            $alert->expandableContent->height = 400;
-            $alert->expandableContent->content->add(new UXLabel(var_export($ex->getTraceAsString(), true)));
-        }
-        
-        $alert->title = 'Произошла ошибка';
-        $alert->contentText = $ex->getMessage();
-        $alert->show();
-    }
-    
-    
-    public function _showForm ($formData, $outputImage) {
-        $n = new Environment();
-        $n->importAutoLoaders();
-        
-        // несовсем понимаю почему требуется импорт именно класса MainForm, причем не важно какое имя у загружаемой формы
-        $n->importClass(MainForm::class);
-        $n->importClass('php\gui\framework\AbstractForm');
-        $n->importClass('php\gui\framework\AbstractModule');
-        $n->execute(function () use ($formData, $outputImage) {
-            $layout = new UXLoader()->loadFromString($formData);
-            $form = new UXForm();
-            $form->add($layout);
-            $outputImage->image = $form->layout->snapshot();
-        });
-    }
-    
 }
