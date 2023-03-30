@@ -9,7 +9,7 @@ use std, gui, framework, app;
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
-    const APP_VERSION = '1.1.5';
+    const APP_VERSION = '1.1.6';
     const APP_TITLE = 'DevelNext ProjectView';
     
     const UPDATE_TEMP_PATH = '\AppData\Local\Temp';
@@ -96,7 +96,12 @@ class AppModule extends AbstractModule
         
         Logger::info('Checking updates...');
 
-        $selfUpdate = new Selfupdate('silentdeath76', 'DevelNext-ProjectViewer');
+        try {
+            $selfUpdate = new Selfupdate('silentdeath76', 'DevelNext-ProjectViewer');
+        } catch (Exception $ex) {
+            Logger::error($ex->getMessage());
+            return;
+        }
         
         try {
             $response = $selfUpdate->getLatest();

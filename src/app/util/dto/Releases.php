@@ -17,6 +17,10 @@ class Releases {
             throw new IllegalArgumentException("Argument must be array");
         }
         
+        if (isset($obj["error"])) {
+            throw new RuntimeException($obj["error"]);
+        }
+        
         if (!isset($obj["tag_name"]) || !isset($obj["assets"])) {
             throw new RuntimeException("Broken array object");
         }

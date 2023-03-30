@@ -30,7 +30,8 @@ pre .dec { color: #98fb98 !important; } /* decimal         - lightgreen */
 ol.linenums {
     margin-top: 0;
     margin-bottom: 0;
-    width: 30px;
+    margin-left: 20px;
+    min-width: 30px;
     color: #AEAEAE !important;
 } /* IE indents via margin-left */
 

@@ -47,5 +47,11 @@
     }, {
         "name": "AudioBundle",
         "link": "https://github.com/MWGuy/jphp-voice-recorder-ext"
+    }, {
+        "name": "DiscordRPC",
+        "link": "https://github.com/silentdeath76/JPHP-DiscordRPC-ext"
+    }, {
+        "name": "Yandex Disc",
+        "link": "https://github.com/silentdeath76/jphp-yandex-disc"
     }
 ]

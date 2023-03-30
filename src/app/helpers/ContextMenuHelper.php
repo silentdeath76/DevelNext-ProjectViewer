@@ -24,8 +24,8 @@ class ContextMenuHelper
      * @return ContextMenuHelper
      */
     public static function of ($target, Configuration $config = null) {
-        if (!($target instanceof UXContextMenu || $target instanceof UXMenu)) {
-            throw new IllegalArgumentException('Args most be php\gui\UXContextMenu or php\gui\UXMenu, now $target = ' . get_class($target));
+        if (!($target instanceof UXContextMenu || $target instanceof UXMenu || $target instanceof UXMenuBar)) {
+            throw new IllegalArgumentException('Args most be php\gui\UXContextMenu or php\gui\UXMenu ot php\gui\UXMenuBar, now $target = ' . get_class($target));
         }
         
         return new self($target, $config);
@@ -50,11 +50,24 @@ class ContextMenuHelper
     /**
      * @return ContextMenuHelper
      */
-    public function addCategory ($text, UXNode $graphic = null) {
-        $this->target->items->add($node = new UXMenu($text));
-        $this->setGraphic($node, $graphic);
+    public function addCategory ($text, callable $callback = null, UXNode $graphic = null) {
+        $param = 'items';
+        
+        if ($this->target instanceof UXMenuBar) {
+            $param = 'menus';
+        }
+        $this->target->{$param}->add($node = new UXMenu());
+        $this->setGraphic($node, $label = new UXLabel($text));
+        
+        if ($callback !== null) {
+            $label->on("click", $callback);
+        }
         
         return ContextMenuHelper::of($node, $this->config);
+    }
+    
+    public function getTarget () {
+        return $this->target;
     }
     
     public function addSeparator () {

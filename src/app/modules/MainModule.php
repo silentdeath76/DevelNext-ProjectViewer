@@ -1,6 +1,7 @@
 <?php
 namespace app\modules;
 
+use Exception;
 use std, gui, framework, app;
 
 
@@ -67,6 +68,39 @@ class MainModule extends AbstractModule
         });
     }
     
+    public function errorAlert (Exception $ex, $detailed = false) {
+        $this->logger->discord($ex->getTraceAsString(), LoggerReporter::ERROR)->send();
+        
+        $alert = new UXAlert("ERROR");
+        $alert->headerText = "";
+        
+        if ($detailed) {
+            $alert->expanded = false;
+            $alert->expandableContent = new UXScrollPane(new UXAnchorPane);
+            $alert->expandableContent->height = 400;
+            $alert->expandableContent->content->add(new UXLabel(var_export($ex->getTraceAsString(), true)));
+        }
+        
+        $alert->title = 'Произошла ошибка';
+        $alert->contentText = $ex->getMessage();
+        $alert->show();
+    }
+    
+    
+    public function _showForm ($formData, $outputImage) {
+        $n = new Environment();
+        $n->importAutoLoaders();
+        
+        $n->importClass(MainForm::class);
+        $n->importClass(MainModule::class);
+        
+        $n->execute(function () use ($formData, $outputImage) {
+            $layout = new UXLoader()->loadFromString($formData);
+            $form = new UXForm();
+            $form->add($layout);
+            $outputImage->image = $form->layout->snapshot();
+        });
+    }
     
     public function firstRunReport () {
         if ($this->ini->get("firstRun") != 1) {
