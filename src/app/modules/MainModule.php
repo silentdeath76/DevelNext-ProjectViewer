@@ -14,6 +14,17 @@ class MainModule extends AbstractModule
     private $formHeight;
     
     public function formSizeSaver () {
+
+        $binder = new EventBinder($this->infoPanelSwitcher);
+        $binder->bind("step", function () {
+            if ($this->appModule()->notifyContainer instanceof UXHBox) {
+                $this->appModule()->notifyContainer->x = 
+                    ($this->infoPanelSwitcher->x +
+                    $this->infoPanelSwitcher->width -
+                    $this->appModule()->notifyContainer->width) + 1;
+            }
+        })
+        
         $this->form("MainForm")->observer("width")->addListener(function ($o, $n)  {
             static $timer;
             
@@ -52,6 +63,7 @@ class MainModule extends AbstractModule
         
         $this->form("MainForm")->observer("maximized")->addListener(function ($o, $n) {
             // закгрузка старых размеров формы если она была равзернута на весь экран
+            
             if ($n === true) {
                 $this->needLoad = true;
                 $this->formWidth = $this->ini->get('width');

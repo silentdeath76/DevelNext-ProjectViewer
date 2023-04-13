@@ -212,7 +212,12 @@ class FSTreeProvider implements IEvents
                 case 'ico': 
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
-                    $file = 'res://.data/img/ui/archive-60.png'; break;
+                    // $file = 'res://.data/img/ui/archive-60.png'; break;
+                    $item->graphic = new UXHBox();
+                    $item->graphic->minWidth = 16;
+                    $item->graphic->minHeight = 12;
+                    $item->graphic->classes->add("zip-icon");
+                    return;
                 case 'php':
                     $file = 'res://.data/img/ui/php-file-60.png'; break;
                 case 'fxml':
@@ -223,14 +228,24 @@ class FSTreeProvider implements IEvents
         } else {
             $file = 'res://.data/img/ui/folder-60.png';
             
+            $item->graphic = new UXHBox();
+            $item->graphic->minWidth = 16;
+            $item->graphic->minHeight = 12;
+            $item->graphic->classes->add("folder-icon");
+            
+            
+            
+            
+            return;
+            
             if ($this->imageCache->exists(FSTreeProvider::EMPTY_PATH_ELEMENT)) {
                 $item->graphic = new UXImageView($this->imageCache->get(FSTreeProvider::EMPTY_PATH_ELEMENT));
-                return;
             } else {
                 $item->graphic = new UXImageView(new UXImage($file, 20, 20));
                 $this->imageCache->set(FSTreeProvider::EMPTY_PATH_ELEMENT, $item->graphic->image);
-                return;
             }
+            
+            return;
         }
         
         $item->graphic = new UXImageView(new UXImage($file, 20, 20));

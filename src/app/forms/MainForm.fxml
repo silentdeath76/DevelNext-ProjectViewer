@@ -32,13 +32,13 @@
       </tabs>
     </TabPaneEx>
     <Data cursor="DEFAULT" draggable="NONE" enabled="1" id="data-tabPane" visible="1"/>
-    <ToggleButton AnchorPane.rightAnchor="10" AnchorPane.topAnchor="32" alignment="CENTER" contentDisplay="LEFT" ellipsisString="..." focusTraversable="true" graphicTextGap="4" id="infoPanelSwitcher" layoutX="864" layoutY="32" prefHeight="30" prefWidth="30" styleClass="toggle-button " text="i" textAlignment="LEFT" textFill="#000000" underline="false" wrapText="false">
+    <ToggleButton AnchorPane.rightAnchor="10" AnchorPane.topAnchor="32" alignment="CENTER" contentDisplay="LEFT" ellipsisString="" focusTraversable="true" graphicTextGap="4" id="infoPanelSwitcher" layoutX="864" layoutY="32" prefHeight="30" prefWidth="30" styleClass="toggle-button " text="i" textAlignment="CENTER" textFill="#000000" underline="false" wrapText="false">
       <font>
         <Font name="System Bold Italic" size="12"/>
       </font>
     </ToggleButton>
     <Data cursor="DEFAULT" enabled="1" id="data-infoPanelSwitcher" tooltipText="" visible="1"/>
-    <Panel AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="-256" AnchorPane.topAnchor="80" backgroundColor="#ffffff" borderColor="#c0c0c0" borderRadius="0" borderStyle="SOLID" borderWidth="2" focusTraversable="false" id="fileInfo" layoutX="912" layoutY="80" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="407" prefWidth="248" styleClass="" title="Инфорация о файле" titleColor="#000000" titleOffset="15" titlePosition="TOP_CENTER">
+    <Panel AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="-256" AnchorPane.topAnchor="80" backgroundColor="#fafbfc" borderColor="#c0c0c0" borderRadius="0" borderStyle="SOLID" borderWidth="2" focusTraversable="false" id="fileInfo" layoutX="912" layoutY="80" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="407" prefWidth="248" styleClass="" title="Инфорация о файле" titleColor="#000000" titleOffset="15" titlePosition="TOP_CENTER">
       <children>
         <ScrollPane AnchorPane.bottomAnchor="6" AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="8" AnchorPane.topAnchor="296" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="container" layoutX="7" layoutY="297" prefHeight="103" prefWidth="232" styleClass="scroll-pane " vbarPolicy="AS_NEEDED" vvalue="0">
           <content>
@@ -106,7 +106,7 @@
         <Data cursor="DEFAULT" enabled="1" id="data-fileSize" visible="1"/>
       </children>
       <titleFont>
-        <Font name="System Regular" size="12"/>
+        <Font name="System Bold" size="12"/>
       </titleFont>
     </Panel>
     <Data cursor="DEFAULT" enabled="1" id="data-fileInfo" visible="1"/>

@@ -26,3 +26,7 @@
 .scroll-pane:focused {
     -fx-background-color: -base-color;
 }
+
+#fileInfo .panel-title {
+    -fx-font-weight: bold;
+}

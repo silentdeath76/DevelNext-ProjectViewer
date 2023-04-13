@@ -8,7 +8,7 @@ use std, gui, framework, app;
 
 class AppModule extends AbstractModule
 {
-    const SELF_UPDATE_DELAY = 10000;
+    const SELF_UPDATE_DELAY = 1000;
     const APP_VERSION = '1.1.6';
     const APP_TITLE = 'DevelNext ProjectView';
     
@@ -22,6 +22,11 @@ class AppModule extends AbstractModule
      * @var Thread
      */
     private $executer;
+    
+    /**
+     * @var UXHBox
+     */
+    public $notifyContainer;
 
     /**
      * @event construct 
@@ -48,40 +53,17 @@ class AppModule extends AbstractModule
         
         $form->show();
         
-        $this->executer = new Thread(function () {
+        $this->executer = new Thread(function () use ($form) {
             Thread::sleep(AppModule::SELF_UPDATE_DELAY);
             $this->update();
             
-            /* 
-            uiLater(function () {
-                $notify = new UXHBox();
-                $notify->spacing = 5;
-                $notify->fillHeight = true;
-                $notify->add($button = new UXFlatButton("🗙"));
-                $button->textColor = "white";
-                $button->hoverColor = 'gray';
-                $notify->rightAnchor = 10;
-                $notify->topAnchor = 5;
-                $notify->y = 5;
-                
-                $notify->add($text = new UXLabel("Есть новая версия программы."));
-                $notify->add($updateButton = new UXFlatButton("Обновить"));
-                $updateButton->hoverColor = '#FFFFFF1c';
-                $updateButton->textColor = "white";
-                $updateButton->paddingLeft = 5;
-                $updateButton->paddingRight = 5;
-                app()->form("MainForm")->add($notify);
-                
-                $notify->x = app()->form("MainForm")->width;
-                $width = UXFont::getDefault()->calculateTextWidth($button->text) +
-                    UXFont::getDefault()->calculateTextWidth($text->text) +
-                    UXFont::getDefault()->calculateTextWidth($updateButton->text) + $notify->spacing * 4;
-                
-                Animation::displace($notify, 1000, $width * -1 - 10, 0, function () use ($notify) {
-                    
+            /* uiLater(function () use ($form) {
+                $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($form) {
+                    var_dump('click!');
                 });
+                
+                $form->tabPane->toBack();
             });
-            
             */
         });
         
@@ -136,6 +118,67 @@ class AppModule extends AbstractModule
             unset($response);
             unset($this->executer);
         }
+    }
+    
+    
+    public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
+        static $container;
+        
+        if ($container == null) {
+            $container = new UXHBox();
+            $container->add($label = new UXLabelEx($text));
+            $container->add($button = new UXFlatButton($buttonText));
+            $container->spacing = 5;
+            $container->padding = 5;
+            $container->paddingRight = $target->width + 10;
+            $container->alignment = "CENTER_LEFT";
+            $container->maxWidth = 0;
+            $container->style = '-fx-background-radius: 10 25 25 10; -fx-border-radius: 10 25 25 10; -fx-background-color: #0000001F';
+            $container->minHeight = $target->height;
+            $container->opacity = 0;
+            $container->x = $target->x + $container->width;
+            $container->y = $target->y-1;
+            
+            $label->ellipsisString = null;
+            $label->autoSize = true;
+            $label->autoSizeType = 'HORIZONTAL';
+            
+            $button->backgroundColor = '#00000000';
+            $button->hoverColor = '#0000001F';
+            $button->clickColor = ' #0000000F';
+            $button->borderRadius = 3;
+            $button->padding = 3;
+            $button->font->bold = true;
+            $button->width = 90;
+            $button->alignment = 'CENTER';
+            
+            $button->ellipsisString = null;
+            $button->on("click", $callback);
+            
+            $target->data("container", $container);
+            $target->parent->add($container);
+            
+            $container->toBack();
+            
+            $this->notifyContainer = $container;
+        }
+        
+        $container->maxWidth = 0;
+        
+        $toSize = UXFont::getDefault()->calculateTextWidth($text) + UXFont::getDefault()->calculateTextWidth($buttonText) + 30 + $container->paddingRight + $customPadding;
+        $show = new UXAnimationTimer(function () use (&$show, $container, $toSize, $target, $customPadding) {
+            $step = 20;
+            $container->maxWidth += $step;
+            $container->width += $step;
+            $container->x = $target->x + $target->width - $container->width + 1;
+            $container->opacity += 0.2;
+            
+            if ($container->maxWidth > $toSize) {
+                $show->stop();
+            }
+        });
+        
+        $show->start();
     }
 
 }

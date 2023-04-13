@@ -48,7 +48,7 @@ class MainForm extends AbstractForm
     {    
         $this->logger = new LoggerReporter();
         $this->mainMenuEvents = new MainMenuEvents();
-        
+
         try {
             $this->reg = Registry::of(self::REGISTRY_PATH);
             
@@ -113,12 +113,7 @@ class MainForm extends AbstractForm
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
                 $this->filePath->text = $path;
                 
-                if ($provider->isFile($path)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/archive-60.png');
-                } else if ($provider->isDirectory($path)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
-                }
-                
+                $this->updateFileInfoIcon($provider, $path);
                 $this->updateFileinfo($provider, $path);
             });
             
@@ -133,13 +128,9 @@ class MainForm extends AbstractForm
                     }
                 }
                 
+                $this->updateFileInfoIcon($provider, $zipPath);
+                
                 if ($provider->isFile($zipPath)) {
-                    if (fs::ext($zipPath) == 'php') {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/php-file-60.png');
-                    } else {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/file-60.png');
-                    }
-                    
                     $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
                         $this->showMeta($stat);
                         
@@ -164,7 +155,6 @@ class MainForm extends AbstractForm
                     
                     $this->updateFileinfo($provider, $zipPath);
                 } else if ($provider->isDirectory($zipPath)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
                     $this->fileSize->text = "unknown";
                 }
             });
@@ -210,6 +200,23 @@ class MainForm extends AbstractForm
         $this->lastFileSelected = $this->tree->focusedItem->value;
         
         $this->fsTree->getFileInfo($this->tree->focusedItem);
+    }
+    
+    
+    public function updateFileInfoIcon (AbstractFileSystem $provider, $path)
+    {
+        if ($provider->isFile($path)) {
+            switch (fs::ext($path)) {
+                case 'zip': $imgpath = 'res://.data/img/ui/archive-60.png'; break;
+                case 'php': $imgpath = 'res://.data/img/ui/php-file-60.png'; break;
+                case 'fxml': $imgpath = 'res://.data/img/ui/fxml-file-24.png'; break;
+                default: $imgpath = 'res://.data/img/ui/file-60.png';
+            }
+            
+            $this->fileImage->image = new UXImage($imgpath);
+        } else if ($provider->isDirectory($path)) {
+            $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
+        }
     }
     
 
@@ -269,7 +276,7 @@ class MainForm extends AbstractForm
         }
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
-            // чтобы контексттоное меню не появлялось на директориях
+            // чтобы контексттоное меню не появлялось на директориях в архиве
             if ($this->tree->focusedItem->children->count() == 0) {
                 $context->showByNode($e->sender, $e->x, $e->y);
             }
@@ -346,7 +353,15 @@ class MainForm extends AbstractForm
      */
     function doTabPaneConstruct(UXEvent $e = null)
     {    
-        $this->tabPane->tabs[0]->graphic = new UXImageView(new UXImage('res://.data/img/ui/code-tab.png', 16, 16));
+        $this->tabPane->tabs[0]->graphic = new UXHBox();
+        $this->tabPane->tabs[0]->graphic->minWidth = 18;
+        $this->tabPane->tabs[0]->graphic->minHeight = 12;
+        $this->tabPane->tabs[0]->graphic->classes->add("code-tab-icon");
+        
+        $this->tabPane->tabs[1]->graphic = new UXHBox();
+        $this->tabPane->tabs[1]->graphic->minWidth = 16;
+        $this->tabPane->tabs[1]->graphic->minHeight = 10;
+        $this->tabPane->tabs[1]->graphic->classes->add("code-tab-view");
     }
 
     

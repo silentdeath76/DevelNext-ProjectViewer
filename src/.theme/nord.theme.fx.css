@@ -6,6 +6,7 @@
     -tab-selected-border-color: derive(-second-base-color, 25%);
     -tree-arrow-color: white;
     -scroll-bar-color: derive(-second-base-color, 25%);
+    -icons-color: #ccc;
 }
 
 .DependencyItem .link > .viewport {
