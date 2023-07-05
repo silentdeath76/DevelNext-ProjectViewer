@@ -111,7 +111,15 @@ class ContextMenuEvents
     
     public function showInExplorer (UXEvent $event = null) {
         $path = $this->form->fsTree->getFileByNode($this->form->tree->focusedItem)->getAbsolutePath($this->form->tree->focusedItem);
-        execute('explorer.exe /select,' . fs::normalize($this->form->projectDir . '/' . $path));
+        
+        $os = str::lower(System::getProperties()["os.name"]);
+        
+        if (str::startsWith($os, 'win')) {
+            execute('explorer.exe /select,' . fs::normalize($this->form->projectDir . '/' . $path));
+        } else if (str::startsWith($os, 'linux')) {
+            execute('xdg-open ' . str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $this->form->projectDir . '/' . $path));
+        }
+        
     }
     
     private function getPath () {
