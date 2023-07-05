@@ -52,16 +52,11 @@ class ContextMenuEvents
                 return;
             }
             
-            
             if (!$zip->has($innerPath)) {
-                $innerPath = str_replace('/', '\\', $innerPath);
+                $innerPath = str_replace('\\', '/', $innerPath);
                 
                 if (!$zip->has($innerPath)) {
-                    $innerPath = str_replace('\\', '//', $innerPath);
-                    
-                    if (!$zip->has($innerPath)) {
-                        Logger::warn('Error wrong path');
-                    }
+                    Logger::warn('Error wrong path');
                 }
             }
             
@@ -78,7 +73,7 @@ class ContextMenuEvents
                         $path = fs::parent($innerPath);
                     }
                     
-                    $path = str_replace('/', '\\', $path);
+                    $path = str_replace('\\', '/', $path);
                     
                     $zip->add($path . $newName, $memory, 8);
                     $zip->remove($innerPath);
@@ -98,16 +93,13 @@ class ContextMenuEvents
         // $zip = new ZipFile();
         $zip = $this->form->fsTree->getZipByNode($this->form->tree->focusedItem)->getZipInstance();
         
+        
         if (UXDialog::confirm('Вы уверены что хотите удалить - ' . $innerPath . '?', $this->form)) {
             if (!$zip->has($innerPath)) {
-                $innerPath = str_replace('/', '\\', $innerPath);
+                $innerPath = str_replace('\\', '/', $innerPath);
                 
                 if (!$zip->has($innerPath)) {
-                    $innerPath = str_replace('\\', '//', $innerPath);
-                    
-                    if (!$zip->has($innerPath)) {
-                        Logger::warn('Error wrong path');
-                    }
+                    Logger::warn('Error wrong path');
                 }
             }
             
@@ -124,6 +116,7 @@ class ContextMenuEvents
     
     private function getPath () {
         $path = $this->form->fsTree->treeHelper->getPath($this->form->tree->focusedItem);
+        $path = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $path);
         return $this->form->fsTree->getPaths($path);
     }
 }
