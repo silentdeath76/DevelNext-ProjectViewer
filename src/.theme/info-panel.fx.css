@@ -32,6 +32,12 @@
     -fx-text-fill: -text-color;
 }
 
+#createdAtLabel, #modifiedAtLabel, #fileSizeLabel {
+    -fx-font: 12 "Open Sans";
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+}
+
 
 .DependencyItem {
     -fx-border-width: 1;
