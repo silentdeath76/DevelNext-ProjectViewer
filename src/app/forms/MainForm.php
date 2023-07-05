@@ -164,8 +164,8 @@ class MainForm extends AbstractForm
             $this->errorAlert($ex);
         }
         
-        // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 1 скунду чтобы не мелькало
-        timer::after(1000, function () { $this->browser->show(); });
+        // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 0.5 скунду чтобы не мелькало
+        timer::after(500, function () { $this->browser->show(); });
         
         $this->showCodeInBrowser('', 'html');
         
@@ -221,6 +221,7 @@ class MainForm extends AbstractForm
     
 
     /**
+     * @event browser.load 
      * @event browser.running 
      */
     function doBrowserRunning(UXEvent $e = null)
@@ -340,15 +341,6 @@ class MainForm extends AbstractForm
     
 
     /**
-     * @event browser.load 
-     */
-    function doBrowserLoad(UXEvent $e = null)
-    {    
-        $this->doBrowserRunning($e);
-    }
-
-
-    /**
      * @event tabPane.construct 
      */
     function doTabPaneConstruct(UXEvent $e = null)
@@ -356,12 +348,12 @@ class MainForm extends AbstractForm
         $this->tabPane->tabs[0]->graphic = new UXHBox();
         $this->tabPane->tabs[0]->graphic->minWidth = 18;
         $this->tabPane->tabs[0]->graphic->minHeight = 12;
-        $this->tabPane->tabs[0]->graphic->classes->add("code-tab-icon");
+        $this->tabPane->tabs[0]->graphic->classes->add("view-tab-icon");
         
         $this->tabPane->tabs[1]->graphic = new UXHBox();
         $this->tabPane->tabs[1]->graphic->minWidth = 16;
         $this->tabPane->tabs[1]->graphic->minHeight = 10;
-        $this->tabPane->tabs[1]->graphic->classes->add("code-tab-view");
+        $this->tabPane->tabs[1]->graphic->classes->add("code-tab-icon");
     }
 
     

@@ -52,10 +52,10 @@
     -fx-faint-focus-color: transparent;
 }
 
-.code-tab-icon {
+.view-tab-icon {
     -fx-background-color: -icons-color;
 }
 
-.code-tab-view {
+.code-tab-icon {
     -fx-background-color: -icons-color;
 }
