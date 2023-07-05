@@ -51,7 +51,7 @@ class FSTreeProvider implements IEvents
         fs::scan($path, ['extensions' => ['zip'], 'callback' => function (File $file) {
             $filePath = str::sub($file->getAbsoluteFile(), strlen($this->selectedDirectory) + 1);
             $this->zipFiles[$file->getAbsoluteFile()] = new ZipFile($file);
-            $items = explode('\\', $filePath);
+            $items = explode(File::DIRECTORY_SEPARATOR, $filePath);
             
             if ($file->isFile()) {
                 $this->treeHelper->makeTree($this->rootItem, $items, function ($node, bool $isDir) use ($filePath) {
@@ -70,6 +70,7 @@ class FSTreeProvider implements IEvents
     public function getFileByNode (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
+        $filePath = str_replace(['/', '\\'], File::DIRECTORY_SEPARATOR, $filePath);
         
         if ($fs->exists($filePath)) {
             return $fs;
@@ -85,6 +86,7 @@ class FSTreeProvider implements IEvents
     public function getZipByNode (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
+        $filePath = str_replace(['/', '\\'], File::DIRECTORY_SEPARATOR, $filePath);
         
         if (!$fs->isFile($filePath)) {
             if (!$fs->isDirectory($filePath)) {
@@ -101,6 +103,7 @@ class FSTreeProvider implements IEvents
     public function getFileInfo (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
+        $filePath = str_replace(['/', '\\'], File::DIRECTORY_SEPARATOR, $filePath);
         
         // если выбранный елемент является файлом на диске
         if ($fs->isFile($filePath)) {
@@ -172,22 +175,22 @@ class FSTreeProvider implements IEvents
         $zipPath = '';
         $found = false;
         
-        foreach (explode('\\', $filePath) as $chunk) {
+        foreach (explode(File::DIRECTORY_SEPARATOR, $filePath) as $chunk) {
             if (str::endsWith($chunk, '.zip')) {
                 $fsPath .= $chunk;
                 $found = true;
             } else {
                 if (!$found) {
-                    $fsPath .= $chunk . '\\';
+                    $fsPath .= $chunk . File::DIRECTORY_SEPARATOR;
                 } else {
-                    $zipPath .= $chunk . '\\';
+                    $zipPath .= $chunk . File::DIRECTORY_SEPARATOR;
                 }
             }
         }
         
         $zipPath = substr($zipPath, 0, -1);
         
-        $zipPath = str_replace('\\', '/', $zipPath);
+        $zipPath = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $zipPath);
         
         return [$fsPath, $zipPath];
     }
