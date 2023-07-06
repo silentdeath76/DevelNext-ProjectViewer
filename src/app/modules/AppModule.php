@@ -23,6 +23,8 @@ class AppModule extends AbstractModule
      */
     private $executer;
     
+    private $temp;
+    
     /**
      * @var UXHBox
      */
@@ -33,6 +35,8 @@ class AppModule extends AbstractModule
      */
     function doConstruct(ScriptEvent $e = null)
     {    
+        $this->temp = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
+        
         // call garbage collector every 30s
         Timer::every(30000, function () {System::gc(); });
     }
@@ -65,8 +69,6 @@ class AppModule extends AbstractModule
     
     
     public function update () {
-        $temp = fs::normalize(System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
-        
         Logger::info('Checking updates...');
 
         try {
@@ -81,26 +83,30 @@ class AppModule extends AbstractModule
             
             if (str::compare(AppModule::APP_VERSION, $response->getVersion()) == AppModule::FOUND_NEW_VERSION) {
                 $form = app()->form("MainForm");
-                Logger::info('Have new version');
-                Logger::info(sprintf("Current version %s new version %s", AppModule::APP_VERSION, $response->getVersion()));
+                Logger::info('Found new version');
+                Logger::info(sprintf("Current version %s; new version %s;", AppModule::APP_VERSION, $response->getVersion()));
                 
-                uiLater(function () use ($form, $response, $temp) {
-                    $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($form, $response, $temp) {
-                        $tempFile = fs::normalize($temp . '/' . $response->getName());
+                uiLater(function () use ($form, $response) {
+                    $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($form, $response) {
+                        $th = new Thread(function () use ($response) {
+                            $tempFile = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $this->temp . '/' . $response->getName());
                 
-                        $http = new HttpClient();
-                        $stream = $http->get($response->getLink())->body();
-                        $outputStream = new FileStream($tempFile, "w+");
-                        $outputStream->write($stream);
-                        $outputStream->close();
-            
-                        fs::copy($tempFile, './' . $response->getName());
-            
-                        if (File::of('./' . $response->getName())->exists()) {
-                            execute(fs::abs('./' . $response->getName()));
-                        }
-            
-                        app()->shutdown();
+                            $http = new HttpClient();
+                            $stream = $http->get($response->getLink())->body();
+                            $outputStream = new FileStream($tempFile, "w+");
+                            $outputStream->write($stream);
+                            $outputStream->close();
+                
+                            fs::copy($tempFile, './' . $response->getName());
+                
+                            if (File::of('./' . $response->getName())->exists()) {
+                                execute(fs::abs('./' . $response->getName()));
+                            }
+                
+                            app()->shutdown();
+                        });
+                        $th->setDaemon(true);
+                        $th->start();
                     });
                     
                     $form->tabPane->toBack();
