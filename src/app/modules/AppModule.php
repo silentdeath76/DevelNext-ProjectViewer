@@ -8,7 +8,7 @@ use std, gui, framework, app;
 
 class AppModule extends AbstractModule
 {
-    const SELF_UPDATE_DELAY = 1000;
+    const SELF_UPDATE_DELAY = 10000;
     const APP_VERSION = '1.1.6';
     const APP_TITLE = 'DevelNext ProjectView';
     
@@ -56,15 +56,6 @@ class AppModule extends AbstractModule
         $this->executer = new Thread(function () use ($form) {
             Thread::sleep(AppModule::SELF_UPDATE_DELAY);
             $this->update();
-            
-            /* uiLater(function () use ($form) {
-                $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($form) {
-                    var_dump('click!');
-                });
-                
-                $form->tabPane->toBack();
-            });
-            */
         });
         
         $this->executer->setDaemon(true);
@@ -89,24 +80,32 @@ class AppModule extends AbstractModule
             $response = $selfUpdate->getLatest();
             
             if (str::compare(AppModule::APP_VERSION, $response->getVersion()) == AppModule::FOUND_NEW_VERSION) {
+                $form = app()->form("MainForm");
                 Logger::info('Have new version');
                 Logger::info(sprintf("Current version %s new version %s", AppModule::APP_VERSION, $response->getVersion()));
                 
-                $tempFile = fs::normalize($temp . '/' . $response->getName());
+                uiLater(function () use ($form, $response, $temp) {
+                    $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($form, $response, $temp) {
+                        $tempFile = fs::normalize($temp . '/' . $response->getName());
                 
-                $http = new HttpClient();
-                $stream = $http->get($response->getLink())->body();
-                $outputStream = new FileStream($tempFile, "w+");
-                $outputStream->write($stream);
-                $outputStream->close();
-    
-                fs::copy($tempFile, './' . $response->getName());
-    
-                if (File::of('./' . $response->getName())->exists()) {
-                    execute(fs::abs('./' . $response->getName()));
-                }
-    
-                app()->shutdown();
+                        $http = new HttpClient();
+                        $stream = $http->get($response->getLink())->body();
+                        $outputStream = new FileStream($tempFile, "w+");
+                        $outputStream->write($stream);
+                        $outputStream->close();
+            
+                        fs::copy($tempFile, './' . $response->getName());
+            
+                        if (File::of('./' . $response->getName())->exists()) {
+                            execute(fs::abs('./' . $response->getName()));
+                        }
+            
+                        app()->shutdown();
+                    });
+                    
+                    $form->tabPane->toBack();
+                });
+                
             }
         
         } catch (Exception $ex) {
@@ -133,7 +132,7 @@ class AppModule extends AbstractModule
             $container->paddingRight = $target->width + 10;
             $container->alignment = "CENTER_LEFT";
             $container->maxWidth = 0;
-            $container->style = '-fx-background-radius: 10 25 25 10; -fx-border-radius: 10 25 25 10; -fx-background-color: #0000001F';
+            $container->style = '-fx-background-radius: 10 25 25 10; -fx-border-radius: 10 25 25 10; -fx-background-color: #0000002F';
             $container->minHeight = $target->height;
             $container->opacity = 0;
             $container->x = $target->x + $container->width;
