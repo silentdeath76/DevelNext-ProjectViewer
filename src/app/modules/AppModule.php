@@ -9,7 +9,7 @@ use std, gui, framework, app;
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
-    const APP_VERSION = '1.1.6';
+    const APP_VERSION = '1.1.5';
     const APP_TITLE = 'DevelNext ProjectView';
     
     const UPDATE_TEMP_PATH = '\AppData\Local\Temp';
@@ -58,7 +58,25 @@ class AppModule extends AbstractModule
         $form->show();
         
         $this->executer = new Thread(function () use ($form) {
+            $file = $this->temp . File::DIRECTORY_SEPARATOR . fs::name($GLOBALS["argv"][0]);
+            
+            if (fs::exists($file)) {
+                Thread::sleep(1000);
+                Logger::info('update from already downloaded file');
+                
+                try {
+                    $this->moveFile($file, './' . fs::name($GLOBALS["argv"][0]));
+                    execute(fs::abs('./' . fs::name($GLOBALS["argv"][0])));
+                } catch (Exception $ex) {
+                    Logger::error($ex->getMessage());
+                }
+                
+                app()->shutdown();
+                return;
+            }
+            
             Thread::sleep(AppModule::SELF_UPDATE_DELAY);
+            
             $this->update();
         });
         
@@ -86,23 +104,19 @@ class AppModule extends AbstractModule
                 Logger::info('Found new version');
                 Logger::info(sprintf("Current version %s; new version %s;", AppModule::APP_VERSION, $response->getVersion()));
                 
-                uiLater(function () use ($form, $response) {
-                    $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($form, $response) {
-                        $th = new Thread(function () use ($response) {
-                            $tempFile = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $this->temp . '/' . $response->getName());
+                $tempFile = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $this->temp . '/' . $response->getName());
                 
-                            $http = new HttpClient();
-                            $stream = $http->get($response->getLink())->body();
-                            $outputStream = new FileStream($tempFile, "w+");
-                            $outputStream->write($stream);
-                            $outputStream->close();
+                $http = new HttpClient();
+                $stream = $http->get($response->getLink())->body();
+                $outputStream = new FileStream($tempFile, "w+");
+                $outputStream->write($stream);
+                $outputStream->close();
                 
-                            fs::copy($tempFile, './' . $response->getName());
-                
-                            if (File::of('./' . $response->getName())->exists()) {
-                                execute(fs::abs('./' . $response->getName()));
-                            }
-                
+                uiLater(function () use ($form, $response, $tempFile) {
+                    $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($response, $tempFile) {
+                        $th = new Thread(function () use ($response, $tempFile) {
+                            $this->moveFile($tempFile, './' . $response->getName());
+                            execute(fs::abs('./' . $response->getName()));
                             app()->shutdown();
                         });
                         $th->setDaemon(true);
@@ -125,6 +139,13 @@ class AppModule extends AbstractModule
         }
     }
     
+    private function moveFile ($from, $to) {
+        fs::copy($from, $to);
+        
+        if (File::of($to)->exists()) {
+            fs::delete($from);
+        }
+    }
     
     public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
         static $container;
