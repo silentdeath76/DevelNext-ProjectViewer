@@ -1,6 +1,8 @@
 <?php
 namespace app\events;
 
+use framework;
+use app;
 use std;
 use Exception;
 use gui;
@@ -58,5 +60,15 @@ class MainMenuEvents
                 app()->form("MainForm")->removeStylesheet('.theme/' . $name . '.theme.fx.css');
             }
         }
+    }
+    
+    public function about () {
+        if (!($this->overlayContainer instanceof OverlayContainer)) {
+            $this->overlayContainer = new OverlayContainer();
+            $this->overlayContainer->addContent(new AboutContainer());
+            app()->form("MainForm")->add($this->overlayContainer->getNode());
+        }
+        
+        $this->overlayContainer->show();
     }
 }

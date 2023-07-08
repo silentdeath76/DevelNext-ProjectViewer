@@ -98,9 +98,8 @@ class MainForm extends AbstractForm
             }
         }
         
-        ContextMenuHelper::of($bar)->addCategory("О программе", function () {
-            $this->form("About")->showAndWait();
-        });
+        ContextMenuHelper::of($bar)->addCategory("О программе", [$this->mainMenuEvents, 'about']);
+        
         
         
         $this->add($bar);
