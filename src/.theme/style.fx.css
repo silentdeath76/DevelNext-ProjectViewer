@@ -45,3 +45,16 @@
 .about .hyperlink {
     -fx-font-size: 18px;
 }
+
+.DependencyItem .link {
+    -fx-background-color: derive(-icons-color, 40%);
+}
+
+.DependencyItem .link:hover {
+    -fx-background-color: derive(-icons-color, -80%)
+}
+
+.tooltip {
+    -fx-text-fill: -text-color;
+    -fx-background-color: -base-color;
+}

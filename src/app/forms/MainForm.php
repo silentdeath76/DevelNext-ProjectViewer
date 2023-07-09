@@ -54,7 +54,7 @@ class MainForm extends AbstractForm
             
             if (($path = $this->reg->read('ProjectDirectory')) !== null) {
                 $this->ini->set("ProjectDirectory", $path);
-                $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
+                $this->reg->clear(); // удаляем старые записи в реестре т.к. теперь сохраняем настрйоки в ini
             }
         } catch (Exception $ignore) {}
         

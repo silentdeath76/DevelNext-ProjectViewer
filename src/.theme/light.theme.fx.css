@@ -8,7 +8,3 @@
     -scroll-bar-color: #a4a4a4;
     -icons-color: #717171;
 }
-
-.DependencyItem .link > .viewport {
-    -fx-background-image: url( '/.data/img/ui/openLinkDark.png');
-}
