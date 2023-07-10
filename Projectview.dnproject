@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project author="silent" authorOS="Windows 10" createdAt="1649055196620" ideName="DevelNext" ideVersion="16.7.0" ideVersionHash="2017103112" name="Projectview" packageName="app" template="ide\project\templates\DefaultGuiProjectTemplate" updatedAt="1660144224087">
+<project author="silent" authorOS="Windows 10" createdAt="1649055196620" ideName="DevelNext" ideVersion="16.7.0" ideVersionHash="2017103112" name="ProjectView" packageName="app" template="ide\project\templates\DefaultGuiProjectTemplate" updatedAt="1688986568329">
   <tree>
     <expanded>
     <path src=""/>
@@ -9,16 +9,11 @@
     </expanded>
   </tree>
   <openedFiles>
-  <file src="Projectview.dnproject"/>
-    <file src="src/app/forms/MainForm.php"/>
+  <file src="ProjectView.dnproject"/>
+    <file selected="1" src="src/app/forms/MainForm.php"/>
     <file src="src/app/events/MainMenuEvents.php"/>
     <file src="src/app/Dependency.php"/>
-    <file selected="1" src="src/app/modules/AppModule.php"/>
-    <file src="src/.theme/light.theme.fx.css"/>
-    <file src="src/.theme/nord.theme.fx.css"/>
-    <file src="src/.theme/dark.theme.fx.css"/>
-    <file src="src/.theme/menu-bar.fx.css"/>
-    <file src="src/app/modules/MainModule.php"/>
+    <file src="src/app/modules/AppModule.php"/>
   </openedFiles>
   <files/>
   <behaviours>

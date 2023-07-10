@@ -58,3 +58,15 @@
     -fx-text-fill: -text-color;
     -fx-background-color: -base-color;
 }
+
+.file-icon .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: ladder(-second-text-color, white 45%, black 50%) !important;
+}
+
+
+
+
+
+
+

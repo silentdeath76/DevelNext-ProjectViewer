@@ -1,6 +1,7 @@
 <?php
 namespace app\forms;
 
+use php\gui\UXTitledPaneWrapper;
 use bundle\windows\Registry;
 use Exception;
 use php\compress\ZipFile;
@@ -204,17 +205,39 @@ class MainForm extends AbstractForm
     
     public function updateFileInfoIcon (AbstractFileSystem $provider, $path)
     {
-        if ($provider->isFile($path)) {
-            switch (fs::ext($path)) {
-                case 'zip': $imgpath = 'res://.data/img/ui/archive-60.png'; break;
-                case 'php': $imgpath = 'res://.data/img/ui/php-file-60.png'; break;
-                case 'fxml': $imgpath = 'res://.data/img/ui/fxml-file-24.png'; break;
-                default: $imgpath = 'res://.data/img/ui/file-60.png';
-            }
+        static $iconFileSelected;
+        
+        /**
+         * IconFileSelected $iconFileSelected
+         */
+        if ($iconFileSelected == null) {
+            $iconFileSelected = new IconFileSelected();
+            $this->fileInfo->add($iconFileSelected->getNode());
+        }
+        
+        if ($provider->isfile($path)) {
             
-            $this->fileImage->image = new UXImage($imgpath);
+            $iconFileSelected->updateClasses(["file-icon"]);
+            $iconFileSelected->setSize(52, 68);
+            
+            switch (fs::ext($path)) {
+                case 'zip':
+                    $iconFileSelected->updateClasses(["zip-icon"]);
+                    $iconFileSelected->setSize(84, 64);
+                    $iconFileSelected->updateText("");
+                    break;
+                case 'php':
+                    $iconFileSelected->updateText("PHP");
+                    break;
+                case 'fxml':
+                    $iconFileSelected->updateText("FXML");
+                    break;
+                default: $iconFileSelected->updateText("");
+            }
         } else if ($provider->isDirectory($path)) {
-            $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
+            $iconFileSelected->updateClasses(["directory-icon"]);
+            $iconFileSelected->setSize(84, 64);
+            $iconFileSelected->updateText("");
         }
     }
     
