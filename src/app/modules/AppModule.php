@@ -35,6 +35,7 @@ class AppModule extends AbstractModule
      */
     function doConstruct(ScriptEvent $e = null)
     {    
+        Localization::load('res://.data/local/ru.txt');
         $this->temp = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
         
         // call garbage collector every 30s
@@ -113,7 +114,7 @@ class AppModule extends AbstractModule
                 $outputStream->close();
                 
                 uiLater(function () use ($form, $response, $tempFile) {
-                    $this->showUpdateNotify("Найдена новая версия программы" . '   ', "Обновить", $form->infoPanelSwitcher, function () use ($response, $tempFile) {
+                    $this->showUpdateNotify(Localization::get('ui.update.found.message') . '   ', Localization::get('ui.update.button.update'), $form->infoPanelSwitcher, function () use ($response, $tempFile) {
                         $th = new Thread(function () use ($response, $tempFile) {
                             $this->moveFile($tempFile, './' . $response->getName());
                             execute(fs::abs('./' . $response->getName()));

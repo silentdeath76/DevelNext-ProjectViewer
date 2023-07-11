@@ -27,7 +27,7 @@ class AboutContainer extends AbstractNode
         $this->title->alignment = 'CENTER';
         $this->title->classes->add("title");
         
-        $this->source = new UXHBox([new UXLabelEx("Сайт: "), $link = new UXHyperlink("GitHub")]);
+        $this->source = new UXHBox([new UXLabelEx(Localization::get('ui.about.site')), $link = new UXHyperlink("GitHub")]);
         $this->source->spacing = $this->spacing;
         $this->source->paddingLeft = $this->paddingLeft;
         $this->source->paddingTop = 20;
@@ -35,14 +35,14 @@ class AboutContainer extends AbstractNode
             browse('https://github.com/silentdeath76/DevelNext-ProjectViewer');
         });
         
-        $this->author = new UXHBox([new UXLabelEx("Автор: "), $link = new UXHyperlink("Vk")]);
+        $this->author = new UXHBox([new UXLabelEx(Localization::get('ui.about.author')), $link = new UXHyperlink("Vk")]);
         $this->author->spacing = $this->spacing;
         $this->author->paddingLeft = $this->paddingLeft;
         $link->on("click", function () {
             browse('https://vk.com/silentrs');
         });
         
-        $this->version = new UXHBox([new UXLabelEx("Версия: "), $this->_version = new UXLabelEx(AppModule::APP_VERSION)]);
+        $this->version = new UXHBox([new UXLabelEx(Localization::get('ui.about.version')), $this->_version = new UXLabelEx(AppModule::APP_VERSION)]);
         $this->version->spacing = $this->spacing;
         $this->version->paddingLeft = $this->paddingLeft;
         

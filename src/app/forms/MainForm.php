@@ -81,11 +81,15 @@ class MainForm extends AbstractForm
         $bar->leftAnchor = $bar->rightAnchor = 0;
         
         
-        ContextMenuHelper::of($bar)->addCategory("Выбрать директорию", [$this->mainMenuEvents, 'selectedFolder']);
+        ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.selectDirectory'), [$this->mainMenuEvents, 'selectedFolder']);
         
-        $themeCategory = ContextMenuHelper::of($bar)->addCategory("Цветовая схема");
+        $themeCategory = ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.theme'));
         
-        $themeList = ["light" => "Светлая", "dark" => "Темная", "nord" => "Nord"];
+        $themeList = [
+            "light" => Localization::get('ui.mainMenu.theme.light'),
+            "dark" => Localization::get('ui.mainMenu.theme.dark'),
+            "nord" => Localization::get('ui.mainMenu.theme.nord')
+        ];
         
         foreach ($themeList as $theme => $text) {
             $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList) {
@@ -99,7 +103,7 @@ class MainForm extends AbstractForm
             }
         }
         
-        ContextMenuHelper::of($bar)->addCategory("О программе", [$this->mainMenuEvents, 'about']);
+        ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.about'), [$this->mainMenuEvents, 'about']);
         
         
         
@@ -144,9 +148,15 @@ class MainForm extends AbstractForm
                             $this->image->image = new UXImage($output);
                             $output = "Binary";
                             $this->tabPane->selectedIndex = 1;
-                        } else if ($ext == 'zip' || $ext == 'exe') {
-                            $output = "Binary";
                         } else {
+                            switch (fs::ext($zipPath)) {
+                                case 'zip':
+                                case 'exe':
+                                case 'jar':
+                                case 'ttf':
+                                    $output = "Binary";
+                            }
+                            
                             $this->tabPane->selectedIndex = 0;
                         }
         
@@ -258,7 +268,7 @@ class MainForm extends AbstractForm
                 $alert->expandableContent->height = 400;
                 $alert->expandableContent->content->add(new UXLabel(var_export(func_get_args(), true)));
                 
-                $alert->title = 'JS Handler';
+                $alert->title = Localization::get('message.browser.error');
                 $alert->contentText = $text;
                 $alert->show();
             });
@@ -293,9 +303,9 @@ class MainForm extends AbstractForm
             $config->set(ContextMenuHelper::GRAPHIC_WIDTH, 16);
             $config->set(ContextMenuHelper::GRAPHIC_HEIGHT, 16);
             
-            $helper->addItem("Сохранить как", [ContextMenuEvents::getInstance($this), "saveAs"], $helper->makeIcon('res://.data/img/context-menu-icons/save.png'));
-            $helper->addItem("Переименовать", [ContextMenuEvents::getInstance($this), "rename"], $helper->makeIcon('res://.data/img/context-menu-icons/edit.png'));
-            $helper->addItem("Удалить", [ContextMenuEvents::getInstance($this), "delete"], $helper->makeIcon('res://.data/img/context-menu-icons/delete.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.saveAs'), [ContextMenuEvents::getInstance($this), "saveAs"], $helper->makeIcon('res://.data/img/context-menu-icons/save.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.rename'), [ContextMenuEvents::getInstance($this), "rename"], $helper->makeIcon('res://.data/img/context-menu-icons/edit.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.delete'), [ContextMenuEvents::getInstance($this), "delete"], $helper->makeIcon('res://.data/img/context-menu-icons/delete.png'));
         }
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
@@ -313,7 +323,7 @@ class MainForm extends AbstractForm
             $config->set(ContextMenuHelper::GRAPHIC_WIDTH, 16);
             $config->set(ContextMenuHelper::GRAPHIC_HEIGHT, 16);
             
-            $helper->addItem("Показать в проводнике", [ContextMenuEvents::getInstance($this), 'showInExplorer'], $helper->makeIcon('res://.data/img/context-menu-icons/open-folder.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.showInExplorer'), [ContextMenuEvents::getInstance($this), 'showInExplorer'], $helper->makeIcon('res://.data/img/context-menu-icons/open-folder.png'));
         }
         
         $contextRoot->showByNode($e->sender, $e->x, $e->y);
@@ -359,6 +369,10 @@ class MainForm extends AbstractForm
     function doFileInfoConstruct(UXEvent $e = null)
     {    
         $e->sender->lookup('.panel-title')->topAnchor = -14;
+        $this->fileInfo->title = Localization::get('ui.sidepanel.fielInfo.title');
+        $this->createdAtLabel->text = Localization::get('ui.sidepanel.fielInfo.createdAt');
+        $this->modifiedAtLabel->text = Localization::get('ui.sidepanel.fielInfo.modifiedAt');
+        $this->fileSizeLabel->text = Localization::get('ui.sidepanel.fielInfo.fileSize');
     }
     
 
@@ -367,11 +381,13 @@ class MainForm extends AbstractForm
      */
     function doTabPaneConstruct(UXEvent $e = null)
     {    
+        $this->tabPane->tabs[0]->text = Localization::get('ui.tab.viewCode');
         $this->tabPane->tabs[0]->graphic = new UXHBox();
         $this->tabPane->tabs[0]->graphic->minWidth = 18;
         $this->tabPane->tabs[0]->graphic->minHeight = 12;
         $this->tabPane->tabs[0]->graphic->classes->add("view-tab-icon");
         
+        $this->tabPane->tabs[1]->text = Localization::get('ui.tab.viewView');
         $this->tabPane->tabs[1]->graphic = new UXHBox();
         $this->tabPane->tabs[1]->graphic->minWidth = 16;
         $this->tabPane->tabs[1]->graphic->minHeight = 10;
@@ -416,10 +432,10 @@ class MainForm extends AbstractForm
     
     private function showMeta ($meta) {
         $meta = $meta["size"];
-        $types = ['b', 'kb', 'mb', 'gb'];
+        $types = [Localization::get('ui.sidepanel.fileSizeFromat.b'), Localization::get('ui.sidepanel.fileSizeFromat.kb'), Localization::get('ui.sidepanel.fileSizeFromat.mb'), Localization::get('ui.sidepanel.fileSizeFromat.gb')];
         
         $index = floor(str::length($meta) / 3);
         
-        $this->fileSize->text = round($meta / pow(1024, $index), 2) . $types[$index];
+        $this->fileSize->text = round($meta / pow(1024, $index), 2) . ' ' . $types[$index];
     }
 }

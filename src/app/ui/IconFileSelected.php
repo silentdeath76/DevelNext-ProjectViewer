@@ -45,6 +45,7 @@ class IconFileSelected extends AbstractNode
     }
     
     public function updateText ($text) {
+        if ($this->label->text == $text) return;
         $this->label->text = $text;
     }
     
@@ -59,5 +60,8 @@ class IconFileSelected extends AbstractNode
     
     public function clear () {
         $this->container->paddingTop = 0;
+        $this->container->alignment = 'TOP_LEFT';
+        $this->container->leftAnchor = null;
+        $this->container->right = null;
     }
 }

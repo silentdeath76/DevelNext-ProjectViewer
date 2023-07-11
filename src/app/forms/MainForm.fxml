@@ -38,7 +38,7 @@
       </font>
     </ToggleButton>
     <Data cursor="DEFAULT" enabled="1" id="data-infoPanelSwitcher" tooltipText="" visible="1"/>
-    <Panel AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="-256" AnchorPane.topAnchor="80" backgroundColor="#fafbfc" borderColor="#c0c0c0" borderRadius="0" borderStyle="SOLID" borderWidth="2" focusTraversable="false" id="fileInfo" layoutX="912" layoutY="80" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="407" prefWidth="248" styleClass="" title="Инфорация о файле" titleColor="#000000" titleOffset="15" titlePosition="TOP_CENTER">
+    <Panel AnchorPane.bottomAnchor="1" AnchorPane.rightAnchor="-256" AnchorPane.topAnchor="80" backgroundColor="#fafbfc" borderColor="#c0c0c0" borderRadius="0" borderStyle="SOLID" borderWidth="2" focusTraversable="false" id="fileInfo" layoutX="912" layoutY="80" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="407" prefWidth="248" styleClass="" titleColor="#000000" titleOffset="15" titlePosition="TOP_CENTER">
       <children>
         <ScrollPane AnchorPane.bottomAnchor="6" AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="8" AnchorPane.topAnchor="296" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="container" layoutX="7" layoutY="297" prefHeight="103" prefWidth="232" styleClass="scroll-pane " vbarPolicy="AS_NEEDED" vvalue="0">
           <content>
@@ -62,19 +62,19 @@
           </font>
         </LabelEx>
         <Data cursor="DEFAULT" enabled="1" id="data-filePath" visible="1"/>
-        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="createdAtLabel" layoutX="7" layoutY="112" prefHeight="17" prefWidth="192" styleClass="label " text="Дата создания:" textAlignment="LEFT" underline="false" wrapText="false">
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="createdAtLabel" layoutX="7" layoutY="112" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Bold Italic" size="12"/>
           </font>
         </LabelEx>
         <Data cursor="DEFAULT" enabled="1" id="data-createdAtLabel" visible="1"/>
-        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="createdAt" layoutX="7" layoutY="136" prefHeight="17" prefWidth="234" styleClass="label " text="-" textAlignment="LEFT" underline="false" wrapText="false">
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="0" id="createdAt" layoutX="7" layoutY="136" prefHeight="17" prefWidth="234" styleClass="label " text="-" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Regular" size="12"/>
           </font>
         </LabelEx>
         <Data cursor="DEFAULT" enabled="1" graphic="" id="data-createdAt" visible="1"/>
-        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="modifiedAtLabel" layoutX="7" layoutY="168" prefHeight="17" prefWidth="192" styleClass="label " text="Дата изменения:" textAlignment="LEFT" underline="false" wrapText="false">
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="modifiedAtLabel" layoutX="7" layoutY="168" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Bold Italic" size="12"/>
           </font>
@@ -86,7 +86,7 @@
           </font>
         </LabelEx>
         <Data cursor="DEFAULT" enabled="1" id="data-modifiedAt" visible="1"/>
-        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSizeLabel" layoutX="7" layoutY="224" prefHeight="17" prefWidth="192" styleClass="label " text="Размер:" textAlignment="LEFT" underline="false" wrapText="false">
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSizeLabel" layoutX="7" layoutY="224" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Bold Italic" size="12"/>
           </font>

@@ -94,7 +94,7 @@ class ContextMenuEvents
         $zip = $this->form->fsTree->getZipByNode($this->form->tree->focusedItem)->getZipInstance();
         
         
-        if (UXDialog::confirm('Вы уверены что хотите удалить - ' . $innerPath . '?', $this->form)) {
+        if (UXDialog::confirm(Localization::get('message.deleteFile') . ' ' . $innerPath . '?', $this->form)) {
             if (!$zip->has($innerPath)) {
                 $innerPath = str_replace('\\', '/', $innerPath);
                 

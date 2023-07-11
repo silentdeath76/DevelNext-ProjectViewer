@@ -93,7 +93,7 @@ class MainModule extends AbstractModule
             $alert->expandableContent->content->add(new UXLabel(var_export($ex->getTraceAsString(), true)));
         }
         
-        $alert->title = 'Произошла ошибка';
+        $alert->title = Localization::get('message.error');
         $alert->contentText = $ex->getMessage();
         $alert->show();
     }

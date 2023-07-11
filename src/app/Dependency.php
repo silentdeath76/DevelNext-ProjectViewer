@@ -145,11 +145,11 @@ class Dependency
             $link->maxHeight = $height;
             $link->minWidth = $width;
             $link->minHeight = $height;
-            $tooltip = UXTooltip::of("Открыть ссылку в браузере");
+            $tooltip = UXTooltip::of(Localization::get('message.link.openInBrowser'));
             UXTooltip::install($link, $tooltip);
             
             $link->on("click", function () use ($url) {
-                if (uiConfirm('Открыть ссылку в браузере?')) {
+                if (uiConfirm(Localization::get('message.link.openInBrowser') . '?')) {
                     open($url);
                 }
             });
