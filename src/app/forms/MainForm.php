@@ -354,6 +354,8 @@ class MainForm extends AbstractForm
      */
     function doInfoPanelSwitcherConstruct(UXEvent $e = null)
     {    
+        // remove empty hint
+        UXTooltip::uninstall($e->sender, $e->sender->tooltip);
         try {
             if ($this->ini->get('panel_file_information_show') == 1) {
                 $this->infoPanelSwitcher->selected = true;
@@ -383,14 +385,10 @@ class MainForm extends AbstractForm
     {    
         $this->tabPane->tabs[0]->text = Localization::get('ui.tab.viewCode');
         $this->tabPane->tabs[0]->graphic = new UXHBox();
-        $this->tabPane->tabs[0]->graphic->minWidth = 18;
-        $this->tabPane->tabs[0]->graphic->minHeight = 12;
         $this->tabPane->tabs[0]->graphic->classes->add("view-tab-icon");
         
         $this->tabPane->tabs[1]->text = Localization::get('ui.tab.viewView');
         $this->tabPane->tabs[1]->graphic = new UXHBox();
-        $this->tabPane->tabs[1]->graphic->minWidth = 16;
-        $this->tabPane->tabs[1]->graphic->minHeight = 10;
         $this->tabPane->tabs[1]->graphic->classes->add("code-tab-icon");
     }
 
