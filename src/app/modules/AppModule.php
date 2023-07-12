@@ -36,7 +36,7 @@ class AppModule extends AbstractModule
     function doConstruct(ScriptEvent $e = null)
     {    
         Localization::load('res://.data/local/ru.txt');
-        $this->temp = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
+        $this->temp = MainModule::replaceSeparator(System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
         
         // call garbage collector every 30s
         Timer::every(30000, function () {System::gc(); });
@@ -65,14 +65,17 @@ class AppModule extends AbstractModule
                 Thread::sleep(1000);
                 Logger::info('update from already downloaded file');
                 
-                try {
-                    $this->moveFile($file, './' . fs::name($GLOBALS["argv"][0]));
-                    execute(fs::abs('./' . fs::name($GLOBALS["argv"][0])));
-                } catch (Exception $ex) {
-                    Logger::error($ex->getMessage());
+                $os = str::lower(System::getProperties()["os.name"]);
+                if (str::startsWith($os, 'win')) {
+                    try {
+                        $this->moveFile($file, './' . fs::name($GLOBALS["argv"][0]));
+                        execute(fs::abs('./' . fs::name($GLOBALS["argv"][0])));
+                    } catch (Exception $ex) {
+                        Logger::error($ex->getMessage());
+                    }
+                    
+                    app()->shutdown();
                 }
-                
-                app()->shutdown();
                 return;
             }
             
@@ -105,7 +108,7 @@ class AppModule extends AbstractModule
                 Logger::info('Found new version');
                 Logger::info(sprintf("Current version %s; new version %s;", AppModule::APP_VERSION, $response->getVersion()));
                 
-                $tempFile = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $this->temp . '/' . $response->getName());
+                $tempFile = MainModule::replaceSeparator($this->temp . '/' . $response->getName());
                 
                 $http = new HttpClient();
                 $stream = $http->get($response->getLink())->body();
@@ -207,5 +210,5 @@ class AppModule extends AbstractModule
         
         $show->start();
     }
-
+    
 }

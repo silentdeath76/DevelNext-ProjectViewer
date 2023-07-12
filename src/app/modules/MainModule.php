@@ -99,6 +99,11 @@ class MainModule extends AbstractModule
     }
     
     
+    public static function replaceSeparator ($string) {
+        return str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $string);
+    }
+    
+    
     public function _showForm ($formData, $outputImage) {
         $n = new Environment();
         $n->importAutoLoaders();

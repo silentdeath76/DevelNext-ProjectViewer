@@ -70,7 +70,7 @@ class FSTreeProvider implements IEvents
     public function getFileByNode (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
-        $filePath = str_replace(['/', '\\'], File::DIRECTORY_SEPARATOR, $filePath);
+        $filePath = MainModule::replaceSeparator($filePath);
         
         if ($fs->exists($filePath)) {
             return $fs;
@@ -86,7 +86,7 @@ class FSTreeProvider implements IEvents
     public function getZipByNode (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
-        $filePath = str_replace(['/', '\\'], File::DIRECTORY_SEPARATOR, $filePath);
+        $filePath = MainModule::replaceSeparator($filePath);
         
         if (!$fs->isFile($filePath)) {
             if (!$fs->isDirectory($filePath)) {
@@ -103,7 +103,7 @@ class FSTreeProvider implements IEvents
     public function getFileInfo (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
-        $filePath = str_replace(['/', '\\'], File::DIRECTORY_SEPARATOR, $filePath);
+        $filePath = MainModule::replaceSeparator($filePath);
         
         // если выбранный елемент является файлом на диске
         if ($fs->isFile($filePath)) {
@@ -206,7 +206,45 @@ class FSTreeProvider implements IEvents
                 $item->graphic = new UXImageView($this->imageCache->get(fs::ext($path)));
                 return;
             }
-        
+            /*
+            
+            $iconFileSelected = new IconFileSelected();
+            $iconFileSelected->clear();
+            
+            switch (fs::ext($path)) {
+                case 'png': 
+                case 'gif': 
+                case 'jpg': 
+                case 'jpeg': 
+                case 'ico': 
+                    $iconFileSelected->setSize(14, 20, 5);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    break;
+                case 'zip': 
+                    $iconFileSelected->updateClasses(["zip-icon"]);
+                    $iconFileSelected->setSize(20, 17, 1);
+                    $iconFileSelected->updateText("");
+                    break;
+                case 'php': 
+                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    $iconFileSelected->updateClasses(["file-icon", "red-color", "small-size"]);
+                    break;
+                case 'fxml': 
+                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    $iconFileSelected->updateClasses(["file-icon", "blue-color", "small-size"]);
+                    break;
+                case 'css': 
+                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    $iconFileSelected->updateClasses(["file-icon", "green-color", "small-size"]);
+                    break;
+                default:
+                    $iconFileSelected->setSize(14, 20, 1);
+                    $iconFileSelected->updateText("");
+            }
+            */
             switch (fs::ext($path)) {
                 case 'png': 
                 case 'gif': 
@@ -236,17 +274,6 @@ class FSTreeProvider implements IEvents
             $item->graphic->minHeight = 12;
             $item->graphic->classes->add("folder-icon");
             
-            
-            
-            
-            return;
-            
-            if ($this->imageCache->exists(FSTreeProvider::EMPTY_PATH_ELEMENT)) {
-                $item->graphic = new UXImageView($this->imageCache->get(FSTreeProvider::EMPTY_PATH_ELEMENT));
-            } else {
-                $item->graphic = new UXImageView(new UXImage($file, 20, 20));
-                $this->imageCache->set(FSTreeProvider::EMPTY_PATH_ELEMENT, $item->graphic->image);
-            }
             
             return;
         }

@@ -117,14 +117,14 @@ class ContextMenuEvents
         if (str::startsWith($os, 'win')) {
             execute('explorer.exe /select,' . fs::normalize($this->form->projectDir . '/' . $path));
         } else if (str::startsWith($os, 'linux')) {
-            execute('xdg-open ' . str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $this->form->projectDir . '/' . $path));
+            execute('xdg-open ' . MainModule::replaceSeparator($this->form->projectDir . '/' . $path));
         }
         
     }
     
     private function getPath () {
         $path = $this->form->fsTree->treeHelper->getPath($this->form->tree->focusedItem);
-        $path = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $path);
+        $path = MainModule::replaceSeparator($path);
         return $this->form->fsTree->getPaths($path);
     }
 }

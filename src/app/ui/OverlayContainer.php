@@ -17,9 +17,6 @@ class OverlayContainer extends AbstractNode
         $this->container->on("click", function () {
             $this->container->hide();
         });
-        
-        /* $container = new AboutContainer();
-        $this->container->add($container->getNode()); */
     }
     
     public function addContent (AbstractNode $node) {
