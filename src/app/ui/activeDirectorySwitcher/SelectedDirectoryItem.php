@@ -1,5 +1,5 @@
 <?php
-namespace app\ui;
+namespace app\ui\activeDirectorySwitcher;
 
 use gui;
 use app;

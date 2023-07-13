@@ -1,7 +1,8 @@
 <?php
-namespace app\ui;
+namespace app\ui\activeDirectorySwitcher;
 
 use app;
+use app\ui\AbstractNode;
 use gui;
 
 class DirectoryItem extends AbstractNode

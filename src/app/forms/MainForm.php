@@ -461,7 +461,7 @@ class MainForm extends AbstractForm
         $this->combobox->onButtonRender(function (UXListCell $cell, $node) use () {
             $item = new SelectedDirectoryItem();
             $item->setText($node[0], $this->combobox->width);
-            $item->setTitle("Текущая директория");
+            $item->setTitle(Localization::get("ui.directorySwitcher.activeDirectory"));
             $item->setImage(new UXImage($node[1], 32, 32));
             
             $cell->graphic = $item->getNode();
@@ -476,6 +476,7 @@ class MainForm extends AbstractForm
             case 'php': $ext = 'php'; break;
             case 'css': $ext = 'css'; break;
             case 'ico':
+            case 'bmp':
             case 'png':
             case 'jpg':
             case 'jpeg':$ext = 'image'; break;

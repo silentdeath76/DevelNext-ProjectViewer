@@ -1,6 +1,7 @@
 <?php
 namespace app\modules;
 
+use app\ui\notify\UpdateNotify;
 use Exception;
 use httpclient;
 use std, gui, framework, app;
@@ -152,63 +153,14 @@ class AppModule extends AbstractModule
     }
     
     public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
-        static $container;
+        static $notify;
         
-        if ($container == null) {
-            $container = new UXHBox();
-            $container->add($label = new UXLabelEx($text));
-            $container->add($button = new UXFlatButton($buttonText));
-            $container->spacing = 5;
-            $container->padding = 5;
-            $container->paddingRight = $target->width + 10;
-            $container->alignment = "CENTER_LEFT";
-            $container->maxWidth = 0;
-            $container->style = '-fx-background-radius: 10 25 25 10; -fx-border-radius: 10 25 25 10; -fx-background-color: #0000002F';
-            $container->minHeight = $target->height;
-            $container->opacity = 0;
-            $container->x = $target->x + $container->width;
-            $container->y = $target->y-1;
-            
-            $label->ellipsisString = null;
-            $label->autoSize = true;
-            $label->autoSizeType = 'HORIZONTAL';
-            
-            $button->backgroundColor = '#00000000';
-            $button->hoverColor = '#0000001F';
-            $button->clickColor = ' #0000000F';
-            $button->borderRadius = 3;
-            $button->padding = 3;
-            $button->font->bold = true;
-            $button->width = 90;
-            $button->alignment = 'CENTER';
-            
-            $button->ellipsisString = null;
-            $button->on("click", $callback);
-            
-            $target->data("container", $container);
-            $target->parent->add($container);
-            
-            $container->toBack();
-            
-            $this->notifyContainer = $container;
+        if ($notify == null) {
+            $notify = new UpdateNotify();
+            $target->parent->add($notify->getNode());
         }
         
-        $container->maxWidth = 0;
-        
-        $toSize = UXFont::getDefault()->calculateTextWidth($text) + UXFont::getDefault()->calculateTextWidth($buttonText) + 30 + $container->paddingRight + $customPadding;
-        $show = new UXAnimationTimer(function () use (&$show, $container, $toSize, $target, $customPadding) {
-            $step = 20;
-            $container->maxWidth += $step;
-            $container->width += $step;
-            $container->x = $target->x + $target->width - $container->width + 1;
-            $container->opacity += 0.2;
-            
-            if ($container->maxWidth > $toSize) {
-                $show->stop();
-            }
-        });
-        
-        $show->start();
+        $notify->show($text, $buttonText, $target, $callback, $customPadding);
     }
     
 }

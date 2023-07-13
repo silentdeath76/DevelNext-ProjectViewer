@@ -13,6 +13,8 @@ ui.contextMenu.rename=Переименовать
 ui.contextMenu.delete=Удалить
 ui.contextMenu.showInExplorer=Показать в проводнике
 
+ui.directorySwitcher.activeDirectory=Текущая директория
+
 ui.tab.viewCode=Исходный код
 ui.tab.viewView=Внешний вид
 
