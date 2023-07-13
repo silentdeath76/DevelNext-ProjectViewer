@@ -45,28 +45,27 @@ class UpdateNotify extends AbstractNode
         $this->button->alignment = 'CENTER';
 
         $this->button->ellipsisString = null;
-
-        $this->notifyContainer = $this->container;
-        $this->container->maxWidth = 0;
     }
 
     public function show ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
-        $this->container->toBack();
         $this->label->text = $text;
         $this->button->text = $buttonText;
         
-        $target->data("this->container", $this->container);
-        // $target->parent->add($this->container);
+        $this->container->maxWidth = 0;
+        
         $this->container->x = $target->x + $this->container->width;
         $this->container->y = $target->y - 1;
         $this->container->minHeight = $target->height;
         $this->container->paddingRight = $target->width + 10;
         
+        $target->data("container", $this->container);
+        
         $this->button->on("click", $callback);
-
-        $this->container->maxWidth = 0;
+        
+        $this->container->toBack();
 
         $toSize = UXFont::getDefault()->calculateTextWidth($text) + UXFont::getDefault()->calculateTextWidth($buttonText) + 30 + $this->container->paddingRight + $customPadding;
+        
         $show = new UXAnimationTimer(function () use (&$show, $toSize, $target) {
             $step = 20;
             $this->container->maxWidth += $step;
@@ -81,4 +80,5 @@ class UpdateNotify extends AbstractNode
 
         $show->start();
     }
+    
 }

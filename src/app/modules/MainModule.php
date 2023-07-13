@@ -14,14 +14,14 @@ class MainModule extends AbstractModule
     private $formHeight;
     
     public function formSizeSaver () {
-
+        // hack for notify
         $binder = new EventBinder($this->infoPanelSwitcher);
         $binder->bind("step", function () {
-            if ($this->appModule()->notifyContainer instanceof UXHBox) {
-                $this->appModule()->notifyContainer->x = 
+            if ($this->form("MainForm")->infoPanelSwitcher->data("container") instanceof UXHBox) {
+                $this->form("MainForm")->infoPanelSwitcher->data("container")->x = 
                     ($this->infoPanelSwitcher->x +
                     $this->infoPanelSwitcher->width -
-                    $this->appModule()->notifyContainer->width) + 1;
+                    $this->form("MainForm")->infoPanelSwitcher->data("container")->width) + 1;
             }
         })
         

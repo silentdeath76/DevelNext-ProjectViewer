@@ -9,7 +9,7 @@ use std, gui, framework, app;
 
 class AppModule extends AbstractModule
 {
-    const SELF_UPDATE_DELAY = 10000;
+    const SELF_UPDATE_DELAY = 1000;
     const APP_VERSION = '1.1.6';
     const APP_TITLE = 'DevelNext ProjectView';
     
@@ -25,11 +25,6 @@ class AppModule extends AbstractModule
     private $executer;
     
     private $temp;
-    
-    /**
-     * @var UXHBox
-     */
-    public $notifyContainer;
 
     /**
      * @event construct 
@@ -104,7 +99,7 @@ class AppModule extends AbstractModule
         try {
             $response = $selfUpdate->getLatest();
             
-            if (str::compare(AppModule::APP_VERSION, $response->getVersion()) == AppModule::FOUND_NEW_VERSION) {
+            if (str::compare(AppModule::APP_VERSION, $response->getVersion()) <= AppModule::FOUND_NEW_VERSION) {
                 $form = app()->form("MainForm");
                 Logger::info('Found new version');
                 Logger::info(sprintf("Current version %s; new version %s;", AppModule::APP_VERSION, $response->getVersion()));
