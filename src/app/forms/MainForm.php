@@ -169,7 +169,6 @@ class MainForm extends AbstractForm
                 }
             });
             
-            // $this->fsTree->setDirectory($this->projectDir);
         } catch (Exception $ex) {
             $this->errorAlert($ex);
         }

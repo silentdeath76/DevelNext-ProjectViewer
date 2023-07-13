@@ -29,8 +29,14 @@
     -fx-background-color: -base-color;
 }
 
+
+#fileInfo {
+    -fx-border-color: -border-base-color;
+}
+
 #fileInfo .panel-title {
     -fx-font-weight: bold;
+    -fx-border-color: -border-base-color;
 }
 
 
@@ -45,6 +51,14 @@
 
 .about .hyperlink {
     -fx-font-size: 18px;
+}
+
+.DependencyItem {
+    -fx-border-color: -border-base-color;
+}
+
+.DependencyItem:hover {
+    -fx-background-color: -second-base-color;
 }
 
 .DependencyItem .link {

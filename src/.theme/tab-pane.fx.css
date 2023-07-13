@@ -1,5 +1,7 @@
 .tab-pane {
     -fx-tab-min-width: 130;
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color: -border-base-color;
 }
 
 .tab-pane .tab-header-area .headers-region {

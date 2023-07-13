@@ -7,8 +7,7 @@
 }
 
 .tree-view {
-    -fx-border-width: 0 1 0 0;
-    -fx-border-color: derive(-second-base-color, -10%);
+    -fx-border-width: 0;
 }
 
 .tree-cell {
