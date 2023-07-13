@@ -22,6 +22,9 @@ class SelectedDirectoryItem extends DirectoryItem
         $this->title->autoSize = true;
         $this->title->textColor = '#000000';
         
+        $this->icon->minWidth = 18;
+        $this->icon->minHeight = $this->icon->maxHeight = 14;
+        
         $this->itemsContainer->children->insert(0, $this->title);
     }
     

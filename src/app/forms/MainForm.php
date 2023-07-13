@@ -426,7 +426,7 @@ class MainForm extends AbstractForm
         
         if (is_array($this->ini->get('directoryList'))) {
             foreach ($this->ini->get('directoryList') as $key => $path) {
-                $this->combobox->items->add([$path, 'res://.data/img/ui/folder-60.png']);
+                $this->combobox->items->add([$path, '.directory-icon']);
                 if ($path == $this->projectDir) {
                     $this->tree->root->children->clear();
                     $this->combobox->selectedIndex = $key;
@@ -435,7 +435,7 @@ class MainForm extends AbstractForm
             }
         } else {
             if ($this->ini->get('directoryList') != null) {
-                $this->combobox->items->add([$this->ini->get('directoryList'), 'res://.data/img/ui/folder-60.png']);
+                $this->combobox->items->add([$this->ini->get('directoryList'), '.directory-icon']);
                 $this->combobox->selectedIndex = 0;
                 $this->fsTree->setDirectory($this->ini->get('directoryList'));
             }
@@ -450,8 +450,8 @@ class MainForm extends AbstractForm
         $cellFactory = function (UXListCell $cell, $node, bool $selected = null) {
             $item = new DirectoryItem();
             $item->setText($node[0]);
-            $item->setImage(new UXImage($node[1], 24, 24));
-            
+            $item->setImage('directory-icon');
+
             $cell->text = "";
             $cell->graphic = $item->getNode();
         }; 
@@ -462,8 +462,8 @@ class MainForm extends AbstractForm
             $item = new SelectedDirectoryItem();
             $item->setText($node[0], $this->combobox->width);
             $item->setTitle(Localization::get("ui.directorySwitcher.activeDirectory"));
-            $item->setImage(new UXImage($node[1], 32, 32));
-            
+            $item->setImage('directory-icon');
+
             $cell->graphic = $item->getNode();
         });
     }

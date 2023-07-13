@@ -6,7 +6,7 @@
     -fx-border-width: 0 0 1 0;
 }
 
-.combo-box:showing  {
+.combo-box:showing, .combo-box:showing > .list-cell {
     -fx-background-color: -second-base-color;
 }
 

@@ -10,7 +10,7 @@ class DirectoryItem extends AbstractNode
     /**
      * @var UXImageArea
      */
-    private $icon;
+    protected $icon;
     
     /**
      * @var UXLabelEx
@@ -30,10 +30,9 @@ class DirectoryItem extends AbstractNode
         $this->container->padding = 5;
         $this->container->css("-fx-font-family: 'Arial';");
         
-        $this->icon = new UXImageArea(new UXImage('res://.data/img/ui/folder-60.png', 18, 18));
-        $this->icon->proportional = true;
-        $this->icon->width = 18;
-        $this->icon->height = 18;
+        $this->icon = new UXHBox();
+        $this->icon->minWidth = 11;
+        $this->icon->minHeight = $this->icon->maxHeight = 8;
         
         $this->container->add($this->icon);
         
@@ -48,8 +47,9 @@ class DirectoryItem extends AbstractNode
         $this->container->add($this->itemsContainer);
     }
     
-    public function setImage (UXImage $image) {
-        $this->icon->image = $image;
+    public function setImage ($image) {
+        $this->icon->classes->clear();
+        $this->icon->classes->add($image);
     }
     
     public function setText ($text, $width = 0) {
