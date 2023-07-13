@@ -18,6 +18,22 @@ class MainMenuEvents
             
         try {
             app()->form("MainForm")->ini->set('ProjectDirectory', $path);
+            $result = app()->form("MainForm")->ini->get('directoryList');
+            
+            if (is_array($result)) {
+                $result[] = $path;
+            } else {
+                if ($result != null) {
+                    $result = [$result, $path];
+                } else {
+                    $result = $path;
+                }
+            }
+            
+            app()->form("MainForm")->ini->set('directoryList', $result);
+            app()->form("MainForm")->combobox->items->add([$path, 'res://.data/img/ui/folder-60.png']);
+            app()->form("MainForm")->combobox->selectedIndex = app()->form("MainForm")->combobox->items->count() - 1;
+            
         } catch (Exception $ex) {
             app()->form("MainForm")->errorAlert($ex);
         }
