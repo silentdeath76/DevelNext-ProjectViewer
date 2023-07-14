@@ -51,6 +51,7 @@ class MainForm extends AbstractForm
         $this->mainMenuEvents = new MainMenuEvents();
 
         try {
+            // старый метод сохранения настроек
             $this->reg = Registry::of(self::REGISTRY_PATH);
             
             if (($path = $this->reg->read('ProjectDirectory')) !== null) {
@@ -399,6 +400,7 @@ class MainForm extends AbstractForm
         $arrow = $e->sender->lookup('.arrow');
         $arrow->rotate = 90;
         
+        // анимация вращения галочки с последующей сменой на крест
         $e->sender->observer('showing')->addListener(function ($old, $new) use ($arrow) {
             $speed = 1000;
             $minangle = 90;
@@ -419,10 +421,14 @@ class MainForm extends AbstractForm
             $timer->start();
         });
         
+        
+        // если не является списком или пустой, то устанавливаем значение в списко из свойства projectDir
         if (count($this->ini->get('directoryList')) == 0 && $this->projectDir != null) {
             $this->ini->set("directoryList", [$this->projectDir]);
         }
         
+        // если список является массивом, проходимся циклом по элементам и добавляем их
+        // елси путь совпадает с тем что находится в свойстве projectDir то делаем его активным
         if (is_array($this->ini->get('directoryList'))) {
             foreach ($this->ini->get('directoryList') as $key => $path) {
                 $this->combobox->items->add([$path, '.directory-icon']);
@@ -433,6 +439,8 @@ class MainForm extends AbstractForm
                 }
             }
         } else {
+            // если список не является массивом, и при этом не пустой
+            // то добовляем это значение и получаем список директорий
             if ($this->ini->get('directoryList') != null) {
                 $this->combobox->items->add([$this->ini->get('directoryList'), '.directory-icon']);
                 $this->combobox->selectedIndex = 0;
@@ -440,23 +448,24 @@ class MainForm extends AbstractForm
             }
         }
         
+        // событие смены значения
         $e->sender->observer('value')->addListener(function ($old, $new) {
             $this->tree->root->children->clear();
             $this->ini->set('ProjectDirectory', $new[0]);
             $this->fsTree->setDirectory($new[0]);
         });
         
-        $cellFactory = function (UXListCell $cell, $node, bool $selected = null) {
+        // событие обрботки элементов прежде чем они попадут в список
+        $this->combobox->onCellRender(function (UXListCell $cell, $node, bool $selected = null) {
             $item = new DirectoryItem();
             $item->setText($node[0]);
             $item->setImage('directory-icon');
 
             $cell->text = "";
             $cell->graphic = $item->getNode();
-        }; 
+        });
         
-        $this->combobox->onCellRender($cellFactory);
-        
+        // событие отрисовки элемента после выбора его из списка 
         $this->combobox->onButtonRender(function (UXListCell $cell, $node) use () {
             $item = new SelectedDirectoryItem();
             $item->setText($node[0], $this->combobox->width);

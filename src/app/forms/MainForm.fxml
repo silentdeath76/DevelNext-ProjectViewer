@@ -7,7 +7,7 @@
       <tabs>
         <Tab text="Исходный код">
           <content>
-            <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="434" prefWidth="640" styleClass="">
+            <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="434" prefWidth="639" styleClass="">
               <children>
                 <WebView AnchorPane.bottomAnchor="3" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" focusTraversable="true" id="browser" layoutX="0" layoutY="0" prefHeight="404" prefWidth="640"/>
                 <Data contextMenuEnabled="" cursor="DEFAULT" enabled="1" id="data-browser" visible=""/>
@@ -68,7 +68,7 @@
           </font>
         </LabelEx>
         <Data cursor="DEFAULT" enabled="1" id="data-createdAtLabel" visible="1"/>
-        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="0" id="createdAt" layoutX="7" layoutY="136" prefHeight="17" prefWidth="234" styleClass="label " text="-" textAlignment="LEFT" underline="false" wrapText="false">
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="createdAt" layoutX="7" layoutY="136" prefHeight="17" prefWidth="234" styleClass="label " text="-" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Regular" size="12"/>
           </font>
@@ -85,19 +85,19 @@
             <Font name="System Regular" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" id="data-modifiedAt" visible="1"/>
-        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSizeLabel" layoutX="7" layoutY="224" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
+        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-modifiedAt" visible="1"/>
+        <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="0" id="fileSizeLabel" layoutX="7" layoutY="224" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Bold Italic" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" id="data-fileSizeLabel" visible="1"/>
+        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-fileSizeLabel" visible="1"/>
         <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSize" layoutX="7" layoutY="248" prefHeight="17" prefWidth="192" styleClass="label " text="-" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Regular" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" id="data-fileSize" visible="1"/>
+        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-fileSize" visible="1"/>
       </children>
       <titleFont>
         <Font name="System Bold" size="12"/>

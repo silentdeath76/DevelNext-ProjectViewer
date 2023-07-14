@@ -30,15 +30,6 @@
 }
 
 
-#fileInfo {
-    -fx-border-color: -border-base-color;
-}
-
-#fileInfo .panel-title {
-    -fx-font-weight: bold;
-    -fx-border-color: -border-base-color;
-}
-
 
 .about .label {
     -fx-font-size: 18px;
@@ -53,21 +44,6 @@
     -fx-font-size: 18px;
 }
 
-.DependencyItem {
-    -fx-border-color: -border-base-color;
-}
-
-.DependencyItem:hover {
-    -fx-background-color: -second-base-color;
-}
-
-.DependencyItem .link {
-    -fx-background-color: derive(-icons-color, 40%);
-}
-
-.DependencyItem .link:hover {
-    -fx-background-color: derive(-icons-color, -80%)
-}
 
 .tooltip {
     -fx-text-fill: -text-color;
