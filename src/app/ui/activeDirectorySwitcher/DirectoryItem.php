@@ -28,7 +28,7 @@ class DirectoryItem extends AbstractNode
         $this->container->alignment = 'CENTER_LEFT';
         $this->container->spacing = 10;
         $this->container->padding = 5;
-        $this->container->css("-fx-font-family: 'Arial';");
+        $this->container->css("-fx-font-family: 'Open Sans';");
         
         $this->icon = new UXHBox();
         $this->icon->minWidth = 11;
