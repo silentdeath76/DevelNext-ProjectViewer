@@ -253,11 +253,11 @@ class FSTreeProvider implements IEvents
                 case 'ico': 
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
-                    // $file = 'res://.data/img/ui/archive-60.png'; break;
                     $item->graphic = new UXHBox();
                     $item->graphic->minWidth = 16;
                     $item->graphic->minHeight = 12;
                     $item->graphic->classes->add("zip-icon");
+
                     return;
                 case 'php':
                     $file = 'res://.data/img/ui/php-file-60.png'; break;
@@ -267,14 +267,11 @@ class FSTreeProvider implements IEvents
                 default: $file = 'res://.data/img/ui/file-60.png';
             }
         } else {
-            $file = 'res://.data/img/ui/folder-60.png';
-            
             $item->graphic = new UXHBox();
             $item->graphic->minWidth = 16;
             $item->graphic->minHeight = 12;
             $item->graphic->classes->add("folder-icon");
-            
-            
+
             return;
         }
         

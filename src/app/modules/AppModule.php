@@ -99,6 +99,7 @@ class AppModule extends AbstractModule
                 $os = str::lower(System::getProperties()["os.name"]);
 
                 // не уверен что небудет проблем с правами и тем что это jar файл по-этому так
+                // хз почему, но на линуксе открытие ссылки в браузере вовсе вешает программу
                 if (str::endsWith($os, 'inux')) {
                     /* uiLater(function () use ($form) {
                         $this->showUpdateNotify(Localization::get('ui.update.found.message') . '   ', Localization::get('ui.update.button.update'), $form->infoPanelSwitcher, function ()  {
