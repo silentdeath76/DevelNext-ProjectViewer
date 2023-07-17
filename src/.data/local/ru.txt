@@ -1,0 +1,37 @@
+ui.update.found.message=Найдена новая версия программы
+ui.update.button.update=Обновить
+
+ui.mainMenu.selectDirectory=Выбрать директорию
+ui.mainMenu.theme=Цветовая схема
+ui.mainMenu.theme.light=Светлая
+ui.mainMenu.theme.dark=Темная
+ui.mainMenu.theme.nord=Nord
+ui.mainMenu.about=О программе
+
+ui.contextMenu.saveAs=Соранить как
+ui.contextMenu.rename=Переименовать
+ui.contextMenu.delete=Удалить
+ui.contextMenu.showInExplorer=Показать в проводнике
+
+ui.directorySwitcher.activeDirectory=Текущая директория
+
+ui.tab.viewCode=Исходный код
+ui.tab.viewView=Внешний вид
+
+ui.sidepanel.fielInfo.title=Инфорация о файле
+ui.sidepanel.fielInfo.createdAt=Дата создания:
+ui.sidepanel.fielInfo.modifiedAt=Дата изменения:
+ui.sidepanel.fielInfo.fileSize=Размер:
+ui.sidepanel.fileSizeFromat.b=б
+ui.sidepanel.fileSizeFromat.kb=кБ
+ui.sidepanel.fileSizeFromat.mb=мБ
+ui.sidepanel.fileSizeFromat.gb=гБ
+
+message.error=Произошла ошибка
+message.browser.error=Произошла ошибка в браузере
+message.deleteFile=Вы уверены что хотите удалить - 
+message.link.openInBrowser=Открыть ссылку в браузере
+
+ui.about.site=Сайт:
+ui.about.author=Автор:
+ui.about.version=Версия:

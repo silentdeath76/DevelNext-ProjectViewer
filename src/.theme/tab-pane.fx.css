@@ -1,5 +1,7 @@
 .tab-pane {
-    -fx-tab-min-width: 100;
+    -fx-tab-min-width: 130;
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color: -border-base-color;
 }
 
 .tab-pane .tab-header-area .headers-region {
@@ -29,6 +31,8 @@
 
 .tab-pane .tab .tab-label {
     -fx-text-fill: -second-text-color;
+    -fx-min-width: 110.0;
+    -fx-font-weight: bold;
 }
 
 .tab-pane .tab-content-area {
@@ -48,4 +52,12 @@
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
+}
+
+.view-tab-icon {
+    -fx-background-color: -icons-color;
+}
+
+.code-tab-icon {
+    -fx-background-color: -icons-color;
 }

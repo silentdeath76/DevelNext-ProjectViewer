@@ -138,16 +138,18 @@ class Dependency
             $width = 10;
             $height = 10;
             
-            $panel->add($link = new UXScrollPane);
-            $link->classes->add("link");
+            $panel->add($link = new UXHBox);
+            $link->classes->addAll(["link", "open-link-icon"]);
             $link->cursor = 'HAND';
             $link->maxWidth = $width;
             $link->maxHeight = $height;
             $link->minWidth = $width;
             $link->minHeight = $height;
+            $tooltip = UXTooltip::of(Localization::get('message.link.openInBrowser'));
+            UXTooltip::install($link, $tooltip);
             
             $link->on("click", function () use ($url) {
-                if (uiConfirm('Открыть ссылку в браузере?')) {
+                if (uiConfirm(Localization::get('message.link.openInBrowser') . '?')) {
                     open($url);
                 }
             });

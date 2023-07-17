@@ -1,6 +1,7 @@
 <?php
 namespace app\forms;
 
+use php\gui\UXTitledPaneWrapper;
 use bundle\windows\Registry;
 use Exception;
 use php\compress\ZipFile;
@@ -48,13 +49,14 @@ class MainForm extends AbstractForm
     {    
         $this->logger = new LoggerReporter();
         $this->mainMenuEvents = new MainMenuEvents();
-        
+
         try {
+            // старый метод сохранения настроек
             $this->reg = Registry::of(self::REGISTRY_PATH);
             
             if (($path = $this->reg->read('ProjectDirectory')) !== null) {
                 $this->ini->set("ProjectDirectory", $path);
-                $this->reg->clear(); // удаляем старые записи в реестре т.к. сохраняем настрйоки в ini теперь
+                $this->reg->clear(); // удаляем старые записи в реестре т.к. теперь сохраняем настрйоки в ini
             }
         } catch (Exception $ignore) {}
         
@@ -80,11 +82,15 @@ class MainForm extends AbstractForm
         $bar->leftAnchor = $bar->rightAnchor = 0;
         
         
-        ContextMenuHelper::of($bar)->addCategory("Выбрать директорию", [$this->mainMenuEvents, 'selectedFolder']);
+        ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.selectDirectory'), [$this->mainMenuEvents, 'selectedFolder']);
         
-        $themeCategory = ContextMenuHelper::of($bar)->addCategory("Цветовая схема");
+        $themeCategory = ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.theme'));
         
-        $themeList = ["light" => "Светлая", "dark" => "Темная", "nord" => "Nord"];
+        $themeList = [
+            "light" => Localization::get('ui.mainMenu.theme.light'),
+            "dark" => Localization::get('ui.mainMenu.theme.dark'),
+            "nord" => Localization::get('ui.mainMenu.theme.nord')
+        ];
         
         foreach ($themeList as $theme => $text) {
             $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList) {
@@ -98,9 +104,8 @@ class MainForm extends AbstractForm
             }
         }
         
-        ContextMenuHelper::of($bar)->addCategory("О программе", function () {
-            $this->form("About")->showAndWait();
-        });
+        ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.about'), [$this->mainMenuEvents, 'about']);
+        
         
         
         $this->add($bar);
@@ -113,12 +118,7 @@ class MainForm extends AbstractForm
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
                 $this->filePath->text = $path;
                 
-                if ($provider->isFile($path)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/archive-60.png');
-                } else if ($provider->isDirectory($path)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
-                }
-                
+                $this->updateFileInfoIcon($provider, $path);
                 $this->updateFileinfo($provider, $path);
             });
             
@@ -133,13 +133,9 @@ class MainForm extends AbstractForm
                     }
                 }
                 
+                $this->updateFileInfoIcon($provider, $zipPath);
+                
                 if ($provider->isFile($zipPath)) {
-                    if (fs::ext($zipPath) == 'php') {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/php-file-60.png');
-                    } else {
-                        $this->fileImage->image = new UXImage('res://.data/img/ui/file-60.png');
-                    }
-                    
                     $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
                         $this->showMeta($stat);
                         
@@ -153,9 +149,15 @@ class MainForm extends AbstractForm
                             $this->image->image = new UXImage($output);
                             $output = "Binary";
                             $this->tabPane->selectedIndex = 1;
-                        } else if ($ext == 'zip' || $ext == 'exe') {
-                            $output = "Binary";
                         } else {
+                            switch (fs::ext($zipPath)) {
+                                case 'zip':
+                                case 'exe':
+                                case 'jar':
+                                case 'ttf':
+                                    $output = "Binary";
+                            }
+                            
                             $this->tabPane->selectedIndex = 0;
                         }
         
@@ -164,18 +166,16 @@ class MainForm extends AbstractForm
                     
                     $this->updateFileinfo($provider, $zipPath);
                 } else if ($provider->isDirectory($zipPath)) {
-                    $this->fileImage->image = new UXImage('res://.data/img/ui/folder-60.png');
                     $this->fileSize->text = "unknown";
                 }
             });
             
-            $this->fsTree->setDirectory($this->projectDir);
         } catch (Exception $ex) {
             $this->errorAlert($ex);
         }
         
-        // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 1 скунду чтобы не мелькало
-        timer::after(1000, function () { $this->browser->show(); });
+        // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 0.5 скунду чтобы не мелькало
+        timer::after(500, function () { $this->browser->show(); });
         
         $this->showCodeInBrowser('', 'html');
         
@@ -212,8 +212,48 @@ class MainForm extends AbstractForm
         $this->fsTree->getFileInfo($this->tree->focusedItem);
     }
     
+    
+    public function updateFileInfoIcon (AbstractFileSystem $provider, $path)
+    {
+        static $iconFileSelected;
+        
+        /**
+         * IconFileSelected $iconFileSelected
+         */
+        if ($iconFileSelected == null) {
+            $iconFileSelected = new IconFileSelected();
+            $this->fileInfo->add($iconFileSelected->getNode());
+        }
+        
+        if ($provider->isfile($path)) {
+            
+            $iconFileSelected->updateClasses(["file-icon"]);
+            $iconFileSelected->setSize(52, 68);
+            
+            switch (fs::ext($path)) {
+                case 'zip':
+                    $iconFileSelected->updateClasses(["zip-icon"]);
+                    $iconFileSelected->setSize(84, 64);
+                    $iconFileSelected->updateText("");
+                    break;
+                case 'php':
+                    $iconFileSelected->updateText("PHP");
+                    break;
+                case 'fxml':
+                    $iconFileSelected->updateText("FXML");
+                    break;
+                default: $iconFileSelected->updateText("");
+            }
+        } else if ($provider->isDirectory($path)) {
+            $iconFileSelected->updateClasses(["directory-icon"]);
+            $iconFileSelected->setSize(84, 64);
+            $iconFileSelected->updateText("");
+        }
+    }
+    
 
     /**
+     * @event browser.load 
      * @event browser.running 
      */
     function doBrowserRunning(UXEvent $e = null)
@@ -228,7 +268,7 @@ class MainForm extends AbstractForm
                 $alert->expandableContent->height = 400;
                 $alert->expandableContent->content->add(new UXLabel(var_export(func_get_args(), true)));
                 
-                $alert->title = 'JS Handler';
+                $alert->title = Localization::get('message.browser.error');
                 $alert->contentText = $text;
                 $alert->show();
             });
@@ -263,13 +303,13 @@ class MainForm extends AbstractForm
             $config->set(ContextMenuHelper::GRAPHIC_WIDTH, 16);
             $config->set(ContextMenuHelper::GRAPHIC_HEIGHT, 16);
             
-            $helper->addItem("Сохранить как", [ContextMenuEvents::getInstance($this), "saveAs"], $helper->makeIcon('res://.data/img/context-menu-icons/save.png'));
-            $helper->addItem("Переименовать", [ContextMenuEvents::getInstance($this), "rename"], $helper->makeIcon('res://.data/img/context-menu-icons/edit.png'));
-            $helper->addItem("Удалить", [ContextMenuEvents::getInstance($this), "delete"], $helper->makeIcon('res://.data/img/context-menu-icons/delete.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.saveAs'), [ContextMenuEvents::getInstance($this), "saveAs"], $helper->makeIcon('res://.data/img/context-menu-icons/save.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.rename'), [ContextMenuEvents::getInstance($this), "rename"], $helper->makeIcon('res://.data/img/context-menu-icons/edit.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.delete'), [ContextMenuEvents::getInstance($this), "delete"], $helper->makeIcon('res://.data/img/context-menu-icons/delete.png'));
         }
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
-            // чтобы контексттоное меню не появлялось на директориях
+            // чтобы контексттоное меню не появлялось на директориях в архиве
             if ($this->tree->focusedItem->children->count() == 0) {
                 $context->showByNode($e->sender, $e->x, $e->y);
             }
@@ -283,7 +323,7 @@ class MainForm extends AbstractForm
             $config->set(ContextMenuHelper::GRAPHIC_WIDTH, 16);
             $config->set(ContextMenuHelper::GRAPHIC_HEIGHT, 16);
             
-            $helper->addItem("Показать в проводнике", [ContextMenuEvents::getInstance($this), 'showInExplorer'], $helper->makeIcon('res://.data/img/context-menu-icons/open-folder.png'));
+            $helper->addItem(Localization::get('ui.contextMenu.showInExplorer'), [ContextMenuEvents::getInstance($this), 'showInExplorer'], $helper->makeIcon('res://.data/img/context-menu-icons/open-folder.png'));
         }
         
         $contextRoot->showByNode($e->sender, $e->x, $e->y);
@@ -314,6 +354,8 @@ class MainForm extends AbstractForm
      */
     function doInfoPanelSwitcherConstruct(UXEvent $e = null)
     {    
+        // remove empty hint
+        UXTooltip::uninstall($e->sender, $e->sender->tooltip);
         try {
             if ($this->ini->get('panel_file_information_show') == 1) {
                 $this->infoPanelSwitcher->selected = true;
@@ -329,24 +371,109 @@ class MainForm extends AbstractForm
     function doFileInfoConstruct(UXEvent $e = null)
     {    
         $e->sender->lookup('.panel-title')->topAnchor = -14;
+        $this->fileInfo->title = Localization::get('ui.sidepanel.fielInfo.title');
+        $this->createdAtLabel->text = Localization::get('ui.sidepanel.fielInfo.createdAt');
+        $this->modifiedAtLabel->text = Localization::get('ui.sidepanel.fielInfo.modifiedAt');
+        $this->fileSizeLabel->text = Localization::get('ui.sidepanel.fielInfo.fileSize');
     }
     
-
-    /**
-     * @event browser.load 
-     */
-    function doBrowserLoad(UXEvent $e = null)
-    {    
-        $this->doBrowserRunning($e);
-    }
-
 
     /**
      * @event tabPane.construct 
      */
     function doTabPaneConstruct(UXEvent $e = null)
     {    
-        $this->tabPane->tabs[0]->graphic = new UXImageView(new UXImage('res://.data/img/ui/code-tab.png', 16, 16));
+        $this->tabPane->tabs[0]->text = Localization::get('ui.tab.viewCode');
+        $this->tabPane->tabs[0]->graphic = new UXHBox();
+        $this->tabPane->tabs[0]->graphic->classes->add("view-tab-icon");
+        
+        $this->tabPane->tabs[1]->text = Localization::get('ui.tab.viewView');
+        $this->tabPane->tabs[1]->graphic = new UXHBox();
+        $this->tabPane->tabs[1]->graphic->classes->add("code-tab-icon");
+    }
+
+    /**
+     * @event combobox.construct 
+     */
+    function doComboboxConstruct(UXEvent $e = null)
+    {    
+        $arrow = $e->sender->lookup('.arrow');
+        $arrow->rotate = 90;
+        
+        // анимация вращения галочки с последующей сменой на крест
+        $e->sender->observer('showing')->addListener(function ($old, $new) use ($arrow) {
+            $speed = 1000;
+            $minangle = 90;
+            $maxangle = 270;
+            $timer = new UXAnimationTimer(function () use (&$timer, $arrow, $new, $speed, $minangle, $maxangle) {
+                if ($new) {
+                    $arrow->rotate += $speed * UXAnimationTimer::FRAME_INTERVAL;
+                } else {
+                    $arrow->rotate -= $speed * UXAnimationTimer::FRAME_INTERVAL;
+                }
+                
+                if ($arrow->rotate % $maxangle == 0 || $arrow->rotate <= $minangle) {
+                    $timer->stop();
+                }
+                
+                if ($arrow->rotate > $maxangle) $arrow->rotate = $maxangle;
+            });
+            $timer->start();
+        });
+        
+        
+        // если не является списком или пустой, то устанавливаем значение в списко из свойства projectDir
+        if (count($this->ini->get('directoryList')) == 0 && $this->projectDir != null) {
+            $this->ini->set("directoryList", [$this->projectDir]);
+        }
+        
+        // если список является массивом, проходимся циклом по элементам и добавляем их
+        // елси путь совпадает с тем что находится в свойстве projectDir то делаем его активным
+        if (is_array($this->ini->get('directoryList'))) {
+            foreach ($this->ini->get('directoryList') as $key => $path) {
+                $this->combobox->items->add([$path, '.directory-icon']);
+                if ($path == $this->projectDir) {
+                    $this->tree->root->children->clear();
+                    $this->combobox->selectedIndex = $key;
+                    $this->fsTree->setDirectory($path);
+                }
+            }
+        } else {
+            // если список не является массивом, и при этом не пустой
+            // то добовляем это значение и получаем список директорий
+            if ($this->ini->get('directoryList') != null) {
+                $this->combobox->items->add([$this->ini->get('directoryList'), '.directory-icon']);
+                $this->combobox->selectedIndex = 0;
+                $this->fsTree->setDirectory($this->ini->get('directoryList'));
+            }
+        }
+        
+        // событие смены значения
+        $e->sender->observer('value')->addListener(function ($old, $new) {
+            $this->tree->root->children->clear();
+            $this->ini->set('ProjectDirectory', $new[0]);
+            $this->fsTree->setDirectory($new[0]);
+        });
+        
+        // событие обрботки элементов прежде чем они попадут в список
+        $this->combobox->onCellRender(function (UXListCell $cell, $node, bool $selected = null) {
+            $item = new DirectoryItem();
+            $item->setText($node[0]);
+            $item->setImage('directory-icon');
+
+            $cell->text = "";
+            $cell->graphic = $item->getNode();
+        });
+        
+        // событие отрисовки элемента после выбора его из списка 
+        $this->combobox->onButtonRender(function (UXListCell $cell, $node) use () {
+            $item = new SelectedDirectoryItem();
+            $item->setText($node[0], $this->combobox->width);
+            $item->setTitle(Localization::get("ui.directorySwitcher.activeDirectory"));
+            $item->setImage('directory-icon');
+
+            $cell->graphic = $item->getNode();
+        });
     }
 
     
@@ -357,6 +484,7 @@ class MainForm extends AbstractForm
             case 'php': $ext = 'php'; break;
             case 'css': $ext = 'css'; break;
             case 'ico':
+            case 'bmp':
             case 'png':
             case 'jpg':
             case 'jpeg':$ext = 'image'; break;
@@ -387,10 +515,10 @@ class MainForm extends AbstractForm
     
     private function showMeta ($meta) {
         $meta = $meta["size"];
-        $types = ['b', 'kb', 'mb', 'gb'];
+        $types = [Localization::get('ui.sidepanel.fileSizeFromat.b'), Localization::get('ui.sidepanel.fileSizeFromat.kb'), Localization::get('ui.sidepanel.fileSizeFromat.mb'), Localization::get('ui.sidepanel.fileSizeFromat.gb')];
         
         $index = floor(str::length($meta) / 3);
         
-        $this->fileSize->text = round($meta / pow(1024, $index), 2) . $types[$index];
+        $this->fileSize->text = round($meta / pow(1024, $index), 2) . ' ' . $types[$index];
     }
 }

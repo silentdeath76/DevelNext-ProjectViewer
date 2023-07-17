@@ -6,8 +6,6 @@
     -tab-selected-border-color: derive(-second-base-color, 25%);
     -tree-arrow-color: white;
     -scroll-bar-color: derive(-second-base-color, 25%);
-}
-
-.DependencyItem .link > .viewport {
-    -fx-background-image: url( '/.data/img/ui/openLinkLight.png');
+    -icons-color: #ccc;
+    -border-base-color: #313131;
 }

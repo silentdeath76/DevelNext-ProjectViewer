@@ -10,6 +10,10 @@ class Selfupdate
     private $url = 'https://api.github.com/repos/{OWNER}/{REPO}/releases/latest';
     private $owner;
     private $repos;
+    /**
+     * @var Response
+     */
+    private $response;
     
     /**
      * @var HttpClient
@@ -30,15 +34,26 @@ class Selfupdate
         $http = $this->http->get($url);
         
         if ($http->statusCode() !== 200) {
-            return Releases::of(["error" => "cant connected to github.com"]);
+            return Releases::of([
+                "error" => "Error connected to github.com",
+                "status" => $http->statusCode(),
+                "headers" => $http->headers(),
+                "response" => json_decode($http->body(), true)
+            ]);
         }
         
         $array = json_decode($http->body(), true);
         
-        return Releases::of($array);
+        $this->response = Releases::of($array);
+
+        return $this->response;
     }
     
-    public function update () {
-        
+    public function download ($tempFile) {
+        $http = new HttpClient();
+        $stream = $http->get($this->response->getLink())->body();
+        $outputStream = new FileStream($tempFile, "w+");
+        $outputStream->write($stream);
+        $outputStream->close();
     }
 }

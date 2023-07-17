@@ -51,7 +51,7 @@ class FSTreeProvider implements IEvents
         fs::scan($path, ['extensions' => ['zip'], 'callback' => function (File $file) {
             $filePath = str::sub($file->getAbsoluteFile(), strlen($this->selectedDirectory) + 1);
             $this->zipFiles[$file->getAbsoluteFile()] = new ZipFile($file);
-            $items = explode('\\', $filePath);
+            $items = explode(File::DIRECTORY_SEPARATOR, $filePath);
             
             if ($file->isFile()) {
                 $this->treeHelper->makeTree($this->rootItem, $items, function ($node, bool $isDir) use ($filePath) {
@@ -70,6 +70,7 @@ class FSTreeProvider implements IEvents
     public function getFileByNode (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
+        $filePath = MainModule::replaceSeparator($filePath);
         
         if ($fs->exists($filePath)) {
             return $fs;
@@ -85,6 +86,7 @@ class FSTreeProvider implements IEvents
     public function getZipByNode (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
+        $filePath = MainModule::replaceSeparator($filePath);
         
         if (!$fs->isFile($filePath)) {
             if (!$fs->isDirectory($filePath)) {
@@ -101,6 +103,7 @@ class FSTreeProvider implements IEvents
     public function getFileInfo (UXTreeItem $item) {
         $fs = new StandartFileSystem();
         $filePath = $this->selectedDirectory . $fs->getAbsolutePath($item);
+        $filePath = MainModule::replaceSeparator($filePath);
         
         // если выбранный елемент является файлом на диске
         if ($fs->isFile($filePath)) {
@@ -172,22 +175,22 @@ class FSTreeProvider implements IEvents
         $zipPath = '';
         $found = false;
         
-        foreach (explode('\\', $filePath) as $chunk) {
+        foreach (explode(File::DIRECTORY_SEPARATOR, $filePath) as $chunk) {
             if (str::endsWith($chunk, '.zip')) {
                 $fsPath .= $chunk;
                 $found = true;
             } else {
                 if (!$found) {
-                    $fsPath .= $chunk . '\\';
+                    $fsPath .= $chunk . File::DIRECTORY_SEPARATOR;
                 } else {
-                    $zipPath .= $chunk . '\\';
+                    $zipPath .= $chunk . File::DIRECTORY_SEPARATOR;
                 }
             }
         }
         
         $zipPath = substr($zipPath, 0, -1);
         
-        $zipPath = str_replace('\\', '/', $zipPath);
+        $zipPath = str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $zipPath);
         
         return [$fsPath, $zipPath];
     }
@@ -203,7 +206,45 @@ class FSTreeProvider implements IEvents
                 $item->graphic = new UXImageView($this->imageCache->get(fs::ext($path)));
                 return;
             }
-        
+            /*
+            
+            $iconFileSelected = new IconFileSelected();
+            $iconFileSelected->clear();
+            
+            switch (fs::ext($path)) {
+                case 'png': 
+                case 'gif': 
+                case 'jpg': 
+                case 'jpeg': 
+                case 'ico': 
+                    $iconFileSelected->setSize(14, 20, 5);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    break;
+                case 'zip': 
+                    $iconFileSelected->updateClasses(["zip-icon"]);
+                    $iconFileSelected->setSize(20, 17, 1);
+                    $iconFileSelected->updateText("");
+                    break;
+                case 'php': 
+                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    $iconFileSelected->updateClasses(["file-icon", "red-color", "small-size"]);
+                    break;
+                case 'fxml': 
+                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    $iconFileSelected->updateClasses(["file-icon", "blue-color", "small-size"]);
+                    break;
+                case 'css': 
+                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->updateText(fs::ext($path));
+                    $iconFileSelected->updateClasses(["file-icon", "green-color", "small-size"]);
+                    break;
+                default:
+                    $iconFileSelected->setSize(14, 20, 1);
+                    $iconFileSelected->updateText("");
+            }
+            */
             switch (fs::ext($path)) {
                 case 'png': 
                 case 'gif': 
@@ -212,7 +253,12 @@ class FSTreeProvider implements IEvents
                 case 'ico': 
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
-                    $file = 'res://.data/img/ui/archive-60.png'; break;
+                    $item->graphic = new UXHBox();
+                    $item->graphic->minWidth = 16;
+                    $item->graphic->minHeight = 12;
+                    $item->graphic->classes->add("zip-icon");
+
+                    return;
                 case 'php':
                     $file = 'res://.data/img/ui/php-file-60.png'; break;
                 case 'fxml':
@@ -221,16 +267,12 @@ class FSTreeProvider implements IEvents
                 default: $file = 'res://.data/img/ui/file-60.png';
             }
         } else {
-            $file = 'res://.data/img/ui/folder-60.png';
-            
-            if ($this->imageCache->exists(FSTreeProvider::EMPTY_PATH_ELEMENT)) {
-                $item->graphic = new UXImageView($this->imageCache->get(FSTreeProvider::EMPTY_PATH_ELEMENT));
-                return;
-            } else {
-                $item->graphic = new UXImageView(new UXImage($file, 20, 20));
-                $this->imageCache->set(FSTreeProvider::EMPTY_PATH_ELEMENT, $item->graphic->image);
-                return;
-            }
+            $item->graphic = new UXHBox();
+            $item->graphic->minWidth = 16;
+            $item->graphic->minHeight = 12;
+            $item->graphic->classes->add("folder-icon");
+
+            return;
         }
         
         $item->graphic = new UXImageView(new UXImage($file, 20, 20));

@@ -18,7 +18,7 @@ class Releases {
         }
         
         if (isset($obj["error"])) {
-            throw new RuntimeException($obj["error"]);
+            throw new RuntimeException(json_encode($obj));
         }
         
         if (!isset($obj["tag_name"]) || !isset($obj["assets"])) {

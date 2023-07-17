@@ -12,30 +12,37 @@
 #infoPanelSwitcher:hover {
     -fx-background-color: -base-color;
     -fx-border-width: 1;
-    -fx-border-color: #0000002F;
+    -fx-border-color: -border-base-color;
 }
 
 /* panel */
 #fileInfo {
     -fx-background-color: -second-base-color;
     -fx-text-fill: -text-color;
-    -fx-border-color: -base-color;
+    -fx-border-color: -border-base-color;
 }
 
 #fileInfo > .panel-title {
     -fx-background-color: -second-base-color;
     -fx-border: 1 1 1 1 !important;
-    -fx-border-color: -base-color;
+    -fx-font-weight: bold;
+    -fx-border-color: -border-base-color;
 }
 
 #fileInfo * {
     -fx-text-fill: -text-color;
 }
 
+#createdAtLabel, #modifiedAtLabel, #fileSizeLabel {
+    -fx-font: 12 "Open Sans";
+    -fx-font-weight: bold;
+    -fx-font-style: italic;
+}
+
 
 .DependencyItem {
     -fx-border-width: 1;
-    -fx-border-color: -second-base-color;
+    -fx-border-color: -border-base-color;
     -fx-text-fill: -text-color;
     -fx-background-color: -base-color;
     -fx-padding: 2;
@@ -49,4 +56,16 @@
 
 .DependencyItem .link:hover > .viewport {
     -fx-background-position: 0 -10;
+}
+
+.DependencyItem:hover {
+    -fx-background-color: -second-base-color;
+}
+
+.DependencyItem .link {
+    -fx-background-color: derive(-icons-color, 40%);
+}
+
+.DependencyItem .link:hover {
+    -fx-background-color: derive(-icons-color, -80%)
 }

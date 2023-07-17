@@ -14,6 +14,17 @@ class MainModule extends AbstractModule
     private $formHeight;
     
     public function formSizeSaver () {
+        // hack for notify
+        $binder = new EventBinder($this->infoPanelSwitcher);
+        $binder->bind("step", function () {
+            if ($this->form("MainForm")->infoPanelSwitcher->data("container") instanceof UXHBox) {
+                $this->form("MainForm")->infoPanelSwitcher->data("container")->x = 
+                    ($this->infoPanelSwitcher->x +
+                    $this->infoPanelSwitcher->width -
+                    $this->form("MainForm")->infoPanelSwitcher->data("container")->width) + 1;
+            }
+        })
+        
         $this->form("MainForm")->observer("width")->addListener(function ($o, $n)  {
             static $timer;
             
@@ -52,6 +63,7 @@ class MainModule extends AbstractModule
         
         $this->form("MainForm")->observer("maximized")->addListener(function ($o, $n) {
             // закгрузка старых размеров формы если она была равзернута на весь экран
+            
             if ($n === true) {
                 $this->needLoad = true;
                 $this->formWidth = $this->ini->get('width');
@@ -69,7 +81,7 @@ class MainModule extends AbstractModule
     }
     
     public function errorAlert (Exception $ex, $detailed = false) {
-        $this->logger->discord($ex->getTraceAsString(), LoggerReporter::ERROR)->send();
+        $this->logger->discord("```json\n" . $ex->getMessage() . "```\n" . $ex->getTraceAsString(), LoggerReporter::ERROR)->send();
         
         $alert = new UXAlert("ERROR");
         $alert->headerText = "";
@@ -81,9 +93,14 @@ class MainModule extends AbstractModule
             $alert->expandableContent->content->add(new UXLabel(var_export($ex->getTraceAsString(), true)));
         }
         
-        $alert->title = 'Произошла ошибка';
+        $alert->title = Localization::get('message.error');
         $alert->contentText = $ex->getMessage();
         $alert->show();
+    }
+    
+    
+    public static function replaceSeparator ($string) {
+        return str_replace(['\\', '/'], File::DIRECTORY_SEPARATOR, $string);
     }
     
     

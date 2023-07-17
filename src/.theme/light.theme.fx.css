@@ -6,8 +6,6 @@
     -tab-selected-border-color: skyblue;
     -tree-arrow-color: #444;
     -scroll-bar-color: #a4a4a4;
-}
-
-.DependencyItem .link > .viewport {
-    -fx-background-image: url( '/.data/img/ui/openLinkDark.png');
+    -icons-color: #717171;
+    -border-base-color: #e3e5e7;
 }

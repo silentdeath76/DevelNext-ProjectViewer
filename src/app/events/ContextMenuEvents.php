@@ -52,16 +52,11 @@ class ContextMenuEvents
                 return;
             }
             
-            
             if (!$zip->has($innerPath)) {
-                $innerPath = str_replace('/', '\\', $innerPath);
+                $innerPath = str_replace('\\', '/', $innerPath);
                 
                 if (!$zip->has($innerPath)) {
-                    $innerPath = str_replace('\\', '//', $innerPath);
-                    
-                    if (!$zip->has($innerPath)) {
-                        Logger::warn('Error wrong path');
-                    }
+                    Logger::warn('Error wrong path');
                 }
             }
             
@@ -78,7 +73,7 @@ class ContextMenuEvents
                         $path = fs::parent($innerPath);
                     }
                     
-                    $path = str_replace('/', '\\', $path);
+                    $path = str_replace('\\', '/', $path);
                     
                     $zip->add($path . $newName, $memory, 8);
                     $zip->remove($innerPath);
@@ -98,16 +93,13 @@ class ContextMenuEvents
         // $zip = new ZipFile();
         $zip = $this->form->fsTree->getZipByNode($this->form->tree->focusedItem)->getZipInstance();
         
-        if (UXDialog::confirm('Вы уверены что хотите удалить - ' . $innerPath . '?', $this->form)) {
+        
+        if (UXDialog::confirm(Localization::get('message.deleteFile') . ' ' . $innerPath . '?', $this->form)) {
             if (!$zip->has($innerPath)) {
-                $innerPath = str_replace('/', '\\', $innerPath);
+                $innerPath = str_replace('\\', '/', $innerPath);
                 
                 if (!$zip->has($innerPath)) {
-                    $innerPath = str_replace('\\', '//', $innerPath);
-                    
-                    if (!$zip->has($innerPath)) {
-                        Logger::warn('Error wrong path');
-                    }
+                    Logger::warn('Error wrong path');
                 }
             }
             
@@ -119,11 +111,20 @@ class ContextMenuEvents
     
     public function showInExplorer (UXEvent $event = null) {
         $path = $this->form->fsTree->getFileByNode($this->form->tree->focusedItem)->getAbsolutePath($this->form->tree->focusedItem);
-        execute('explorer.exe /select,' . fs::normalize($this->form->projectDir . '/' . $path));
+        
+        $os = str::lower(System::getProperties()["os.name"]);
+        
+        if (str::startsWith($os, 'win')) {
+            execute('explorer.exe /select,' . fs::normalize($this->form->projectDir . '/' . $path));
+        } else if (str::startsWith($os, 'linux')) {
+            execute('xdg-open ' . MainModule::replaceSeparator($this->form->projectDir . '/' . $path));
+        }
+        
     }
     
     private function getPath () {
         $path = $this->form->fsTree->treeHelper->getPath($this->form->tree->focusedItem);
+        $path = MainModule::replaceSeparator($path);
         return $this->form->fsTree->getPaths($path);
     }
 }

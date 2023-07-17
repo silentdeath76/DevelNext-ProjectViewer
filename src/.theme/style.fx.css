@@ -6,6 +6,8 @@
 @import "menu-bar.fx.css";
 @import "tree.fx.css";
 @import "context-menu.fx.css";
+@import "combobox.fx.css";
+@import "svg-icons.fx.css";
 
 @import "light.theme.fx.css";
 
@@ -26,3 +28,52 @@
 .scroll-pane:focused {
     -fx-background-color: -base-color;
 }
+
+
+
+.about .label {
+    -fx-font-size: 18px;
+    -fx-text-fill: white;
+}
+
+.about .title {
+    -fx-font-size: 26px;
+}
+
+.about .hyperlink {
+    -fx-font-size: 18px;
+}
+
+
+.tooltip {
+    -fx-text-fill: -text-color;
+    -fx-background-color: -base-color;
+}
+
+.file-icon .label {
+    -fx-font-weight: bold;
+    -fx-text-fill: ladder(-second-text-color, white 45%, black 50%) !important;
+}
+
+/*
+.red-color {
+    -fx-background-color: #de1f65;
+}
+
+.blue-color {
+    -fx-background-color: #1f6fde;
+}
+
+.green-color {
+    -fx-background-color: #91d15f;
+}
+
+.small-size {
+    -fx-font-size: 6;
+    -fx-font-weight: normal;
+}
+*/
+
+
+
+
