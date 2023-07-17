@@ -81,7 +81,7 @@ class MainModule extends AbstractModule
     }
     
     public function errorAlert (Exception $ex, $detailed = false) {
-        $this->logger->discord($ex->getTraceAsString(), LoggerReporter::ERROR)->send();
+        $this->logger->discord("```json\n" . $ex->getMessage() . "```\n" . $ex->getTraceAsString(), LoggerReporter::ERROR)->send();
         
         $alert = new UXAlert("ERROR");
         $alert->headerText = "";

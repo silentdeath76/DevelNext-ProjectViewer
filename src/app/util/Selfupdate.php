@@ -34,7 +34,12 @@ class Selfupdate
         $http = $this->http->get($url);
         
         if ($http->statusCode() !== 200) {
-            return Releases::of(["error" => "cant connected to github.com"]);
+            return Releases::of([
+                "error" => "Error connected to github.com",
+                "status" => $http->statusCode(),
+                "headers" => $http->headers(),
+                "response" => json_decode($http->body(), true)
+            ]);
         }
         
         $array = json_decode($http->body(), true);

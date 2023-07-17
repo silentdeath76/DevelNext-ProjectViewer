@@ -11,9 +11,10 @@
     -fx-background-color: -second-base-color;
 }
 
-
 .context-menu, .menu-item {
     -fx-background-color: -second-base-color;
+    -fx-padding: 8 5;
+    -fx-font-size: 13;
 }
 
 .menu-bar *.check-box {
@@ -32,12 +33,23 @@
 
 .check-box .box {
     -fx-background-color: -base-color;
-    -fx-border-color: derive(-base-color, -15%);
+    -fx-border-color: -border-base-color;
     
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
+    -fx-border-radius: 45;
+    -fx-background-radius: 45;
+}
+
+.check-box:selected .box {
+    -fx-padding: 5;
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
 }
 
 .check-box:selected .mark {
-    -fx-background-color: -text-color;
+    // -fx-shape: "M3.432,6.189 C3.824,5.798 4.455,5.798 4.847,6.189 L6.968,8.31 L13.147,2.131 C13.531,1.747 14.157,1.753 14.548,2.144 L16.67,4.266 C17.06,4.657 17.066,5.284 16.684,5.666 L7.662,14.687 C7.278,15.07 6.651,15.064 6.261,14.673 L1.311,9.723 C0.92,9.333 0.92,8.7 1.311,8.31 L3.432,6.189 Z";
+    -fx-shape: "M58.968,12.734c-2.193-2.423-5.936-2.608-8.359-0.415L24.481,35.975L9.991,22.218c-2.371-2.25-6.117-2.152-8.366,0.218
+        c-2.249,2.37-2.152,6.115,0.218,8.365l18.208,17.283c1.145,1.088,2.609,1.627,4.072,1.627c0.822,0,1.643-0.176,2.406-0.516
+        c0.885-0.232,1.729-0.674,2.455-1.332l29.568-26.771C60.976,18.899,61.161,15.157,58.968,12.734z";
+    
+    -fx-background-color: -icons-color;
 }

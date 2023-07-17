@@ -73,7 +73,7 @@
             <Font name="System Regular" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-createdAt" visible="1"/>
+        <Data cursor="DEFAULT" enabled="1" id="data-createdAt" visible="1"/>
         <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="modifiedAtLabel" layoutX="7" layoutY="168" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Bold Italic" size="12"/>
@@ -85,26 +85,26 @@
             <Font name="System Regular" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-modifiedAt" visible="1"/>
+        <Data cursor="DEFAULT" enabled="1" id="data-modifiedAt" visible="1"/>
         <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="0" id="fileSizeLabel" layoutX="7" layoutY="224" prefHeight="17" prefWidth="192" styleClass="label " text="" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Bold Italic" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-fileSizeLabel" visible="1"/>
+        <Data cursor="DEFAULT" enabled="1" id="data-fileSizeLabel" visible="1"/>
         <LabelEx AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" alignment="CENTER_LEFT" autoSize="false" contentDisplay="LEFT" ellipsisString="..." focusTraversable="false" graphicTextGap="4" id="fileSize" layoutX="7" layoutY="248" prefHeight="17" prefWidth="192" styleClass="label " text="-" textAlignment="LEFT" underline="false" wrapText="false">
           <font>
             <Font name="System Regular" size="12"/>
           </font>
         </LabelEx>
-        <Data cursor="DEFAULT" enabled="1" graphic="" id="data-fileSize" visible="1"/>
+        <Data cursor="DEFAULT" enabled="1" id="data-fileSize" visible="1"/>
       </children>
       <titleFont>
         <Font name="System Bold" size="12"/>
       </titleFont>
     </Panel>
     <Data cursor="DEFAULT" enabled="1" id="data-fileInfo" visible="1"/>
-    <ComboBox editable="false" focusTraversable="true" id="combobox" layoutX="0" layoutY="32" prefHeight="54" prefWidth="256" promptText="" styleClass="combo-box-base combo-box " value="" visibleRowCount="10">
+    <ComboBox AnchorPane.leftAnchor="0" AnchorPane.topAnchor="32" editable="false" focusTraversable="true" id="combobox" layoutX="0" layoutY="32" prefHeight="54" prefWidth="256" promptText="" styleClass="combo-box-base combo-box " value="" visibleRowCount="10">
       <items xmlns:fx="http://javafx.com/fxml">
         <FXCollections fx:factory="observableArrayList"/>
       </items>
