@@ -20,16 +20,13 @@ class ContextMenuEvents
         $zip = $this->form->fsTree->getZipByNode($this->form->tree->focusedItem)->getZipInstance();
         
         if (!$zip->has($innerPath)) {
-            $innerPath = str_replace('/', '\\', $innerPath);
-                
+            $innerPath = str_replace('\\', '/', $innerPath);
+            
             if (!$zip->has($innerPath)) {
-                $innerPath = str_replace('\\', '//', $innerPath);  
-                
-                if (!$zip->has($innerPath)) {
-                   
-                }
+                Logger::warn('Error wrong path');
             }
         }
+
 
         $zip->read($innerPath, function ($stat, Stream $stream) use ($innerPath) {
             $saveDialog = new UXFileChooser();
@@ -44,7 +41,6 @@ class ContextMenuEvents
     public function rename () {
         list($zipFile, $innerPath) = $this->getPath();
         
-        // $zip = new ZipFile();
         $zip = $this->form->fsTree->getZipByNode($this->form->tree->focusedItem)->getZipInstance();
         if (($newName = UXDialog::input(fs::name($innerPath), fs::name($innerPath), $this->form)) != null) {
 
