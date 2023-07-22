@@ -14,6 +14,12 @@ class Dependency
     const DEPENDENCY_ICON_PATH = '.data/img/develnext/bundle/';
     
     
+    private $linkIconWidth = 10;
+    private $linkIconHeight = 10;
+    
+    private $iconWidth = 16;
+    private $iconHeight = 16;
+    
     /**
      * @var ObjectStorage
      */
@@ -50,9 +56,9 @@ class Dependency
             $panelWidth = $this->getPanelWidth($panel);
             
             if ($panel->children->count() > 2) {
-                $panelWidth += 42; // 3 * 2 + 5 * 2 + 16 + 10
+                $panelWidth += 42; // 3 * 2 + 5 * 2 + $this->iconWidth + $this->linkIconWidth
             } else {
-                $panelWidth += 27; // 3 * 2 + 5 + 16
+                $panelWidth += 27; // 3 * 2 + 5 + $this->iconHeight
             }
             
             if (count($sort) === 0) {
@@ -122,29 +128,22 @@ class Dependency
         $panel->spacing = 5;
         
         $panel->add($view = new UXImageView($image));
-        $view->x = 4;
-        $view->y = 4;
-        $view->width = 16;
-        $view->height = 16;
+        $view->width = $this->iconWidth;
+        $view->height = $this->iconHeight;
         
         $panel->add($label = new UXLabelEx($name));
         $label->autoSize = true;
         $label->autoSizeType = 'HORIZONTAL';
-        $label->x = 24;
-        $label->y = 4;
         $panel->classes->add('DependencyItem');
         
         if (($url = $this->getLink($name)) != false) {
-            $width = 10;
-            $height = 10;
-            
             $panel->add($link = new UXHBox);
             $link->classes->addAll(["link", "open-link-icon"]);
             $link->cursor = 'HAND';
-            $link->maxWidth = $width;
-            $link->maxHeight = $height;
-            $link->minWidth = $width;
-            $link->minHeight = $height;
+            $link->maxWidth = $this->linkIconWidth;
+            $link->maxHeight = $this->linkIconHeight;
+            $link->minWidth = $this->linkIconWidth;
+            $link->minHeight = $this->linkIconHeight;
             $tooltip = UXTooltip::of(Localization::get('message.link.openInBrowser'));
             UXTooltip::install($link, $tooltip);
             
@@ -162,9 +161,26 @@ class Dependency
     private function getLink($name) {
         static $json = json_decode(FileStream::of('res://.data/dependencys.json'), true);
         
-        $found = array_column($json, null, 'name');
+        $found = null;
         
-        if (is_null($found[$name])) {
+        // если пает будет перименован то можно будет добавить алиас имени (как пример пакет windows: версия 1.2 - windows, версия 2.2 - Windows)
+        // можно конечно сделать strtolower, но если пакет будет перименован по другому то все равно приедся делать алиасы
+        Flow::of($json)->each(function ($array, $index) use ($name, &$found) {
+            if (is_array($array["name"])) {
+                if (in_array($name, $array["name"], true)) {
+                    $found = [
+                        "name" => $array["name"][0],
+                        "link" => $array["link"]
+                    ];
+                    return false;
+                }
+            } else if ($array["name"] == $name) {
+                $found = $array;
+                return false;
+            }
+        });
+        
+        if (is_null($found)) {
             /** default extensions */
             switch ($name) {
                 case '2D Game':
@@ -186,7 +202,7 @@ class Dependency
             return false;
         }
         
-        return $found[$name]["link"];
+        return $found["link"];
     }
     
     
@@ -215,7 +231,7 @@ class Dependency
             default: return $this->getBundleIcon($bundleName);
         }
         
-        return new UXImage($name, 16, 16);
+        return new UXImage($name);
     }
     
     
