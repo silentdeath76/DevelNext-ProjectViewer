@@ -14,13 +14,13 @@ pre {
 /* desert scheme ported from vim to google prettify */
 pre.prettyprint { display: block; background-color: #313131 !important; }
 pre .nocode { background-color: none; color: #FFF !important; }
-pre .str { color: #ffa0a0 !important; } /* string  - pink */
-pre .kwd { color: #f0e68c !important; font-weight: bold }
-pre .com { color: #87ceeb !important; } /* comment - skyblue */
-pre .typ { color: #98fb98 !important; } /* type    - lightgreen */
-pre .lit { color: #cd5c5c !important; } /* literal - darkred */
-pre .pun { color: #fff    !important; } /* punctuation */
-pre .pln { color: #fff    !important; } /* plaintext */
+pre .str { color: #98c379 !important; } /* string  - pink */
+pre .kwd { color: #c678dd !important; font-weight: bold }
+pre .com { color: #5c6370 !important; } /* comment - skyblue */
+pre .typ { color: #e6c07b !important; } /* type    - lightgreen */
+pre .lit { color: #e6c07b !important; } /* literal - darkred */
+pre .pun { color: #f0f0f0 !important; } /* punctuation */
+pre .pln { color: #f0f0f0 !important; } /* plaintext */
 pre .tag { color: #f0e68c !important; font-weight: bold } /* html/xml tag    - lightyellow */
 pre .atn { color: #bdb76b !important; font-weight: bold } /* attribute name  - khaki */
 pre .atv { color: #ffa0a0 !important; } /* attribute value - pink */
@@ -35,19 +35,6 @@ ol.linenums {
     color: #AEAEAE !important;
 } /* IE indents via margin-left */
 
-@media print {
-  pre.prettyprint { background-color: none }
-  pre .str, code .str { color: #060 !important; }
-  pre .kwd, code .kwd { color: #006 !important; font-weight: bold }
-  pre .com, code .com { color: #600 !important; font-style: italic }
-  pre .typ, code .typ { color: #404 !important; font-weight: bold }
-  pre .lit, code .lit { color: #044 !important; }
-  pre .pun, code .pun { color: #440 !important; }
-  pre .pln, code .pln { color: #000 !important; }
-  pre .tag, code .tag { color: #006; font-weight: bold }
-  pre .atn, code .atn { color: #404 !important; }
-  pre .atv, code .atv { color: #060 !important; }
-}
 
 ul {
     margin: 10px;
