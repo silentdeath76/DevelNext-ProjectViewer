@@ -77,6 +77,8 @@ class MainForm extends AbstractForm
         
         $this->projectDir = $this->ini->get('ProjectDirectory');
         
+        $this->add(new SelectDirectoryCombobox()->getNode());
+        
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
                 $this->filePath->text = $path;
@@ -117,6 +119,7 @@ class MainForm extends AbstractForm
                                 case 'zip':
                                 case 'exe':
                                 case 'jar':
+                                case 'ico': // develnext not support view ico files
                                 case 'ttf':
                                     $output = "Binary";
                             }
@@ -330,90 +333,6 @@ class MainForm extends AbstractForm
         $this->tabPane->tabs[1]->graphic->classes->add("code-tab-icon");
     }
 
-    /**
-     * @event combobox.construct 
-     */
-    function doComboboxConstruct(UXEvent $e = null)
-    {    
-        $arrow = $e->sender->lookup('.arrow');
-        $arrow->rotate = 90;
-        
-        // анимация вращения галочки с последующей сменой на крест
-        $e->sender->observer('showing')->addListener(function ($old, $new) use ($arrow) {
-            $speed = 1000;
-            $minangle = 90;
-            $maxangle = 270;
-            
-            $timer = new UXAnimationTimer(function () use (&$timer, $arrow, $new, $speed, $minangle, $maxangle) {
-                if ($new) {
-                    $arrow->rotate += $speed * UXAnimationTimer::FRAME_INTERVAL;
-                } else {
-                    $arrow->rotate -= $speed * UXAnimationTimer::FRAME_INTERVAL;
-                }
-                
-                if ($arrow->rotate % $maxangle == 0 || $arrow->rotate <= $minangle) {
-                    $timer->stop();
-                }
-                
-                if ($arrow->rotate > $maxangle) $arrow->rotate = $maxangle;
-            });
-            $timer->start();
-        });
-        
-        
-        // если не является списком или пустой, то устанавливаем значение в списко из свойства projectDir
-        if (count($this->ini->get('directoryList')) == 0 && $this->projectDir != null) {
-            $this->ini->set("directoryList", [$this->projectDir]);
-        }
-        
-        // если список является массивом, проходимся циклом по элементам и добавляем их
-        // елси путь совпадает с тем что находится в свойстве projectDir то делаем его активным
-        if (is_array($this->ini->get('directoryList'))) {
-            foreach ($this->ini->get('directoryList') as $key => $path) {
-                $this->combobox->items->add([$path, '.directory-icon']);
-                if ($path == $this->projectDir) {
-                    $this->tree->root->children->clear();
-                    $this->combobox->selectedIndex = $key;
-                    $this->fsTree->setDirectory($path);
-                }
-            }
-        } else {
-            // если список не является массивом, и при этом не пустой
-            // то добовляем это значение и получаем список директорий
-            if ($this->ini->get('directoryList') != null) {
-                $this->combobox->items->add([$this->ini->get('directoryList'), '.directory-icon']);
-                $this->combobox->selectedIndex = 0;
-                $this->fsTree->setDirectory($this->ini->get('directoryList'));
-            }
-        }
-        
-        // событие смены значения
-        $e->sender->observer('value')->addListener(function ($old, $new) {
-            $this->tree->root->children->clear();
-            $this->ini->set('ProjectDirectory', $new[0]);
-            $this->fsTree->setDirectory($new[0]);
-        });
-        
-        // событие обрботки элементов прежде чем они попадут в список
-        $this->combobox->onCellRender(function (UXListCell $cell, $node, bool $selected = null) {
-            $item = new DirectoryItem();
-            $item->setText($node[0]);
-            $item->setImage('directory-icon');
-
-            $cell->text = "";
-            $cell->graphic = $item->getNode();
-        });
-        
-        // событие отрисовки элемента после выбора его из списка 
-        $this->combobox->onButtonRender(function (UXListCell $cell, $node) use () {
-            $item = new SelectedDirectoryItem();
-            $item->setText($node[0], $this->combobox->width);
-            $item->setTitle(Localization::get("ui.directorySwitcher.activeDirectory"));
-            $item->setImage('directory-icon');
-
-            $cell->graphic = $item->getNode();
-        });
-    }
 
     
     public function getHighlightType ($zipPath) {
