@@ -35,11 +35,6 @@ class MainForm extends AbstractForm
      * @var LoggerReporter
      */
     public $logger;
-    
-    /**
-     * @var MainMenuEvents
-     */
-    public $mainMenuEvents;
 
 
     /**
@@ -48,7 +43,6 @@ class MainForm extends AbstractForm
     function doConstruct(UXEvent $e = null)
     {    
         $this->logger = new LoggerReporter();
-        $this->mainMenuEvents = new MainMenuEvents();
 
         try {
             // старый метод сохранения настроек
@@ -77,38 +71,7 @@ class MainForm extends AbstractForm
         
         $this->fsTree = new FSTreeProvider($this->tree->root);
         
-        $bar = new UXMenuBar();
-        $bar->classes->add("menu-bar");
-        $bar->leftAnchor = $bar->rightAnchor = 0;
-        
-        
-        ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.selectDirectory'), [$this->mainMenuEvents, 'selectedFolder']);
-        
-        $themeCategory = ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.theme'));
-        
-        $themeList = [
-            "light" => Localization::get('ui.mainMenu.theme.light'),
-            "dark" => Localization::get('ui.mainMenu.theme.dark'),
-            "nord" => Localization::get('ui.mainMenu.theme.nord')
-        ];
-        
-        foreach ($themeList as $theme => $text) {
-            $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList) {
-                $this->mainMenuEvents->changeTheme($ev, $themeCategory->getTarget(), $themeList);
-            }, $node = new UXCheckbox($text));
-            
-            if ($theme === $this->data('theme')) {
-                $node->selected = true;
-                $node->enabled = false;
-                $this->addStylesheet('.theme/' . $theme. '.theme.fx.css');
-            }
-        }
-        
-        ContextMenuHelper::of($bar)->addCategory(Localization::get('ui.mainMenu.about'), [$this->mainMenuEvents, 'about']);
-        
-        
-        
-        $this->add($bar);
+        $this->add(new MainMenu()->getNode());
         
         $this->infoPanelSwitcher->toFront();
         
@@ -290,43 +253,15 @@ class MainForm extends AbstractForm
     function doTreeClickRight(UXMouseEvent $e = null)
     {    
         if (count($this->tree->selectedIndexes) < 1) return;
-        
-        static $context = new UXContextMenu(),
-               $contextRoot = new UXContextMenu();
-        
-        $this->getConfig()->set(ContextMenuEvents::CONTEXT_MENU_X, $e->x);
-        $this->getConfig()->set(ContextMenuEvents::CONTEXT_MENU_Y, $e->y);
-        
-        if ($context->items->isEmpty()) {
-            $helper = ContextMenuHelper::of($context, $config = new Configuration());
-            
-            $config->set(ContextMenuHelper::GRAPHIC_WIDTH, 16);
-            $config->set(ContextMenuHelper::GRAPHIC_HEIGHT, 16);
-            
-            $helper->addItem(Localization::get('ui.contextMenu.saveAs'), [ContextMenuEvents::getInstance($this), "saveAs"], $helper->makeIcon('res://.data/img/context-menu-icons/save.png'));
-            $helper->addItem(Localization::get('ui.contextMenu.rename'), [ContextMenuEvents::getInstance($this), "rename"], $helper->makeIcon('res://.data/img/context-menu-icons/edit.png'));
-            $helper->addItem(Localization::get('ui.contextMenu.delete'), [ContextMenuEvents::getInstance($this), "delete"], $helper->makeIcon('res://.data/img/context-menu-icons/delete.png'));
-        }
+        static $context = new FileContextMenu(),
+            $contextRoot = new DirectoryContextMenu();
         
         if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
-            // чтобы контексттоное меню не появлялось на директориях в архиве
-            if ($this->tree->focusedItem->children->count() == 0) {
-                $context->showByNode($e->sender, $e->x, $e->y);
-            }
-            
+            $context->showByNode($e);
             return;
         }
         
-        if ($contextRoot->items->isEmpty()) {
-            $helper = ContextMenuHelper::of($contextRoot, $config = new Configuration());
-            
-            $config->set(ContextMenuHelper::GRAPHIC_WIDTH, 16);
-            $config->set(ContextMenuHelper::GRAPHIC_HEIGHT, 16);
-            
-            $helper->addItem(Localization::get('ui.contextMenu.showInExplorer'), [ContextMenuEvents::getInstance($this), 'showInExplorer'], $helper->makeIcon('res://.data/img/context-menu-icons/open-folder.png'));
-        }
-        
-        $contextRoot->showByNode($e->sender, $e->x, $e->y);
+        $contextRoot->showByNode($e);
     }
     
 
