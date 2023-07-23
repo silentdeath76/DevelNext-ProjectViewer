@@ -256,8 +256,11 @@ class MainForm extends AbstractForm
         static $context = new FileContextMenu(),
             $contextRoot = new DirectoryContextMenu();
         
-        if (($fs = $this->fsTree->getFileByNode($this->tree->focusedItem)) === false) {
-            $context->showByNode($e);
+        if ($this->fsTree->getFileByNode($this->tree->focusedItem) === false) {
+            // чтобы контексттоное меню не появлялось на директориях в архиве
+            if ($this->tree->focusedItem->children->count() == 0) {
+                $context->showByNode($e);
+            }
             return;
         }
         
@@ -340,6 +343,7 @@ class MainForm extends AbstractForm
             $speed = 1000;
             $minangle = 90;
             $maxangle = 270;
+            
             $timer = new UXAnimationTimer(function () use (&$timer, $arrow, $new, $speed, $minangle, $maxangle) {
                 if ($new) {
                     $arrow->rotate += $speed * UXAnimationTimer::FRAME_INTERVAL;
