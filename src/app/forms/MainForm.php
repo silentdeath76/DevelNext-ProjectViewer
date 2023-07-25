@@ -119,7 +119,6 @@ class MainForm extends AbstractForm
                                 case 'zip':
                                 case 'exe':
                                 case 'jar':
-                                case 'ico': // develnext not support view ico files
                                 case 'ttf':
                                     $output = "Binary";
                             }

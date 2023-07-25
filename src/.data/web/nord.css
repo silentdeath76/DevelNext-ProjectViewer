@@ -21,10 +21,10 @@ pre .typ { color: #00f769 !important; } /* type    - lightgreen */
 pre .lit { color: #b45bcf !important; } /* literal - darkred */
 pre .pun { color: #fff    !important; } /* punctuation */
 pre .pln { color: #fff    !important; } /* plaintext */
-pre .tag { color: #f0e68c !important; font-weight: bold } /* html/xml tag    - lightyellow */
-pre .atn { color: #bdb76b !important; font-weight: bold } /* attribute name  - khaki */
-pre .atv { color: #ffa0a0 !important; } /* attribute value - pink */
-pre .dec { color: #98fb98 !important; } /* decimal         - lightgreen */
+pre .tag { color: #b45bcf !important; font-weight: bold } /* html/xml tag    - lightyellow */
+pre .atn { color: #626483 !important; font-weight: bold } /* attribute name  - khaki */
+pre .atv { color: #ebff87 !important; } /* attribute value - pink */
+pre .dec { color: #626483 !important; } /* decimal         - lightgreen */
 
 /* Specify class=linenums on a pre to get line numbering */
 ol.linenums {
