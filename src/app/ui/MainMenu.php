@@ -27,7 +27,7 @@ class MainMenu extends AbstractNode
         ];
         
         foreach ($themeList as $theme => $text) {
-            $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList) {
+            $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList, $mainMenuEvents) {
                 $mainMenuEvents->changeTheme($ev, $themeCategory->getTarget(), $themeList);
             }, $node = new UXCheckbox($text));
             

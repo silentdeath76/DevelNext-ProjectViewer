@@ -11,9 +11,6 @@ use std, gui, framework, app;
 class MainForm extends AbstractForm
 {
 
-    const REGISTRY_PATH = 'HKCU\SOFTWARE\ProjectView';
-    
-    
     /**
      * @var FSTreeProvider
      */
@@ -44,16 +41,6 @@ class MainForm extends AbstractForm
     {    
         $this->logger = new LoggerReporter();
 
-        try {
-            // старый метод сохранения настроек
-            $this->reg = Registry::of(self::REGISTRY_PATH);
-            
-            if (($path = $this->reg->read('ProjectDirectory')) !== null) {
-                $this->ini->set("ProjectDirectory", $path);
-                $this->reg->clear(); // удаляем старые записи в реестре т.к. теперь сохраняем настрйоки в ini
-            }
-        } catch (Exception $ignore) {}
-        
         $this->firstRunReport();
         $this->formSizeSaver($this->ini);
         
@@ -144,10 +131,12 @@ class MainForm extends AbstractForm
         
         $this->showCodeInBrowser('', 'html');
         
-        $this->centerOnScreen();
+        // фикс мигания экрана если окно развернуто на весь екран и выбрана не светлая тема
+        waitAsync(100, function () {
+            $this->opacity = 1;
+            $this->centerOnScreen();
+        });
         
-        $this->opacity = 1;
-        $this->show();
     }
     
     

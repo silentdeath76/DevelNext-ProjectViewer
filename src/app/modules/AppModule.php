@@ -10,6 +10,7 @@ use std, gui, framework, app;
 class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 1000;
+
     const APP_VERSION = '1.1.7';
     const APP_TITLE = 'DevelNext ProjectView';
     
@@ -17,11 +18,6 @@ class AppModule extends AbstractModule
 
     const WINDOW_MIN_WIDTH = 900;
     const WINDOW_MIN_HEIGHT = 450;
-
-    /**
-     * @var Thread
-     */
-    private $executer;
 
     /**
      * @var String
@@ -57,7 +53,7 @@ class AppModule extends AbstractModule
 
         $form->show();
 
-        $this->executer = new Thread(function () use ($form) {
+        $thread = new Thread(function () use ($form) {
             $file = $this->temp . File::DIRECTORY_SEPARATOR . fs::name($GLOBALS["argv"][0]);
 
             if (fs::exists($file)) {
@@ -73,13 +69,14 @@ class AppModule extends AbstractModule
             $this->update();
         });
 
-        $this->executer->setDaemon(true);
-        $this->executer->start();
+        $thread->setDaemon(true);
+        $thread->start();
     }
 
 
 
-    public function update () {
+    public function update (): void
+    {
         Logger::info('Checking updates...');
 
         try {
@@ -116,13 +113,18 @@ class AppModule extends AbstractModule
                 $selfUpdate->download($tempFile);
 
                 uiLater(function () use ($form, $response, $tempFile) {
-                    $this->showUpdateNotify(Localization::get('ui.update.found.message') . '   ', Localization::get('ui.update.button.update'), $form->infoPanelSwitcher, function () use ($response, $tempFile) {
-                        $th = new Thread(function () use ($response, $tempFile) {
-                            $this->updateAndRun($tempFile);
-                        });
-                        $th->setDaemon(true);
-                        $th->start();
-                    });
+                    $this->showUpdateNotify(
+                        Localization::get('ui.update.found.message') . '   ',
+                        Localization::get('ui.update.button.update'),
+                        $form->infoPanelSwitcher,
+                        function () use ($response, $tempFile) {
+                            $thread = new Thread(function () use ($response, $tempFile) {
+                                $this->updateAndRun($tempFile);
+                            });
+                            $thread->setDaemon(true);
+                            $thread->start();
+                        }
+                    );
 
                     $form->tabPane->toBack();
                 });
@@ -136,11 +138,11 @@ class AppModule extends AbstractModule
         } finally {
             unset($selfUpdate);
             unset($response);
-            unset($this->executer);
         }
     }
 
-    private function moveFile ($from, $to) {
+    private function moveFile ($from, $to): void
+    {
         fs::copy($from, $to);
 
         if (File::of($to)->exists()) {
@@ -148,7 +150,8 @@ class AppModule extends AbstractModule
         }
     }
 
-    public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
+    public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0): void
+    {
         static $notify;
 
         if ($notify == null) {

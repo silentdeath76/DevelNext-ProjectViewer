@@ -62,8 +62,8 @@ class MainModule extends AbstractModule
         
         
         $this->form("MainForm")->observer("maximized")->addListener(function ($o, $n) {
-            // закгрузка старых размеров формы если она была равзернута на весь экран
-            
+            // закгрузка старых размеров формы если она была раpвернута на весь экран
+
             if ($n === true) {
                 $this->needLoad = true;
                 $this->formWidth = $this->ini->get('width');
