@@ -44,14 +44,8 @@ class MainForm extends AbstractForm
         $this->firstRunReport();
         $this->formSizeSaver($this->ini);
         
-        if ($this->ini->get("maximized") == 1) {
-            $this->maximized = true;
-        } else {
-            $this->width = $this->ini->get("width");
-            $this->height = $this->ini->get("height");
-        }
-        
-        // ----------------------------------------
+        $this->width = $this->ini->get("width");
+        $this->height = $this->ini->get("height");
         
         $this->tree->root = new UXTreeItem();
         $this->tree->rootVisible = false;
@@ -133,6 +127,10 @@ class MainForm extends AbstractForm
         
         // фикс мигания экрана если окно развернуто на весь екран и выбрана не светлая тема
         waitAsync(100, function () {
+            if ($this->ini->get("maximized") == 1) {
+                $this->maximized = true;
+            }
+            
             $this->opacity = 1;
             $this->centerOnScreen();
         });
