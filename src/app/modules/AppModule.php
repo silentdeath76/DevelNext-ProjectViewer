@@ -12,8 +12,7 @@ class AppModule extends AbstractModule
     const SELF_UPDATE_DELAY = 1000;
     const APP_VERSION = '1.1.7';
     const APP_TITLE = 'DevelNext ProjectView';
-
-    const UPDATE_TEMP_PATH = '\AppData\Local\Temp';
+    
     const FOUND_NEW_VERSION = -1;
 
     const WINDOW_MIN_WIDTH = 900;
@@ -24,6 +23,9 @@ class AppModule extends AbstractModule
      */
     private $executer;
 
+    /**
+     * @var String
+     */
     private $temp;
 
     /**
@@ -31,8 +33,9 @@ class AppModule extends AbstractModule
      */
     function doConstruct(ScriptEvent $e = null)
     {
+        $this->temp = System::getProperty('java.io.tmpdir');
+        
         Localization::load('res://.data/local/ru.txt');
-        $this->temp = MainModule::replaceSeparator(System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
 
         // call garbage collector every 30s
         Timer::every(30000, function () {System::gc(); });
@@ -100,15 +103,15 @@ class AppModule extends AbstractModule
 
                 // не уверен что небудет проблем с правами и тем что это jar файл по-этому так
                 // хз почему, но на линуксе открытие ссылки в браузере вовсе вешает программу
-                if (str::endsWith($os, 'inux')) {
-                    /* uiLater(function () use ($form) {
+                /* if (str::endsWith($os, 'inux')) {
+                    uiLater(function () use ($form) {
                         $this->showUpdateNotify(Localization::get('ui.update.found.message') . '   ', Localization::get('ui.update.button.update'), $form->infoPanelSwitcher, function ()  {
                             browse('https://github.com/silentdeath76/DevelNext-ProjectViewer/releases/latest/');
                         });
-                    }); */
+                    });
                     
                     return;
-                }
+                } */
 
                 $selfUpdate->download($tempFile);
 
@@ -172,6 +175,9 @@ class AppModule extends AbstractModule
             }
 
             app()->shutdown();
+        } else if (str::endsWith($os, 'inux')) {
+            Logger::error('Unnsupported operation');
+            Logger::info(sprintf('Open path "%s" and copy file "%s.exe" manually', $this->temp, fs::nameNoExt($GLOBALS["argv"][0])));
         }
     }
 
