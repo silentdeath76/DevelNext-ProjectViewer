@@ -65,7 +65,11 @@ class UpdateNotify extends AbstractNode
         $this->container->toBack();
 
         $toSize = UXFont::getDefault()->calculateTextWidth($text) + UXFont::getDefault()->calculateTextWidth($buttonText) + 30 + $this->container->paddingRight + $customPadding;
-        
+
+        $this->applyAnimation($toSize, $target);
+    }
+
+    private function applyAnimation ($toSize, $target) {
         $show = new UXAnimationTimer(function () use (&$show, $toSize, $target) {
             $step = 20;
             $this->container->maxWidth += $step;

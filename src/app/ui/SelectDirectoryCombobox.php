@@ -28,9 +28,9 @@ class SelectDirectoryCombobox extends AbstractNode
         
         // событие смены значения
         $this->container->observer('value')->addListener(function ($old, $new) {
-            app()->form("MainForm")->tree->root->children->clear();
-            app()->form("MainForm")->ini->set('ProjectDirectory', $new[0]);
-            app()->form("MainForm")->fsTree->setDirectory($new[0]);
+            $this->getForm()->tree->root->children->clear();
+            $this->getForm()->ini->set('ProjectDirectory', $new[0]);
+            $this->getForm()->fsTree->setDirectory($new[0]);
         });
         
         // событие обрботки элементов прежде чем они попадут в список
@@ -57,28 +57,28 @@ class SelectDirectoryCombobox extends AbstractNode
     
     private function configurateConfig () {
         // если не является списком или пустой, то устанавливаем значение в списко из свойства projectDir
-        if (count(app()->form("MainForm")->ini->get('directoryList')) == 0 && app()->form("MainForm")->projectDir != null) {
-            app()->form("MainForm")->ini->set("directoryList", [app()->form("MainForm")->projectDir]);
+        if (count($this->getForm()->ini->get('directoryList')) == 0 && $this->getForm()->projectDir != null) {
+            $this->getForm()->ini->set("directoryList", [$this->getForm()->projectDir]);
         }
         
         // если список является массивом, проходимся циклом по элементам и добавляем их
         // елси путь совпадает с тем что находится в свойстве projectDir то делаем его активным
-        if (is_array(app()->form("MainForm")->ini->get('directoryList'))) {
-            foreach (app()->form("MainForm")->ini->get('directoryList') as $key => $path) {
+        if (is_array($this->getForm()->ini->get('directoryList'))) {
+            foreach ($this->getForm()->ini->get('directoryList') as $key => $path) {
                 $this->container->items->add([$path, '.directory-icon']);
-                if ($path == app()->form("MainForm")->projectDir) {
-                    app()->form("MainForm")->tree->root->children->clear();
+                if ($path == $this->getForm()->projectDir) {
+                    $this->getForm()->tree->root->children->clear();
                     $this->container->selectedIndex = $key;
-                    app()->form("MainForm")->fsTree->setDirectory($path);
+                    $this->getForm()->fsTree->setDirectory($path);
                 }
             }
         } else {
             // если список не является массивом, и при этом не пустой
             // то добовляем это значение и получаем список директорий
-            if (app()->form("MainForm")->ini->get('directoryList') != null) {
-                $this->container->items->add([app()->form("MainForm")->ini->get('directoryList'), '.directory-icon']);
+            if ($this->getForm()->ini->get('directoryList') != null) {
+                $this->container->items->add([$this->getForm()->ini->get('directoryList'), '.directory-icon']);
                 $this->container->selectedIndex = 0;
-                app()->form("MainForm")->fsTree->setDirectory(app()->form("MainForm")->ini->get('directoryList'));
+                $this->getForm()->fsTree->setDirectory($this->getForm()->ini->get('directoryList'));
             }
         }
     }
@@ -110,5 +110,9 @@ class SelectDirectoryCombobox extends AbstractNode
             
             $timer->start();
         });
+    }
+
+    private function getForm () {
+        return app()->form("MainForm");
     }
 }

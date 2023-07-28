@@ -12,11 +12,11 @@ class MainMenu extends AbstractNode
     protected $container;
     
     protected function make () {
-        $this->mainMenuEvents = new MainMenuEvents();
+        $mainMenuEvents = new MainMenuEvents();
         $this->container = new UXMenuBar();
         $this->container->leftAnchor = $this->container->rightAnchor = 0;
         
-        ContextMenuHelper::of($this->container)->addCategory(Localization::get('ui.mainMenu.selectDirectory'), [$this->mainMenuEvents, 'selectedFolder']);
+        ContextMenuHelper::of($this->container)->addCategory(Localization::get('ui.mainMenu.selectDirectory'), [$mainMenuEvents, 'selectedFolder']);
         
         $themeCategory = ContextMenuHelper::of($this->container)->addCategory(Localization::get('ui.mainMenu.theme'));
         
@@ -28,7 +28,7 @@ class MainMenu extends AbstractNode
         
         foreach ($themeList as $theme => $text) {
             $themeCategory->addItem(null, function ($ev) use ($themeCategory, $themeList) {
-                $this->mainMenuEvents->changeTheme($ev, $themeCategory->getTarget(), $themeList);
+                $mainMenuEvents->changeTheme($ev, $themeCategory->getTarget(), $themeList);
             }, $node = new UXCheckbox($text));
             
             if ($theme === app()->form("MainForm")->data('theme')) {
@@ -38,6 +38,6 @@ class MainMenu extends AbstractNode
             }
         }
         
-        ContextMenuHelper::of($this->container)->addCategory(Localization::get('ui.mainMenu.about'), [$this->mainMenuEvents, 'about']);
+        ContextMenuHelper::of($this->container)->addCategory(Localization::get('ui.mainMenu.about'), [$mainMenuEvents, 'about']);
     }
 }

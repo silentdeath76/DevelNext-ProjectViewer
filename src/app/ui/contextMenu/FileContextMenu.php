@@ -7,6 +7,7 @@ use gui;
 
 class FileContextMenu extends AbstractNode
 {
+    protected $iconPath = 'res://.data/img/context-menu-icons/';
     /**
      * @var UXContextMenu
      */
@@ -31,15 +32,15 @@ class FileContextMenu extends AbstractNode
     protected function setItems () {
         $this->helper->addItem(Localization::get('ui.contextMenu.saveAs'), 
             [ContextMenuEvents::getInstance(app()->form("MainForm")), "saveAs"],
-            $this->helper->makeIcon('res://.data/img/context-menu-icons/save.png')
+            $this->helper->makeIcon($this->iconPath . 'save.png')
         );
         $this->helper->addItem(Localization::get('ui.contextMenu.rename'),
             [ContextMenuEvents::getInstance(app()->form("MainForm")), "rename"],
-            $this->helper->makeIcon('res://.data/img/context-menu-icons/edit.png')
+            $this->helper->makeIcon($this->iconPath . 'edit.png')
         );
         $this->helper->addItem(Localization::get('ui.contextMenu.delete'),
             [ContextMenuEvents::getInstance(app()->form("MainForm")), "delete"],
-            $this->helper->makeIcon('res://.data/img/context-menu-icons/delete.png')
+            $this->helper->makeIcon($this->iconPath . 'delete.png')
         );
     }
 }
