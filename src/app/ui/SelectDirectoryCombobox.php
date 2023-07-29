@@ -16,7 +16,9 @@ class SelectDirectoryCombobox extends AbstractNode
         $this->container = new UXComboBox();
         $this->container->width = 256;
         $this->container->height = 54;
-        $this->container->y = 32;
+        $this->container->leftAnchor = 0;
+        $this->container->rightAnchor = 0;
+        $this->container->y = 8;
         $this->container->id = 'combobox';
         
         $this->configurateConfig();

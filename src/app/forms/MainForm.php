@@ -58,7 +58,7 @@ class MainForm extends AbstractForm
         
         $this->projectDir = $this->ini->get('ProjectDirectory');
         
-        $this->add(new SelectDirectoryCombobox()->getNode());
+        $this->leftCotainer->content->add(new SelectDirectoryCombobox()->getNode());
         
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
@@ -120,6 +120,20 @@ class MainForm extends AbstractForm
             $this->errorAlert($ex);
         }
         
+        // splitter
+        $this->split = new UXSplitPane([$this->leftCotainer, $this->rightContainer]);
+        $this->split->position = [0, 0];
+        $this->split->topAnchor = 25;
+        $this->split->bottomAnchor = true;
+        $this->split->rightAnchor = true;
+        $this->split->leftAnchor = true;
+
+        $this->split->setDividerPosition(0, $this->ini->get("splitter") ?? 0.25);
+        $this->add($this->split);
+        
+        UXSplitPane::setResizeWithParent($this->leftCotainer, false);
+        // end spliter
+        
         // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 0.5 скунду чтобы не мелькало
         timer::after(500, function () { $this->browser->show(); });
         
@@ -142,7 +156,7 @@ class MainForm extends AbstractForm
      * @event tree.click-Left 
      */
     function doTreeClickLeft(UXMouseEvent $e = null)
-    {    
+    {
         if (count($this->tree->selectedIndexes) < 1) return;
         
         // чтобы не пререотрисовывать по новой данные если кликнули второй раз по элементу
@@ -228,19 +242,19 @@ class MainForm extends AbstractForm
             $e->sender->engine->executeScript(Stream::of('res://.data/web/run_prettify.js'));
             
             $theme = $this->data('theme') ?: 'light';
-
+        
             $e->sender->engine->userStyleSheetLocation = new ResourceStream('/.data/web/' . $theme . '.css')->toExternalForm();
         } catch (Exception $ex) {
             $this->errorAlert($ex, true);
         }
     }
-
-
+    
+    
     /**
      * @event tree.click-Right 
      */
     function doTreeClickRight(UXMouseEvent $e = null)
-    {    
+    {
         if (count($this->tree->selectedIndexes) < 1) return;
         static $context = new FileContextMenu(),
             $contextRoot = new DirectoryContextMenu();
@@ -255,13 +269,13 @@ class MainForm extends AbstractForm
         
         $contextRoot->showByNode($e);
     }
-    
+
 
     /**
      * @event infoPanelSwitcher.click-Left 
      */
     function doInfoPanelSwitcherClickLeft(UXMouseEvent $e = null)
-    {    
+    {
         $padding = 8;
         
         if ($this->infoPanelSwitcher->selected) {
@@ -275,12 +289,12 @@ class MainForm extends AbstractForm
         }
     }
     
-
+    
     /**
      * @event infoPanelSwitcher.construct 
      */
     function doInfoPanelSwitcherConstruct(UXEvent $e = null)
-    {    
+    {
         // remove empty hint
         UXTooltip::uninstall($e->sender, $e->sender->tooltip);
         try {
@@ -291,12 +305,12 @@ class MainForm extends AbstractForm
         } catch (Exception $ignore) {}
     }
     
-
+    
     /**
      * @event fileInfo.construct 
      */
     function doFileInfoConstruct(UXEvent $e = null)
-    {    
+    {
         $e->sender->lookup('.panel-title')->topAnchor = -14;
         $this->fileInfo->title = Localization::get('ui.sidepanel.fielInfo.title');
         $this->createdAtLabel->text = Localization::get('ui.sidepanel.fielInfo.createdAt');
@@ -304,12 +318,12 @@ class MainForm extends AbstractForm
         $this->fileSizeLabel->text = Localization::get('ui.sidepanel.fielInfo.fileSize');
     }
     
-
+    
     /**
      * @event tabPane.construct 
      */
     function doTabPaneConstruct(UXEvent $e = null)
-    {    
+    {
         $this->tabPane->tabs[0]->text = Localization::get('ui.tab.viewCode');
         $this->tabPane->tabs[0]->graphic = new UXHBox();
         $this->tabPane->tabs[0]->graphic->classes->add("view-tab-icon");
@@ -319,7 +333,7 @@ class MainForm extends AbstractForm
         $this->tabPane->tabs[1]->graphic->classes->add("code-tab-icon");
     }
 
-
+    
     
     public function getHighlightType ($zipPath) {
         switch ($zipPath) {
