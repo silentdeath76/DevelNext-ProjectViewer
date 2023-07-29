@@ -61,6 +61,9 @@
 
 .split-pane .split-pane-divider {
     -fx-background-color: -base-color;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: -border-base-color;
+    -fx-border-insets: 61 0;
 }
 
 .split-pane .split-pane-divider * {
