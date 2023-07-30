@@ -196,14 +196,19 @@ class FSTreeProvider implements IEvents
     }
     
     protected function applyIcon ($item, $path) {
-
+    
         if (!($item instanceof UXTreeItem || $item instanceof UXLabel)) {
             throw new IllegalArgumentException('$item must be instance UXTreeItem or UXLabel');
         }
         
         if ($path !== FSTreeProvider::EMPTY_PATH_ELEMENT) {
             if ($this->imageCache->exists(fs::ext($path))) {
-                $item->graphic = new UXImageView($this->imageCache->get(fs::ext($path)));
+                $item->graphic = new UXImageArea($this->imageCache->get(fs::ext($path)));
+                $item->graphic->width = 20;
+                $item->graphic->height = 24;
+                $item->graphic->centered = true;
+                $item->graphic->proportional = true;
+                
                 if (fs::ext($path) == 'php') {
                     $this->applyColor($item->graphic, [0.17, 0.57, 0.09, 0.9]);
                 } else if (fs::ext($path) == 'fxml') {
@@ -261,8 +266,8 @@ class FSTreeProvider implements IEvents
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
                     $item->graphic = new UXHBox();
-                    $item->graphic->minWidth = 16;
-                    $item->graphic->minHeight = 12;
+                    $item->graphic->minWidth = 20;
+                    $item->graphic->minHeight = 14;
                     $item->graphic->classes->add("zip-icon");
 
                     return;
@@ -275,14 +280,19 @@ class FSTreeProvider implements IEvents
             }
         } else {
             $item->graphic = new UXHBox();
-            $item->graphic->minWidth = 16;
-            $item->graphic->minHeight = 12;
+            $item->graphic->minWidth = 20;
+            $item->graphic->minHeight = 14;
             $item->graphic->classes->add("folder-icon");
 
             return;
         }
         
-        $item->graphic = new UXImageView(new UXImage($file, 20, 20));
+        // dublicate code
+        $item->graphic = new UXImageArea(new UXImage($file, 28, 24));
+        $item->graphic->width = 20;
+        $item->graphic->height = 24;
+        $item->graphic->centered = true;
+        $item->graphic->proportional = true;
         
         // dublicate code
         if (fs::ext($path) == 'php') {

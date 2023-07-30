@@ -17,6 +17,11 @@ class MainForm extends AbstractForm
     public $fsTree;
     
     /**
+     * @var UXSplitPane
+     */
+    private $split;
+    
+    /**
      * Путь до директории с проектами
      */
     public $projectDir;
@@ -128,7 +133,6 @@ class MainForm extends AbstractForm
         $this->split->rightAnchor = true;
         $this->split->leftAnchor = true;
 
-        $this->split->setDividerPosition(0, $this->ini->get("splitter") ?? 0.25);
         $this->add($this->split);
         
         UXSplitPane::setResizeWithParent($this->leftCotainer, false);
@@ -144,6 +148,8 @@ class MainForm extends AbstractForm
             if ($this->ini->get("maximized") == 1) {
                 $this->maximized = true;
             }
+            
+            $this->split->setDividerPosition(0, $this->ini->get("splitter") ?: 0.25);
             
             $this->opacity = 1;
             $this->centerOnScreen();
@@ -331,6 +337,14 @@ class MainForm extends AbstractForm
         $this->tabPane->tabs[1]->text = Localization::get('ui.tab.viewView');
         $this->tabPane->tabs[1]->graphic = new UXHBox();
         $this->tabPane->tabs[1]->graphic->classes->add("code-tab-icon");
+    }
+
+    /**
+     * @event close 
+     */
+    function doClose(UXWindowEvent $e = null)
+    {    
+        $this->ini->set("splitter", $this->split->dividerPositions);
     }
 
     
