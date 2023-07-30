@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?import javafx.scene.*?><?import javafx.collections.*?><?import javafx.scene.layout.*?><?import javafx.scene.control.*?><?import javafx.scene.text.*?><?import javafx.scene.image.*?><?import javafx.scene.shape.*?><?import javafx.scene.paint.*?><?import javafx.scene.web.*?><?import javafx.geometry.*?><?import java.lang.*?><?import org.develnext.jphp.ext.javafx.classes.data.*?><?import org.develnext.jphp.ext.javafx.support.*?><?import org.develnext.jphp.ext.javafx.support.control.*?><?import org.develnext.jphp.ext.game.support.*?><AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" focusTraversable="false" id="" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="488" prefWidth="904" styleClass="">
   <children>
-    <ScrollPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="32" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="leftCotainer" layoutX="0" layoutY="32" prefHeight="456" prefWidth="256" styleClass="scroll-pane " vbarPolicy="NEVER" vvalue="0">
-      <content>
-        <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="456" prefWidth="256" styleClass="">
-          <children>
-            <TreeView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="64" editable="false" fixedCellSize="-1" focusTraversable="true" id="tree" layoutX="0" layoutY="64" prefHeight="392" prefWidth="256" showRoot="true" styleClass="tree-view "/>
-            <Data cursor="DEFAULT" enabled="1" id="data-tree" visible="1"/>
-          </children>
-        </AnchorPane>
-      </content>
-    </ScrollPane>
-    <Data cursor="DEFAULT" enabled="1" id="data-leftCotainer" visible="1"/>
     <ScrollPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="256" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="32" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="rightContainer" layoutX="256" layoutY="32" prefHeight="456" prefWidth="648" styleClass="scroll-pane " vbarPolicy="NEVER" vvalue="0">
       <content>
         <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="456" prefWidth="648" styleClass="">
           <children>
-            <TabPaneEx AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="8" AnchorPane.topAnchor="8" focusTraversable="true" id="tabPane" layoutX="0" layoutY="8" prefHeight="448" prefWidth="640" styleClass="tab-pane " tabClosingPolicy="UNAVAILABLE">
+            <TabPaneEx AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="8" focusTraversable="true" id="tabPane" layoutX="0" layoutY="8" prefHeight="448" prefWidth="648" styleClass="tab-pane " tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Исходный код">
                   <content>
-                    <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="426" prefWidth="639" styleClass="">
+                    <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="416" prefWidth="647" styleClass="">
                       <children>
                         <WebView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="-1" AnchorPane.topAnchor="0" focusTraversable="true" id="browser" layoutX="0" layoutY="0" prefHeight="408" prefWidth="640"/>
                         <Data contextMenuEnabled="" cursor="DEFAULT" enabled="1" id="data-browser" visible=""/>
@@ -30,9 +19,9 @@
                 </Tab>
                 <Tab text="Внешний вид">
                   <content>
-                    <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="439" prefWidth="640" styleClass="">
+                    <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="439" prefWidth="647" styleClass="">
                       <children>
-                        <ImageViewEx AnchorPane.bottomAnchor="2" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" autoSize="false" centered="true" focusTraversable="false" height="437" id="image" layoutX="0" layoutY="0" mosaic="false" mosaicGap="0" proportional="true" stretch="true" styleClass="" textFill="#000000" width="640">
+                        <ImageViewEx AnchorPane.bottomAnchor="2" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" autoSize="false" centered="true" focusTraversable="false" height="437" id="image" layoutX="0" layoutY="0" mosaic="false" mosaicGap="0" proportional="true" stretch="true" styleClass="" textFill="#000000" width="647">
                           <font>
                             <Font name="System Regular" size="12"/>
                           </font>
@@ -121,6 +110,17 @@
         </AnchorPane>
       </content>
     </ScrollPane>
+    <ScrollPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="32" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="leftCotainer" layoutX="0" layoutY="32" prefHeight="456" prefWidth="256" styleClass="scroll-pane " vbarPolicy="NEVER" vvalue="0">
+      <content>
+        <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="456" prefWidth="256" styleClass="">
+          <children>
+            <TreeView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="64" editable="false" fixedCellSize="-1" focusTraversable="true" id="tree" layoutX="0" layoutY="64" prefHeight="392" prefWidth="256" showRoot="true" styleClass="tree-view "/>
+            <Data cursor="DEFAULT" enabled="1" id="data-tree" visible="1"/>
+          </children>
+        </AnchorPane>
+      </content>
+    </ScrollPane>
+    <Data cursor="DEFAULT" enabled="1" id="data-leftCotainer" visible="1"/>
     <Data cursor="DEFAULT" enabled="1" id="data-rightContainer" visible="1"/>
   </children>
 </AnchorPane>
