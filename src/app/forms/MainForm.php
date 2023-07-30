@@ -2,7 +2,6 @@
 namespace app\forms;
 
 use php\gui\UXTitledPaneWrapper;
-use bundle\windows\Registry;
 use Exception;
 use php\compress\ZipFile;
 use std, gui, framework, app;
@@ -27,11 +26,6 @@ class MainForm extends AbstractForm
     public $projectDir;
     
     private $lastFileSelected;
-    
-    /**
-     * @var Registry
-     */
-    public $reg;
     
     /**
      * @var LoggerReporter

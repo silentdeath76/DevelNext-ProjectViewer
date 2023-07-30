@@ -248,19 +248,18 @@ class Dependency
             return $this->imageCache->get($bundleName);
         }
         
-        $extensions = [];
         $path = System::getProperty('user.home') . self::DEFAULT_DEPENDENCY_PATH;
         
         foreach (fs::scan($path, ["extensions" => ["jar"], "namePattern" => '^dn-(.*?)\.jar$']) as $jar) {
             if (str::contains($jar, $bundleName)) {
                 $zip = new ZipFile($jar);
-                $image = "";
+                $image = null;
             
                 foreach ($zip->statAll() as $key => $stat) {
                 
                     if (str::startsWith($key, self::DEPENDENCY_ICON_PATH . $bundlename)) {
                         if ($stat["crc"] != 0){
-                            $zip->read($stat["name"], function ($stat, MiscStream $stream) use ($lab, &$image) {
+                            $zip->read($stat["name"], function ($stat, MiscStream $stream) use (&$image) {
                                 $image = new UXImage($stream);
                             });
                             
