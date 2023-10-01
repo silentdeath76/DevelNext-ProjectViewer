@@ -34,6 +34,7 @@ class IconFileSelected extends AbstractNode
         $this->label = new UXLabelEx("");
         $this->label->autoSize = true;
         $this->label->font->size = 18;
+        $this->label->style = '-fx-font-size: 18;';
         $this->label->ellipsisString = "";
         
         $this->svg->add($this->label);
