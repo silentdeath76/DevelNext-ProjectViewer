@@ -9,7 +9,7 @@ use std, gui, framework, app;
 
 class AppModule extends AbstractModule
 {
-    const SELF_UPDATE_DELAY = 1000;
+    const SELF_UPDATE_DELAY = 10000;
 
     const APP_VERSION = '1.1.7';
     const APP_TITLE = 'DevelNext ProjectView';
@@ -52,6 +52,7 @@ class AppModule extends AbstractModule
         $form->data('theme', $theme);
 
         $form->show();
+
 
         $thread = new Thread(function () use ($form) {
             $file = $this->temp . File::DIRECTORY_SEPARATOR . fs::name($GLOBALS["argv"][0]);
@@ -110,13 +111,13 @@ class AppModule extends AbstractModule
                     return;
                 } */
 
-                $selfUpdate->download($tempFile);
+                // $selfUpdate->download($tempFile);
 
                 uiLater(function () use ($form, $response, $tempFile) {
                     $this->showUpdateNotify(
                         Localization::get('ui.update.found.message') . '   ',
                         Localization::get('ui.update.button.update'),
-                        $form->infoPanelSwitcher,
+                        $form,
                         function () use ($response, $tempFile) {
                             $thread = new Thread(function () use ($response, $tempFile) {
                                 $this->updateAndRun($tempFile);
@@ -150,16 +151,18 @@ class AppModule extends AbstractModule
         }
     }
 
-    public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0): void
+    public function showUpdateNotify ($text, $buttonText, $target, callable $callback, $customPadding = 0): void
     {
         static $notify;
-
+        
         if ($notify == null) {
             $notify = new UpdateNotify();
-            $target->parent->add($notify->getNode());
+            $notify->getNode()->topAnchor = 29;
+            $notify->getNode()->rightAnchor = 10;
+            $target->add($notify->getNode());
         }
 
-        $notify->show($text, $buttonText, $target, $callback, $customPadding);
+        $notify->show($text, $buttonText, $callback, $customPadding);
     }
 
     /**

@@ -27,8 +27,7 @@ class UpdateNotify extends AbstractNode
         $this->container->spacing = 5;
         $this->container->padding = 5;
         $this->container->alignment = "CENTER_LEFT";
-        $this->container->maxWidth = 0;
-        $this->container->style = '-fx-background-radius: 10 25 25 10; -fx-border-radius: 10 25 25 10; -fx-background-color: #0000002F';
+        $this->container->style = '-fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: #0000002F';
         $this->container->opacity = 0;
 
         $this->label->ellipsisString = null;
@@ -47,22 +46,12 @@ class UpdateNotify extends AbstractNode
         $this->button->ellipsisString = null;
     }
 
-    public function show ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
+    public function show ($text, $buttonText, callable $callback, $customPadding = 0) {
         $this->label->text = $text;
         $this->button->text = $buttonText;
         
         $this->container->maxWidth = 0;
-        
-        $this->container->x = $target->x + $this->container->width;
-        $this->container->y = $target->y - 1;
-        $this->container->minHeight = $target->height;
-        $this->container->paddingRight = $target->width + 10;
-        
-        $target->data("container", $this->container);
-        
         $this->button->on("click", $callback);
-        
-        $this->container->toBack();
 
         $toSize = UXFont::getDefault()->calculateTextWidth($text) + UXFont::getDefault()->calculateTextWidth($buttonText) + 30 + $this->container->paddingRight + $customPadding;
 
@@ -74,7 +63,7 @@ class UpdateNotify extends AbstractNode
             $step = 20;
             $this->container->maxWidth += $step;
             $this->container->width += $step;
-            $this->container->x = $target->x + $target->width - $this->container->width + 1;
+            // $this->container->x = $target->x + $target->width - $this->container->width + 1;
             $this->container->opacity += 0.2;
 
             if ($this->container->maxWidth > $toSize) {

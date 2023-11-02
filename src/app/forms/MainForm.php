@@ -31,6 +31,11 @@ class MainForm extends AbstractForm
      * @var LoggerReporter
      */
     public $logger;
+    
+    /**
+     * @var Fileinfo
+     */
+    public $fileInfoPanel;
 
 
     /**
@@ -53,22 +58,22 @@ class MainForm extends AbstractForm
         
         $this->add(new MainMenu()->getNode());
         
-        $this->infoPanelSwitcher->toFront();
-        
         $this->projectDir = $this->ini->get('ProjectDirectory');
         
         $this->leftCotainer->content->add(new SelectDirectoryCombobox()->getNode());
         
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
-                $this->filePath->text = $path;
+                // $this->filePath->text = $path;
+                $this->fileInfoPanel->updateFilePath($path);
                 
                 $this->updateFileInfoIcon($provider, $path);
                 $this->updateFileinfo($provider, $path);
             });
             
             $this->fsTree->onZipFileSystem(function (ZipFileSystem $provider, $zipPath, $path) {
-                $this->filePath->text = $zipPath;
+                // $this->filePath->text = $zipPath;
+                $this->fileInfoPanel->updateFilePath($zipPath);
                 
                 if (!$provider->getZipInstance()->has($zipPath)) {
                     $zipPath = str_replace('\\', '/', $zipPath);
@@ -111,7 +116,8 @@ class MainForm extends AbstractForm
                     
                     $this->updateFileinfo($provider, $zipPath);
                 } else if ($provider->isDirectory($zipPath)) {
-                    $this->fileSize->text = "unknown";
+                    // $this->fileSize->text = "unknown";
+                    $this->fileInfoPanel->updateFileSize("unknown");
                 }
             });
             
@@ -149,6 +155,8 @@ class MainForm extends AbstractForm
             $this->centerOnScreen();
         });
         
+        $this->fileInfoPanel = new Fileinfo();
+        $this->add($this->fileInfoPanel->getNode());   
     }
     
     
@@ -181,6 +189,8 @@ class MainForm extends AbstractForm
     
     public function updateFileInfoIcon (AbstractFileSystem $provider, $path)
     {
+        $this->fileInfoPanel->updateFileIcon($provider, $path);
+        return;
         static $iconFileSelected;
         
         /**
@@ -249,7 +259,6 @@ class MainForm extends AbstractForm
         }
     }
     
-    
     /**
      * @event tree.click-Right 
      */
@@ -271,52 +280,10 @@ class MainForm extends AbstractForm
     }
 
 
-    /**
-     * @event infoPanelSwitcher.click-Left 
-     */
-    function doInfoPanelSwitcherClickLeft(UXMouseEvent $e = null)
-    {
-        $padding = 8;
-        
-        if ($this->infoPanelSwitcher->selected) {
-            $this->tabPane->rightAnchor = $this->fileInfo->width + $padding * 2;
-            $this->fileInfo->rightAnchor = $padding;
-            $this->ini->set('panel_file_information_show', 1);
-        } else {
-            $this->tabPane->rightAnchor = $padding;
-            $this->fileInfo->rightAnchor -= $this->fileInfo->width + $padding;
-            $this->ini->set('panel_file_information_show', 0);
-        }
-    }
     
     
-    /**
-     * @event infoPanelSwitcher.construct 
-     */
-    function doInfoPanelSwitcherConstruct(UXEvent $e = null)
-    {
-        // remove empty hint
-        UXTooltip::uninstall($e->sender, $e->sender->tooltip);
-        try {
-            if ($this->ini->get('panel_file_information_show') == 1) {
-                $this->infoPanelSwitcher->selected = true;
-                $this->doInfoPanelSwitcherClickLeft();
-            }
-        } catch (Exception $ignore) {}
-    }
     
     
-    /**
-     * @event fileInfo.construct 
-     */
-    function doFileInfoConstruct(UXEvent $e = null)
-    {
-        $e->sender->lookup('.panel-title')->topAnchor = -14;
-        $this->fileInfo->title = Localization::get('ui.sidepanel.fielInfo.title');
-        $this->createdAtLabel->text = Localization::get('ui.sidepanel.fielInfo.createdAt');
-        $this->modifiedAtLabel->text = Localization::get('ui.sidepanel.fielInfo.modifiedAt');
-        $this->fileSizeLabel->text = Localization::get('ui.sidepanel.fielInfo.fileSize');
-    }
     
     
     /**
@@ -365,9 +332,13 @@ class MainForm extends AbstractForm
     
     
     public function updateFileinfo ($provider, $path) {
-        $this->createdAt->text = $provider->createdAt($path);
-        $this->modifiedAt->text = $provider->modifiedAt($path);
+        //$this->createdAt->text = $provider->createdAt($path);
+        //$this->modifiedAt->text = $provider->modifiedAt($path);
         $this->showMeta(["size" => $provider->size($path)]);
+        
+        $this->fileInfoPanel->updateCreatedAt($provider->createdAt($path));
+        $this->fileInfoPanel->updateModifiedAt($provider->modifiedAt($path));
+        
     }
     
     
@@ -385,6 +356,9 @@ class MainForm extends AbstractForm
         
         $index = floor(str::length($meta) / 3);
         
-        $this->fileSize->text = round($meta / pow(1024, $index), 2) . ' ' . $types[$index];
+        // $this->fileSize->text = round($meta / pow(1024, $index), 2) . ' ' . $types[$index];
+        
+        
+        $this->fileInfoPanel->updateFileSize(round($meta / pow(1024, $index), 2) . ' ' . $types[$index]);
     }
 }

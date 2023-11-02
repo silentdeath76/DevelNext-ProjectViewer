@@ -27,8 +27,6 @@ class Dependency
     
     
     public function getDependencys (ZipFile $zip) {
-        app()->form("MainForm")->flowPane->children->clear();
-        
         $panels = [];
         
         foreach ($zip->statAll() as $path => $state) {
@@ -50,7 +48,7 @@ class Dependency
         
         
         $sort = [];
-        $pWidth = app()->form("MainForm")->container->width - 10; // 10 - padding 5px
+        $pWidth = app()->form("MainForm")->fileInfoPanel->getWidth(); // 10 - padding 5px
 
         foreach ($panels as $panel) {
             $panelWidth = $this->getPanelWidth($panel);
@@ -103,13 +101,17 @@ class Dependency
             }
         }
         
+        $t = [];
+        
         foreach ($sort as $l) {
             foreach ($l as $panel) {
                 try {
-                    app()->form("MainForm")->flowPane->children->add($panel["panel"]);
+                    $t[] = $panel["panel"];
                 } catch (Exception $ignore) {}
             }
         }
+        
+        app()->form("MainForm")->fileInfoPanel->updateDependecyList($t);
     }
     
     

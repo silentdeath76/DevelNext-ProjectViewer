@@ -14,17 +14,6 @@ class MainModule extends AbstractModule
     private $formHeight;
     
     public function formSizeSaver () {
-        // hack for notify
-        $binder = new EventBinder($this->infoPanelSwitcher);
-        $binder->bind("step", function () {
-            if ($this->form("MainForm")->infoPanelSwitcher->data("container") instanceof UXHBox) {
-                $this->form("MainForm")->infoPanelSwitcher->data("container")->x = 
-                    ($this->infoPanelSwitcher->x +
-                    $this->infoPanelSwitcher->width -
-                    $this->form("MainForm")->infoPanelSwitcher->data("container")->width) + 1;
-            }
-        })
-        
         $this->form("MainForm")->observer("width")->addListener(function ($o, $n)  {
             static $timer;
             
