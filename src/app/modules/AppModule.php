@@ -111,7 +111,7 @@ class AppModule extends AbstractModule
                     return;
                 } */
 
-                // $selfUpdate->download($tempFile);
+                $selfUpdate->download($tempFile);
 
                 uiLater(function () use ($form, $response, $tempFile) {
                     $this->showUpdateNotify(

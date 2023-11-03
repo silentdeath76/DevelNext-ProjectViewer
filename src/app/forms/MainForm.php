@@ -64,15 +64,13 @@ class MainForm extends AbstractForm
         
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
-                // $this->filePath->text = $path;
                 $this->fileInfoPanel->updateFilePath($path);
                 
-                $this->updateFileInfoIcon($provider, $path);
+                $this->fileInfoPanel->updateFileIcon($provider, $path);
                 $this->updateFileinfo($provider, $path);
             });
             
             $this->fsTree->onZipFileSystem(function (ZipFileSystem $provider, $zipPath, $path) {
-                // $this->filePath->text = $zipPath;
                 $this->fileInfoPanel->updateFilePath($zipPath);
                 
                 if (!$provider->getZipInstance()->has($zipPath)) {
@@ -83,7 +81,7 @@ class MainForm extends AbstractForm
                     }
                 }
                 
-                $this->updateFileInfoIcon($provider, $zipPath);
+                $this->fileInfoPanel->updateFileIcon($provider, $zipPath);
                 
                 if ($provider->isFile($zipPath)) {
                     $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
@@ -116,7 +114,6 @@ class MainForm extends AbstractForm
                     
                     $this->updateFileinfo($provider, $zipPath);
                 } else if ($provider->isDirectory($zipPath)) {
-                    // $this->fileSize->text = "unknown";
                     $this->fileInfoPanel->updateFileSize("unknown");
                 }
             });
@@ -185,48 +182,6 @@ class MainForm extends AbstractForm
         
         $this->fsTree->getFileInfo($this->tree->focusedItem);
     }
-    
-    
-    public function updateFileInfoIcon (AbstractFileSystem $provider, $path)
-    {
-        $this->fileInfoPanel->updateFileIcon($provider, $path);
-        return;
-        static $iconFileSelected;
-        
-        /**
-         * IconFileSelected $iconFileSelected
-         */
-        if ($iconFileSelected == null) {
-            $iconFileSelected = new IconFileSelected();
-            $this->fileInfo->add($iconFileSelected->getNode());
-        }
-        
-        if ($provider->isfile($path)) {
-            
-            $iconFileSelected->updateClasses(["file-icon"]);
-            $iconFileSelected->setSize(52, 68);
-            
-            switch (fs::ext($path)) {
-                case 'zip':
-                    $iconFileSelected->updateClasses(["zip-icon"]);
-                    $iconFileSelected->setSize(84, 64);
-                    $iconFileSelected->updateText("");
-                    break;
-                case 'php':
-                    $iconFileSelected->updateText("PHP");
-                    break;
-                case 'fxml':
-                    $iconFileSelected->updateText("FXML");
-                    break;
-                default: $iconFileSelected->updateText("");
-            }
-        } else if ($provider->isDirectory($path)) {
-            $iconFileSelected->updateClasses(["directory-icon"]);
-            $iconFileSelected->setSize(84, 64);
-            $iconFileSelected->updateText("");
-        }
-    }
-    
 
     /**
      * @event browser.load 
@@ -278,12 +233,6 @@ class MainForm extends AbstractForm
         
         $contextRoot->showByNode($e);
     }
-
-
-    
-    
-    
-    
     
     
     /**
@@ -332,13 +281,10 @@ class MainForm extends AbstractForm
     
     
     public function updateFileinfo ($provider, $path) {
-        //$this->createdAt->text = $provider->createdAt($path);
-        //$this->modifiedAt->text = $provider->modifiedAt($path);
         $this->showMeta(["size" => $provider->size($path)]);
         
         $this->fileInfoPanel->updateCreatedAt($provider->createdAt($path));
         $this->fileInfoPanel->updateModifiedAt($provider->modifiedAt($path));
-        
     }
     
     
@@ -355,9 +301,6 @@ class MainForm extends AbstractForm
         $types = [Localization::get('ui.sidepanel.fileSizeFromat.b'), Localization::get('ui.sidepanel.fileSizeFromat.kb'), Localization::get('ui.sidepanel.fileSizeFromat.mb'), Localization::get('ui.sidepanel.fileSizeFromat.gb')];
         
         $index = floor(str::length($meta) / 3);
-        
-        // $this->fileSize->text = round($meta / pow(1024, $index), 2) . ' ' . $types[$index];
-        
         
         $this->fileInfoPanel->updateFileSize(round($meta / pow(1024, $index), 2) . ' ' . $types[$index]);
     }

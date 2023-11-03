@@ -89,9 +89,7 @@ class Fileinfo extends AbstractNode
         $this->container->titlePosition = 'TOP_CENTER';
         $this->container->x = 6;
         $this->container->minWidth = 232;
-        //$this->container->height = 216;
         $this->container->anchors = [
-            // "right" => 8,
             "top" => 80,
             "bottom" => 0
         ];
@@ -103,7 +101,6 @@ class Fileinfo extends AbstractNode
             $this->container->form->add($this->controllButton);
             $this->controllButton->rightAnchor = 5;
             $this->controllButton->y = $this->container->y + 20;
-            // $this->controllButton->x = ($this->showed) ? $this->container->minWidth + $buttonSift : $this->controllButton->rightAnchor = $buttonSift / 2;
             
             $this->updateModifiedAt('-');
             $this->updateCreatedAt('-');
@@ -114,13 +111,6 @@ class Fileinfo extends AbstractNode
                 $this->hide();
             }
         });
-        
-        /* $binder->bind("step", function () {
-            if ($this->container->data("container") instanceof UXHBox) {
-                var_dump(1);
-            }
-        }); */
-        
         
         $this->iconFileSelected = new IconFileSelected();
         $this->container->add($this->iconFileSelected->getNode());
@@ -184,7 +174,8 @@ class Fileinfo extends AbstractNode
         $this->dependencyFlowPane->children->addAll($items);
     }
     
-    public function getWidth () {
+    public function getWidth ()
+    {
         return $this->dependencyContainer->width;
     }
     
@@ -199,20 +190,20 @@ class Fileinfo extends AbstractNode
         }
     }
     
-    public function show () {
+    public function show ()
+    {
         app()->form("MainForm")->tabPane->rightAnchor = $this->container->width + $this->padding * 2 + 3;
         $this->container->rightAnchor = $this->padding;
-        //$this->controllButton->text = '>';
         $this->controllButton->graphic->rotate = 180;
         $this->controllButton->rightAnchor = $this->container->minWidth + $this->buttonScreenXShift + 2;
         
         $this->showed = true;
     }
     
-    public function hide () {
+    public function hide ()
+    {
         app()->form("MainForm")->tabPane->rightAnchor = $this->padding + 3;
         $this->container->rightAnchor -= $this->container->minWidth + $this->padding;
-        //$this->controllButton->text = '<';
         $this->controllButton->graphic->rotate = 0;
         $this->controllButton->rightAnchor = $this->buttonScreenXShift / 2 - 2;
         
