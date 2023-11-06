@@ -32,6 +32,7 @@ class SelectDirectoryCombobox extends AbstractNode
         $this->container->observer('value')->addListener(function ($old, $new) {
             $this->getForm()->tree->root->children->clear();
             $this->getForm()->ini->set('ProjectDirectory', $new[0]);
+            $this->getForm()->projectDir = $new[0];
             $this->getForm()->fsTree->setDirectory($new[0]);
         });
         
