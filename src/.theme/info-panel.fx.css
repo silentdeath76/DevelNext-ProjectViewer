@@ -76,13 +76,17 @@
     -fx-background-color: #0000000F;
     -fx-pref-width: 16;
     -fx-pref-height: 25;
-    -fx-padding: 8 2 5 5;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
+    -fx-padding: 5 2 5 5;
+    -fx-border-radius: 3 0 0 3;
+    -fx-background-radius: 3 0 0 3;
 }
 
 .panel-toggle:hover {
-    -fx-background-color: #0000001F;
+    -fx-background-color: -icons-color;
+}
+
+.panel-toggle:hover .arrow {
+    -fx-background-color: -base-color;
 }
 
 .panel-toggle > .arrow {

@@ -116,8 +116,11 @@ class Fileinfo extends AbstractNode
         $this->container->add($this->iconFileSelected->getNode());
         
         $this->controllButton = new UXFlatButton();
+        $this->controllButton->maxWidth = 12;
         $this->controllButton->classes->add('panel-toggle');
         $this->controllButton->graphic = new UXHBox();
+        $this->controllButton->graphic->maxWidth = 8;
+        $this->controllButton->graphic->maxHeight = 10;
         $this->controllButton->graphic->classes->add("arrow");
         $this->controllButton->on("action", [$this, 'controlledButtonAction']);
         
