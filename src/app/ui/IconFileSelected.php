@@ -21,6 +21,7 @@ class IconFileSelected extends AbstractNode
         $this->container = new UXHBox();
         $this->container->leftAnchor = 0;
         $this->container->rightAnchor = 0;
+        $this->container->padding = 0;
         $this->container->paddingTop = 15;
         $this->container->alignment = 'CENTER';
         
@@ -33,6 +34,8 @@ class IconFileSelected extends AbstractNode
         $this->label = new UXLabelEx("");
         $this->label->autoSize = true;
         $this->label->font->size = 18;
+        $this->label->style = '-fx-font-size: 18;';
+        $this->label->ellipsisString = "";
         
         $this->svg->add($this->label);
         
@@ -50,8 +53,8 @@ class IconFileSelected extends AbstractNode
     }
     
     public function setSize ($width, $height, $size = 0) {
-        $this->svg->minWidth = $width;
-        $this->svg->minHeight = $height;
+        $this->svg->maxWidth = $this->svg->minWidth = $width;
+        $this->svg->maxHeight = $this->svg->minHeight = $height;
         
         if ($size === 0) return;
         

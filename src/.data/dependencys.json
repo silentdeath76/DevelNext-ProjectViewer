@@ -1,6 +1,6 @@
 [
     {
-        "name": "Windows",
+        "name": ["Windows", "windows"],
         "link": "https://github.com/TsSaltan/jphp-windows-ext"
     }, {
         "name": "jURL",

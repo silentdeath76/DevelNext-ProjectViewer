@@ -14,17 +14,17 @@ pre {
 /* desert scheme ported from vim to google prettify */
 pre.prettyprint { display: block; background-color: #fafbfc !important; }
 pre .nocode { background-color: none; color: #000 !important; }
-pre .str { color: #925959 !important; }                     /* string */
-pre .kwd { color: #7f7948 !important; font-weight: bold }   /* keyword class, interface, var, as, ... etc */
-pre .com { color: #87ceeb !important; }                     /* comment */
-pre .typ { color: #249324 !important; }                     /* type | classname */
-pre .lit { color: #b03b3b !important; }                     /* literal */
-pre .pun { color: #000    !important; }                     /* punctuation */
-pre .pln { color: #000    !important; }                     /* const name, method name, function name plaintext */
-pre .tag { color: #c5ba57 !important; font-weight: bold }   /* html/xml tag    - lightyellow */
-pre .atn { color: #9a9344 !important; font-weight: bold }   /* attribute name  - khaki */
-pre .atv { color: #925959 !important; }                     /* attribute value */
-pre .dec { color: #249324 !important; }                     /* decimal */
+pre .str { color: #183691 !important; }                     /* string */
+pre .kwd { color: #a71d5d !important; font-weight: bold }   /* keyword class, interface, var, as, ... etc */
+pre .com { color: #969896 !important; }                     /* comment */
+pre .typ { color: #795da3 !important; }                     /* type | classname */
+pre .lit { color: #0086b3 !important; }                     /* literal */
+pre .pun { color: #333    !important; }                     /* punctuation */
+pre .pln { color: #333    !important; }                     /* const name, method name, function name plaintext */
+pre .tag { color: #a71d5d !important; font-weight: bold }   /* html/xml tag    - lightyellow */
+pre .atn { color: #969896 !important; font-weight: bold }   /* attribute name  - khaki */
+pre .atv { color: #183691 !important; }                     /* attribute value */
+pre .dec { color: #969896 !important; }                     /* decimal */
 
 /* Specify class=linenums on a pre to get line numbering */
 ol.linenums {
@@ -35,19 +35,6 @@ ol.linenums {
     color: #444 !important;
 } /* IE indents via margin-left */
 
-@media print {
-  pre.prettyprint { background-color: none }
-  pre .str, code .str { color: #060 !important; }
-  pre .kwd, code .kwd { color: #006 !important; font-weight: bold }
-  pre .com, code .com { color: #600 !important; font-style: italic }
-  pre .typ, code .typ { color: #404 !important; font-weight: bold }
-  pre .lit, code .lit { color: #044 !important; }
-  pre .pun, code .pun { color: #440 !important; }
-  pre .pln, code .pln { color: #000 !important; }
-  pre .tag, code .tag { color: #006; font-weight: bold }
-  pre .atn, code .atn { color: #404 !important; }
-  pre .atv, code .atv { color: #060 !important; }
-}
 
 ul {
     margin: 10px;

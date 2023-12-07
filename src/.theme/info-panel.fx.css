@@ -39,7 +39,6 @@
     -fx-font-style: italic;
 }
 
-
 .DependencyItem {
     -fx-border-width: 1;
     -fx-border-color: -border-base-color;
@@ -68,4 +67,29 @@
 
 .DependencyItem .link:hover {
     -fx-background-color: derive(-icons-color, -80%)
+}
+
+
+
+/* --- controll button --- */
+.panel-toggle {
+    -fx-background-color: #0000000F;
+    -fx-pref-width: 16;
+    -fx-pref-height: 25;
+    -fx-padding: 5 2 5 5;
+    -fx-border-radius: 3 0 0 3;
+    -fx-background-radius: 3 0 0 3;
+}
+
+.panel-toggle:hover {
+    -fx-background-color: -icons-color;
+}
+
+.panel-toggle:hover .arrow {
+    -fx-background-color: -base-color;
+}
+
+.panel-toggle > .arrow {
+    -fx-shape: 'm4.431 12.822 13 9A1 1 0 0 0 19 21V3a1 1 0 0 0-1.569-.823l-13 9a1.003 1.003 0 0 0 0 1.645z';
+    -fx-background-color: -icons-color;
 }

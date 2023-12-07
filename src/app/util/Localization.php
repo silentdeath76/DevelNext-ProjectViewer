@@ -20,6 +20,8 @@ class Localization
     private static function parse ($data) {
         $result = [];
         foreach (explode("\n", $data) as $line) {
+            if (trim($line)[0] == '#') continue;
+            
             $pair = explode('=', $line);
             $result[trim($pair[0])] = trim($pair[1]);
         }

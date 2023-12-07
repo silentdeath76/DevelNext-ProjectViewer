@@ -1,5 +1,5 @@
 <?php
-namespace app\ui\\overlayContainers;
+namespace app\ui\overlayContainers;
 
 use app;
 use gui;

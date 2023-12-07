@@ -9,21 +9,19 @@ use std, gui, framework, app;
 
 class AppModule extends AbstractModule
 {
-    const SELF_UPDATE_DELAY = 1000;
-    const APP_VERSION = '1.1.7';
-    const APP_TITLE = 'DevelNext ProjectView';
+    const SELF_UPDATE_DELAY = 10000;
 
-    const UPDATE_TEMP_PATH = '\AppData\Local\Temp';
+    const APP_VERSION = '1.1.8';
+    const APP_TITLE = 'DevelNext ProjectView';
+    
     const FOUND_NEW_VERSION = -1;
 
     const WINDOW_MIN_WIDTH = 900;
     const WINDOW_MIN_HEIGHT = 450;
 
     /**
-     * @var Thread
+     * @var String
      */
-    private $executer;
-
     private $temp;
 
     /**
@@ -31,8 +29,9 @@ class AppModule extends AbstractModule
      */
     function doConstruct(ScriptEvent $e = null)
     {
+        $this->temp = System::getProperty('java.io.tmpdir');
+        
         Localization::load('res://.data/local/ru.txt');
-        $this->temp = MainModule::replaceSeparator(System::getProperty('user.home') . self::UPDATE_TEMP_PATH);
 
         // call garbage collector every 30s
         Timer::every(30000, function () {System::gc(); });
@@ -54,7 +53,8 @@ class AppModule extends AbstractModule
 
         $form->show();
 
-        $this->executer = new Thread(function () use ($form) {
+
+        $thread = new Thread(function () use ($form) {
             $file = $this->temp . File::DIRECTORY_SEPARATOR . fs::name($GLOBALS["argv"][0]);
 
             if (fs::exists($file)) {
@@ -70,13 +70,14 @@ class AppModule extends AbstractModule
             $this->update();
         });
 
-        $this->executer->setDaemon(true);
-        $this->executer->start();
+        $thread->setDaemon(true);
+        $thread->start();
     }
 
 
 
-    public function update () {
+    public function update (): void
+    {
         Logger::info('Checking updates...');
 
         try {
@@ -100,26 +101,31 @@ class AppModule extends AbstractModule
 
                 // не уверен что небудет проблем с правами и тем что это jar файл по-этому так
                 // хз почему, но на линуксе открытие ссылки в браузере вовсе вешает программу
-                if (str::endsWith($os, 'inux')) {
-                    /* uiLater(function () use ($form) {
+                /* if (str::endsWith($os, 'inux')) {
+                    uiLater(function () use ($form) {
                         $this->showUpdateNotify(Localization::get('ui.update.found.message') . '   ', Localization::get('ui.update.button.update'), $form->infoPanelSwitcher, function ()  {
                             browse('https://github.com/silentdeath76/DevelNext-ProjectViewer/releases/latest/');
                         });
-                    }); */
+                    });
                     
                     return;
-                }
+                } */
 
                 $selfUpdate->download($tempFile);
 
                 uiLater(function () use ($form, $response, $tempFile) {
-                    $this->showUpdateNotify(Localization::get('ui.update.found.message') . '   ', Localization::get('ui.update.button.update'), $form->infoPanelSwitcher, function () use ($response, $tempFile) {
-                        $th = new Thread(function () use ($response, $tempFile) {
-                            $this->updateAndRun($tempFile);
-                        });
-                        $th->setDaemon(true);
-                        $th->start();
-                    });
+                    $this->showUpdateNotify(
+                        Localization::get('ui.update.found.message') . '   ',
+                        Localization::get('ui.update.button.update'),
+                        $form,
+                        function () use ($response, $tempFile) {
+                            $thread = new Thread(function () use ($response, $tempFile) {
+                                $this->updateAndRun($tempFile);
+                            });
+                            $thread->setDaemon(true);
+                            $thread->start();
+                        }
+                    );
 
                     $form->tabPane->toBack();
                 });
@@ -133,11 +139,11 @@ class AppModule extends AbstractModule
         } finally {
             unset($selfUpdate);
             unset($response);
-            unset($this->executer);
         }
     }
 
-    private function moveFile ($from, $to) {
+    private function moveFile ($from, $to): void
+    {
         fs::copy($from, $to);
 
         if (File::of($to)->exists()) {
@@ -145,15 +151,18 @@ class AppModule extends AbstractModule
         }
     }
 
-    public function showUpdateNotify ($text, $buttonText, UXRegion $target, callable $callback, $customPadding = 0) {
+    public function showUpdateNotify ($text, $buttonText, $target, callable $callback, $customPadding = 0): void
+    {
         static $notify;
-
+        
         if ($notify == null) {
             $notify = new UpdateNotify();
-            $target->parent->add($notify->getNode());
+            $notify->getNode()->topAnchor = 29;
+            $notify->getNode()->rightAnchor = 10;
+            $target->add($notify->getNode());
         }
 
-        $notify->show($text, $buttonText, $target, $callback, $customPadding);
+        $notify->show($text, $buttonText, $callback, $customPadding);
     }
 
     /**
@@ -172,6 +181,9 @@ class AppModule extends AbstractModule
             }
 
             app()->shutdown();
+        } else if (str::endsWith($os, 'inux')) {
+            Logger::error('Unnsupported operation');
+            Logger::info(sprintf('Open path "%s" and copy file "%s.exe" manually', $this->temp, fs::nameNoExt($GLOBALS["argv"][0])));
         }
     }
 

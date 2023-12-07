@@ -196,18 +196,27 @@ class FSTreeProvider implements IEvents
     }
     
     protected function applyIcon ($item, $path) {
-
+    
         if (!($item instanceof UXTreeItem || $item instanceof UXLabel)) {
             throw new IllegalArgumentException('$item must be instance UXTreeItem or UXLabel');
         }
         
         if ($path !== FSTreeProvider::EMPTY_PATH_ELEMENT) {
             if ($this->imageCache->exists(fs::ext($path))) {
-                $item->graphic = new UXImageView($this->imageCache->get(fs::ext($path)));
+                $item->graphic = new UXImageArea($this->imageCache->get(fs::ext($path)));
+                $item->graphic->width = 20;
+                $item->graphic->height = 24;
+                $item->graphic->centered = true;
+                $item->graphic->proportional = true;
+                
+                if (fs::ext($path) == 'php') {
+                    $this->applyColor($item->graphic, [0.17, 0.57, 0.09, 0.9]);
+                } else if (fs::ext($path) == 'fxml') {
+                    $this->applyColor($item->graphic, [0.17, 0.57, -0.88, 0.9]);
+                }
                 return;
             }
-            /*
-            
+            /* 
             $iconFileSelected = new IconFileSelected();
             $iconFileSelected->clear();
             
@@ -222,28 +231,31 @@ class FSTreeProvider implements IEvents
                     break;
                 case 'zip': 
                     $iconFileSelected->updateClasses(["zip-icon"]);
-                    $iconFileSelected->setSize(20, 17, 1);
+                    $iconFileSelected->setSize(20, 17, 5);
                     $iconFileSelected->updateText("");
                     break;
                 case 'php': 
-                    $iconFileSelected->setSize(14, 20, 4);
+                    var_dump($path);
+                    $iconFileSelected->setSize(16, 20, 10);
                     $iconFileSelected->updateText(fs::ext($path));
-                    $iconFileSelected->updateClasses(["file-icon", "red-color", "small-size"]);
+                    $iconFileSelected->updateClasses(["file-icon", "red-color", "normal-size"]);
                     break;
                 case 'fxml': 
-                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->setSize(16, 20, 4);
                     $iconFileSelected->updateText(fs::ext($path));
                     $iconFileSelected->updateClasses(["file-icon", "blue-color", "small-size"]);
                     break;
                 case 'css': 
-                    $iconFileSelected->setSize(14, 20, 4);
+                    $iconFileSelected->setSize(16, 20, 4);
                     $iconFileSelected->updateText(fs::ext($path));
                     $iconFileSelected->updateClasses(["file-icon", "green-color", "small-size"]);
                     break;
                 default:
-                    $iconFileSelected->setSize(14, 20, 1);
+                    $iconFileSelected->setSize(16, 20, 1);
                     $iconFileSelected->updateText("");
             }
+            
+            $item->graphic = $iconFileSelected->getNode();
             */
             switch (fs::ext($path)) {
                 case 'png': 
@@ -254,8 +266,8 @@ class FSTreeProvider implements IEvents
                     $file = 'res://.data/img/ui/image-16.png'; break;
                 case 'zip':
                     $item->graphic = new UXHBox();
-                    $item->graphic->minWidth = 16;
-                    $item->graphic->minHeight = 12;
+                    $item->graphic->minWidth = 20;
+                    $item->graphic->minHeight = 14;
                     $item->graphic->classes->add("zip-icon");
 
                     return;
@@ -268,15 +280,38 @@ class FSTreeProvider implements IEvents
             }
         } else {
             $item->graphic = new UXHBox();
-            $item->graphic->minWidth = 16;
-            $item->graphic->minHeight = 12;
+            $item->graphic->minWidth = 20;
+            $item->graphic->minHeight = 14;
             $item->graphic->classes->add("folder-icon");
 
             return;
         }
         
-        $item->graphic = new UXImageView(new UXImage($file, 20, 20));
+        // dublicate code
+        $item->graphic = new UXImageArea(new UXImage($file, 28, 24));
+        $item->graphic->width = 20;
+        $item->graphic->height = 24;
+        $item->graphic->centered = true;
+        $item->graphic->proportional = true;
+        
+        // dublicate code
+        if (fs::ext($path) == 'php') {
+            $this->applyColor($item->graphic, [0.17, 0.57, 0.09, 0.9]);
+        } else if (fs::ext($path) == 'fxml') {
+            $this->applyColor($item->graphic, [0.17, 0.57, -0.88, 0.9]);
+        }
+        
         $this->imageCache->set(fs::ext($path), $item->graphic->image);
+    }
+    
+    protected function applyColor ($node, $params) {
+        $effect = new UXColorAdjustEffect();
+        $effect->brightness = $params[0];
+        $effect->contrast = $params[1];
+        $effect->hue = $params[2];
+        $effect->saturation = $params[3];
+        
+        $node->effects->add($effect);
     }
     
     

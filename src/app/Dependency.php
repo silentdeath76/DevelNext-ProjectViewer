@@ -14,6 +14,12 @@ class Dependency
     const DEPENDENCY_ICON_PATH = '.data/img/develnext/bundle/';
     
     
+    private $linkIconWidth = 10;
+    private $linkIconHeight = 10;
+    
+    private $iconWidth = 16;
+    private $iconHeight = 16;
+    
     /**
      * @var ObjectStorage
      */
@@ -21,8 +27,6 @@ class Dependency
     
     
     public function getDependencys (ZipFile $zip) {
-        app()->form("MainForm")->flowPane->children->clear();
-        
         $panels = [];
         
         foreach ($zip->statAll() as $path => $state) {
@@ -44,15 +48,15 @@ class Dependency
         
         
         $sort = [];
-        $pWidth = app()->form("MainForm")->container->width - 10; // 10 - padding 5px
+        $pWidth = app()->form("MainForm")->fileInfoPanel->getWidth(); // 10 - padding 5px
 
         foreach ($panels as $panel) {
             $panelWidth = $this->getPanelWidth($panel);
             
             if ($panel->children->count() > 2) {
-                $panelWidth += 42; // 3 * 2 + 5 * 2 + 16 + 10
+                $panelWidth += 42; // 3 * 2 + 5 * 2 + $this->iconWidth + $this->linkIconWidth
             } else {
-                $panelWidth += 27; // 3 * 2 + 5 + 16
+                $panelWidth += 27; // 3 * 2 + 5 + $this->iconHeight
             }
             
             if (count($sort) === 0) {
@@ -97,13 +101,17 @@ class Dependency
             }
         }
         
+        $t = [];
+        
         foreach ($sort as $l) {
             foreach ($l as $panel) {
                 try {
-                    app()->form("MainForm")->flowPane->children->add($panel["panel"]);
+                    $t[] = $panel["panel"];
                 } catch (Exception $ignore) {}
             }
         }
+        
+        app()->form("MainForm")->fileInfoPanel->updateDependecyList($t);
     }
     
     
@@ -122,29 +130,22 @@ class Dependency
         $panel->spacing = 5;
         
         $panel->add($view = new UXImageView($image));
-        $view->x = 4;
-        $view->y = 4;
-        $view->width = 16;
-        $view->height = 16;
+        $view->width = $this->iconWidth;
+        $view->height = $this->iconHeight;
         
         $panel->add($label = new UXLabelEx($name));
         $label->autoSize = true;
         $label->autoSizeType = 'HORIZONTAL';
-        $label->x = 24;
-        $label->y = 4;
         $panel->classes->add('DependencyItem');
         
         if (($url = $this->getLink($name)) != false) {
-            $width = 10;
-            $height = 10;
-            
             $panel->add($link = new UXHBox);
             $link->classes->addAll(["link", "open-link-icon"]);
             $link->cursor = 'HAND';
-            $link->maxWidth = $width;
-            $link->maxHeight = $height;
-            $link->minWidth = $width;
-            $link->minHeight = $height;
+            $link->maxWidth = $this->linkIconWidth;
+            $link->maxHeight = $this->linkIconHeight;
+            $link->minWidth = $this->linkIconWidth;
+            $link->minHeight = $this->linkIconHeight;
             $tooltip = UXTooltip::of(Localization::get('message.link.openInBrowser'));
             UXTooltip::install($link, $tooltip);
             
@@ -162,9 +163,26 @@ class Dependency
     private function getLink($name) {
         static $json = json_decode(FileStream::of('res://.data/dependencys.json'), true);
         
-        $found = array_column($json, null, 'name');
+        $found = null;
         
-        if (is_null($found[$name])) {
+        // если пает будет перименован то можно будет добавить алиас имени (как пример пакет windows: версия 1.2 - windows, версия 2.2 - Windows)
+        // можно конечно сделать strtolower, но если пакет будет перименован по другому то все равно приедся делать алиасы
+        Flow::of($json)->each(function ($array, $index) use ($name, &$found) {
+            if (is_array($array["name"])) {
+                if (in_array($name, $array["name"], true)) {
+                    $found = [
+                        "name" => $array["name"][0],
+                        "link" => $array["link"]
+                    ];
+                    return false;
+                }
+            } else if ($array["name"] == $name) {
+                $found = $array;
+                return false;
+            }
+        });
+        
+        if (is_null($found)) {
             /** default extensions */
             switch ($name) {
                 case '2D Game':
@@ -186,7 +204,7 @@ class Dependency
             return false;
         }
         
-        return $found[$name]["link"];
+        return $found["link"];
     }
     
     
@@ -215,7 +233,7 @@ class Dependency
             default: return $this->getBundleIcon($bundleName);
         }
         
-        return new UXImage($name, 16, 16);
+        return new UXImage($name);
     }
     
     
@@ -232,19 +250,18 @@ class Dependency
             return $this->imageCache->get($bundleName);
         }
         
-        $extensions = [];
         $path = System::getProperty('user.home') . self::DEFAULT_DEPENDENCY_PATH;
         
         foreach (fs::scan($path, ["extensions" => ["jar"], "namePattern" => '^dn-(.*?)\.jar$']) as $jar) {
             if (str::contains($jar, $bundleName)) {
                 $zip = new ZipFile($jar);
-                $image = "";
+                $image = null;
             
                 foreach ($zip->statAll() as $key => $stat) {
                 
                     if (str::startsWith($key, self::DEPENDENCY_ICON_PATH . $bundlename)) {
                         if ($stat["crc"] != 0){
-                            $zip->read($stat["name"], function ($stat, MiscStream $stream) use ($lab, &$image) {
+                            $zip->read($stat["name"], function ($stat, MiscStream $stream) use (&$image) {
                                 $image = new UXImage($stream);
                             });
                             
