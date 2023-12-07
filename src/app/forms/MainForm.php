@@ -48,8 +48,8 @@ class MainForm extends AbstractForm
         $this->firstRunReport();
         $this->formSizeSaver($this->ini);
         
-        $this->width = $this->ini->get("width");
-        $this->height = $this->ini->get("height");
+        $this->width = $this->ini->get("width") ?? $this->width;
+        $this->height = $this->ini->get("height") ?? $this->height;
         
         $this->tree->root = new UXTreeItem();
         $this->tree->rootVisible = false;

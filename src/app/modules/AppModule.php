@@ -11,7 +11,7 @@ class AppModule extends AbstractModule
 {
     const SELF_UPDATE_DELAY = 10000;
 
-    const APP_VERSION = '1.1.7';
+    const APP_VERSION = '1.1.8';
     const APP_TITLE = 'DevelNext ProjectView';
     
     const FOUND_NEW_VERSION = -1;
