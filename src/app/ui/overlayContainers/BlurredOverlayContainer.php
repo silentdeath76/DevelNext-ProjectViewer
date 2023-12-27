@@ -7,7 +7,7 @@ use framework;
 use gui;
 use app;
 
-class blurredOverlayContainer extends OverlayContainer
+class BlurredOverlayContainer extends OverlayContainer
 {
     /**
      * @var UXAnchorPane
