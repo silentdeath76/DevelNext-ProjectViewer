@@ -80,7 +80,7 @@ class MainMenuEvents
     
     public function about () {
         if (!($this->overlayContainer instanceof OverlayContainer)) {
-            $this->overlayContainer = new BluredOverlayContainer();
+            $this->overlayContainer = new blurredOverlayContainer();
             $this->overlayContainer->addContent(new AboutContainer());
             app()->form("MainForm")->add($this->overlayContainer->getNode());
         }

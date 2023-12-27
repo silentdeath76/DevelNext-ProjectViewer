@@ -7,7 +7,7 @@ use framework;
 use gui;
 use app;
 
-class BluredOverlayContainer extends OverlayContainer
+class blurredOverlayContainer extends OverlayContainer
 {
     /**
      * @var UXAnchorPane
@@ -22,7 +22,7 @@ class BluredOverlayContainer extends OverlayContainer
     /**
      * @var UXAnchorPane
      */
-    protected $bluredContainer;
+    protected $blurredContainer;
     
     
     private $blurRadius = 5;
@@ -30,8 +30,7 @@ class BluredOverlayContainer extends OverlayContainer
     private $targetChildren;
      
     protected function make () {
-        $this->container = new UXAnchorPane();
-        $this->container->leftAnchor = $this->container->topAnchor = $this->container->rightAnchor = $this->container->bottomAnchor = 0;
+        $this->container = $this->makeAnchorPane();
         
         $binder = new EventBinder($this->container);
         $binder->bind("construct", function () {
@@ -40,26 +39,23 @@ class BluredOverlayContainer extends OverlayContainer
             foreach ($this->targetChildren as $key => $node) {
                 if ($node === $this->container) {
                     unset($this->targetChildren[$key]);
-                    $this->bluredContainer->children->addAll($this->targetChildren); // фикс первого появления: не применяется размытие т.к. событие construct срабатывает позже чем вызов метода show
+                    $this->blurredContainer->children->addAll($this->targetChildren); // фикс первого появления: не применяется размытие т.к. событие construct срабатывает позже чем вызов метода show
                     break;
                 }
             }
         });
         
-        $this->bluredContainer = new UXAnchorPane();
-        $this->bluredContainer->leftAnchor = $this->bluredContainer->topAnchor = $this->bluredContainer->rightAnchor = $this->bluredContainer->bottomAnchor = 0;
-        $this->bluredContainer->mouseTransparent = true;
+        $this->blurredContainer = $this->makeAnchorPane();
+        $this->blurredContainer->mouseTransparent = true;
         
-        $blur = new GaussianBlurEffectBehaviour();
-        $blur->radius = $this->blurRadius;
-        $blur->apply($this->bluredContainer);
+        $this->applyBlur($this->blurredContainer);
         
         $this->overlay = new UXHBox();
         $this->overlay->alignment = 'CENTER';
         $this->overlay->leftAnchor = $this->overlay->topAnchor = $this->overlay->rightAnchor = $this->overlay->bottomAnchor = 0;
         $this->overlay->style= "-fx-background-color: " . $this->overlayBackground . ";";
         $this->overlay->on("click", function () {
-            $this->bluredContainer->children->clear();
+            $this->blurredContainer->children->clear();
             
             try {
                 $this->container->parent->children->addAll($this->targetChildren);
@@ -68,7 +64,7 @@ class BluredOverlayContainer extends OverlayContainer
             $this->container->hide();
         });
         
-        $this->container->add($this->bluredContainer);
+        $this->container->add($this->blurredContainer);
         $this->container->add($this->overlay);
     }
     
@@ -78,6 +74,23 @@ class BluredOverlayContainer extends OverlayContainer
     
     public function show () {
         $this->container->show();
-        $this->bluredContainer->children->addAll($this->targetChildren);
+        $this->blurredContainer->children->addAll($this->targetChildren);
+    }
+    
+    
+    /**
+     * @return UXAnchorPane
+     */
+    private function makeAnchorPane () {
+        $pane = new UXAnchorPane();
+        $pane->leftAnchor = $pane->topAnchor = $pane->rightAnchor = $pane->bottomAnchor = 0;
+        
+        return $pane;
+    }
+    
+    private function applyBlur ($container) {
+        $blur = new GaussianBlurEffectBehaviour();
+        $blur->radius = $this->blurRadius;
+        $blur->apply($container);
     }
 }
