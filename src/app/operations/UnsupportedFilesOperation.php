@@ -1,6 +1,8 @@
 <?php
 namespace app\operations;
 
+use framework;
+
 class UnsupportedFilesOperation extends AbstractOperation
 {
     public function getActiveTab ()
@@ -15,6 +17,6 @@ class UnsupportedFilesOperation extends AbstractOperation
     
     public function action ($ext = null)
     {
-        app()->form("MainForm")->showCodeInBrowser($this->output, $ext);
+        app()->form("MainForm")->showCodeInBrowser("Binary data", $ext);
     }
 }

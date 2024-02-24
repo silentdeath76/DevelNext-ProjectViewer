@@ -1,6 +1,7 @@
 <?php
 namespace app\operations;
 
+use framework;
 use gui;
 use std;
 use app;
@@ -14,7 +15,10 @@ class FXMLOperation extends AbstractOperation
     
     public function action ()
     {
-        $this->_showForm($this->output, app()->form("MainForm")->image);
+        $temp = (string) $this->output;
+        
+        app()->form("MainForm")->showCodeInBrowser($temp, 'xml');
+        $this->_showForm($temp, app()->form("MainForm")->image);
     }
     
     public function forExt ()

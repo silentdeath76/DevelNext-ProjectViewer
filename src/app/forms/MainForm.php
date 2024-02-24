@@ -1,6 +1,7 @@
 <?php
 namespace app\forms;
 
+use Error;
 use php\gui\UXTitledPaneWrapper;
 use Exception;
 use php\compress\ZipFile;
@@ -94,23 +95,17 @@ class MainForm extends AbstractForm
                         
                         /** @var AbstractOperation $operation */
                         foreach ($this->operationList as $operation) {
-                            if (is_array($operation->forExt())) {
-                                if (in_array(fs::ext($zipPath), $operation->forExt())) {
-                                    $operation->setOutput("Binary data");
-                                } else {
-                                    $operation->setOutput($output);
-                                }
-                                
-                                $this->tabPane->selectedIndex = $operation->getActiveTab();
-                                $operation->action($ext);
+                            if (is_array($operation->forExt()) && in_array(fs::ext($zipPath), $operation->forExt())) {
+                                return $this->triggerOperation ($operation, $output, $ext);
                             } else if (fs::ext($zipPath) == $operation->forExt()) {
-                                $operation->setOutput($output);
-                                $this->tabPane->selectedIndex = $operation->getActiveTab();
-                                $operation->action();
-                            } else {
-                                
+                                return $this->triggerOperation ($operation, $output, $ext);
+                            } else if ($operation->forExt() === $ext) {
+                                return $this->triggerOperation ($operation, $output, $ext);
                             }
                         }
+                        
+                        $this->showCodeInBrowser($output->readFully(), $ext);
+                        
                         
                         return;
                         if (fs::ext($zipPath) === 'fxml') {
@@ -311,8 +306,19 @@ class MainForm extends AbstractForm
         $this->fileInfoPanel->updateModifiedAt($provider->modifiedAt($path));
     }
     
+    private $s = false;
     
     public function showCodeInBrowser ($output, $ext = 'config') {
+        if ($output instanceof Stream) {
+            
+            if ($output instanceof MemoryStream) {
+                $this->s = true;
+            }
+            
+            $output = (string) $output;
+        }
+            
+        
         $output = str_replace(['<', '>'], ['&lt;', '&gt;'], $output); 
         $this->browser->engine->loadContent(
             str_replace(['${lang}', '${code}'], [$ext, $output], Stream::of('res://.data/web/highlight.html'))
@@ -332,5 +338,11 @@ class MainForm extends AbstractForm
     public function registerOperation ($class)
     {
         $this->operationList[$class] = new $class();
+    }
+    
+    private function triggerOperation ($operation, $output, $ext) {
+        $operation->setOutput($output);
+        $operation->action($ext);
+        $this->tabPane->selectedIndex = $operation->getActiveTab();
     }
 }
