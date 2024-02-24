@@ -105,30 +105,6 @@ class MainForm extends AbstractForm
                         }
                         
                         $this->showCodeInBrowser($output->readFully(), $ext);
-                        
-                        
-                        return;
-                        if (fs::ext($zipPath) === 'fxml') {
-                            $output = (string) $output;
-                            $this->_showForm($output, $this->image);
-                            $this->tabPane->selectedIndex = 1;
-                        } else if ($ext == 'image') {
-                            $this->image->image = new UXImage($output);
-                            $output = "Binary";
-                            $this->tabPane->selectedIndex = 1;
-                        } else {
-                            switch (fs::ext($zipPath)) {
-                                case 'zip':
-                                case 'exe':
-                                case 'jar':
-                                case 'ttf':
-                                    $output = "Binary";
-                            }
-                            
-                            $this->tabPane->selectedIndex = 0;
-                        }
-        
-                        $this->showCodeInBrowser($output, $ext);
                     });
                     
                     $this->updateFileinfo($provider, $zipPath);
@@ -306,19 +282,8 @@ class MainForm extends AbstractForm
         $this->fileInfoPanel->updateModifiedAt($provider->modifiedAt($path));
     }
     
-    private $s = false;
     
     public function showCodeInBrowser ($output, $ext = 'config') {
-        if ($output instanceof Stream) {
-            
-            if ($output instanceof MemoryStream) {
-                $this->s = true;
-            }
-            
-            $output = (string) $output;
-        }
-            
-        
         $output = str_replace(['<', '>'], ['&lt;', '&gt;'], $output); 
         $this->browser->engine->loadContent(
             str_replace(['${lang}', '${code}'], [$ext, $output], Stream::of('res://.data/web/highlight.html'))
