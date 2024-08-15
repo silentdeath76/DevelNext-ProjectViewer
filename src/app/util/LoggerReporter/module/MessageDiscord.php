@@ -49,7 +49,9 @@ class MessageDiscord extends AbstractMessage implements IMessageDiscord
         $this->http->postAsync($this->baseUrl . $this->apiKeys[$this->level], [
             "content" => $messageBody,
             "username" => "App reporter v" . AppModule::APP_VERSION
-        ]);
+        ], function ($response) {
+            $this->onResponse($response);
+        });
 
     }
 
@@ -65,6 +67,13 @@ class MessageDiscord extends AbstractMessage implements IMessageDiscord
             "content" => $messageBody,
             "username" => "App reporter v" . AppModule::APP_VERSION,
             "files" => $logFile
-        ]);
+        ], function ($response) {
+            $this->onResponse($response);
+        });
+    }
+    
+    public function onResponse (HttpResponse $resposne) {
+        if (($resposne = $resposne->body()) == null) return;
+        app()->form("MainForm")->logger->console($resposne, LoggerReporter::ERROR);
     }
 }
