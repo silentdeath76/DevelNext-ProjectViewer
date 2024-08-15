@@ -1,6 +1,7 @@
 <?php
 namespace app\operations;
 
+use framework;
 use std;
 use gui;
 use app;
@@ -20,6 +21,11 @@ class FontOperation extends AbstractOperation
     public function action ()
     {
         $font = UXFont::load($this->output, 24);
+        
+        if ($font === null) {
+            app()->form("MainForm")->logger->console("Broken font file or not supported type", LoggerReporter::ERROR)->show();
+            return;
+        }
         
         app()->form("MainForm")->image->mouseTransparent = true;
         
