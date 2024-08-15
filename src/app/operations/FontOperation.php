@@ -37,7 +37,7 @@ class FontOperation extends AbstractOperation
         if (app()->form("MainForm")->data('theme') == 'dark' || app()->form("MainForm")->data('theme') == 'nord') {
             $gc->fillColor = 'white';
         } else {
-            $gc->fillColor = 'dark';
+            $gc->fillColor = 'black';
         }
         
         for ($i = a; $i < z; $i++) {
@@ -60,9 +60,8 @@ class FontOperation extends AbstractOperation
         
         $text .= "\n";
         $text .= flow($abc)->toString("");
+        
         $text .= "\n";
-        
-        
         $text .= flow($abc)->map(function ($v) {
             return str::upper($v);
         })->toString("");

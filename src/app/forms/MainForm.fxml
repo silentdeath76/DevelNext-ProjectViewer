@@ -9,7 +9,7 @@
               <tabs>
                 <Tab text="Исходный код">
                   <content>
-                    <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="426" prefWidth="647" styleClass="">
+                    <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="416" prefWidth="647" styleClass="">
                       <children>
                         <WebView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="-1" AnchorPane.topAnchor="0" focusTraversable="true" id="browser" layoutX="0" layoutY="0" prefHeight="408" prefWidth="640"/>
                         <Data contextMenuEnabled="" cursor="DEFAULT" enabled="1" id="data-browser" visible=""/>
@@ -38,7 +38,7 @@
         </AnchorPane>
       </content>
     </ScrollPane>
-    <ScrollPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="32" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="leftCotainer" layoutX="0" layoutY="32" prefHeight="456" prefWidth="256" styleClass="scroll-pane " vbarPolicy="NEVER" vvalue="0">
+    <ScrollPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="32" fitToHeight="true" fitToWidth="true" focusTraversable="false" hbarPolicy="NEVER" hvalue="0" id="leftContainer" layoutX="0" layoutY="32" prefHeight="456" prefWidth="256" styleClass="scroll-pane " vbarPolicy="NEVER" vvalue="0">
       <content>
         <AnchorPane focusTraversable="false" id="" maxHeight="-1" maxWidth="-1" minHeight="-1" minWidth="-1" prefHeight="456" prefWidth="256" styleClass="">
           <children>
@@ -48,7 +48,7 @@
         </AnchorPane>
       </content>
     </ScrollPane>
-    <Data cursor="DEFAULT" enabled="1" id="data-leftCotainer" visible="1"/>
+    <Data cursor="DEFAULT" enabled="1" id="data-leftContainer" visible="1"/>
     <Data cursor="DEFAULT" enabled="1" id="data-rightContainer" visible="1"/>
   </children>
 </AnchorPane>

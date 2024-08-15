@@ -39,7 +39,7 @@ class MainForm extends AbstractForm
     public $fileInfoPanel;
     
     
-    private $operationList = [];
+    use OpertaionTrait;
 
 
     /**
@@ -64,7 +64,7 @@ class MainForm extends AbstractForm
         
         $this->projectDir = $this->ini->get('ProjectDirectory');
         
-        $this->leftCotainer->content->add(new SelectDirectoryCombobox()->getNode());
+        $this->leftContainer->content->add(new SelectDirectoryCombobox()->getNode());
         
         try {
             $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
@@ -93,18 +93,9 @@ class MainForm extends AbstractForm
                         
                         $ext = $this->getHighlightType(fs::ext($zipPath));
                         
-                        /** @var AbstractOperation $operation */
-                        foreach ($this->operationList as $operation) {
-                            if (is_array($operation->forExt()) && in_array(fs::ext($zipPath), $operation->forExt())) {
-                                return $this->triggerOperation ($operation, $output, $ext);
-                            } else if (fs::ext($zipPath) == $operation->forExt()) {
-                                return $this->triggerOperation ($operation, $output, $ext);
-                            } else if ($operation->forExt() === $ext) {
-                                return $this->triggerOperation ($operation, $output, $ext);
-                            }
+                        if ($this->findOperation($zipPath, $output, $ext) === false) {
+                            $this->showCodeInBrowser($output->readFully(), $ext);
                         }
-                        
-                        $this->showCodeInBrowser($output->readFully(), $ext);
                     });
                     
                     $this->updateFileinfo($provider, $zipPath);
@@ -118,7 +109,7 @@ class MainForm extends AbstractForm
         }
         
         // splitter
-        $this->split = new UXSplitPane([$this->leftCotainer, $this->rightContainer]);
+        $this->split = new UXSplitPane([$this->leftContainer, $this->rightContainer]);
         $this->split->position = [0, 0];
         $this->split->topAnchor = 25;
         $this->split->bottomAnchor = true;
@@ -127,7 +118,7 @@ class MainForm extends AbstractForm
 
         $this->add($this->split);
         
-        UXSplitPane::setResizeWithParent($this->leftCotainer, false);
+        UXSplitPane::setResizeWithParent($this->leftContainer, false);
         // end spliter
         
         // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 0.5 скунду чтобы не мелькало
@@ -300,14 +291,4 @@ class MainForm extends AbstractForm
         $this->fileInfoPanel->updateFileSize(round($meta / pow(1024, $index), 2) . ' ' . $types[$index]);
     }
     
-    public function registerOperation ($class)
-    {
-        $this->operationList[$class] = new $class();
-    }
-    
-    private function triggerOperation ($operation, $output, $ext) {
-        $operation->setOutput($output);
-        $operation->action($ext);
-        $this->tabPane->selectedIndex = $operation->getActiveTab();
-    }
 }
