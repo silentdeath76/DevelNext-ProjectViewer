@@ -49,6 +49,7 @@ class AppModule extends AbstractModule
         $form->registerOperation(FXMLOperation::class);
         $form->registerOperation(UnsupportedFilesOperation::class);
         $form->registerOperation(ImageOperation::class);
+        $form->registerOperation(FontOperation::class);
         
         $form->minWidth = AppModule::WINDOW_MIN_WIDTH;
         $form->minHeight = AppModule::WINDOW_MIN_HEIGHT;

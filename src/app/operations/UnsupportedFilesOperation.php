@@ -12,7 +12,7 @@ class UnsupportedFilesOperation extends AbstractOperation
     
     public function forExt ()
     {
-        return ["exe", "dll", "jar", "ttf", "zip"];
+        return ["exe", "dll", "jar", "zip"];
     }
     
     public function action ($ext = null)
