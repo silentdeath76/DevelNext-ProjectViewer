@@ -13,7 +13,7 @@ trait OpertaionTrait
         $this->operationList[$class] = new $class();
     }
     
-    private function findOperation ($zipPath, $output, $ext)
+    public function findOperation ($zipPath, $output, $ext)
     {
         /** @var AbstractOperation $operation */
         foreach ($this->operationList as $operation) {
@@ -29,7 +29,7 @@ trait OpertaionTrait
         return false;
     }
     
-    private function triggerOperation ($operation, $output, $ext)
+    public function triggerOperation ($operation, $output, $ext)
     {
         $operation->setOutput($output);
         $operation->action($ext);
