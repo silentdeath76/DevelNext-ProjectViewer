@@ -13,6 +13,7 @@
 
 * {
     -fx-font-family: 'Open Sans';
+    -fx-font-smoothing-type: lcd;
 }
 
 .root {
@@ -37,6 +38,7 @@
 }
 
 .about .title {
+    -fx-font-family: 'Open Sans Light';
     -fx-font-size: 26px;
 }
 

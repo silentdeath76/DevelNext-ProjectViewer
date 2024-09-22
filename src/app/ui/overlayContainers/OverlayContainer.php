@@ -6,6 +6,8 @@ use gui;
 
 class OverlayContainer extends AbstractNode
 {
+    protected $overlayBackground = '#000010cF';
+    
     protected function make () {
         $this->container = new UXHBox();
         $this->container->alignment = 'CENTER';
@@ -13,7 +15,7 @@ class OverlayContainer extends AbstractNode
         $this->container->rightAnchor = 0;
         $this->container->topAnchor = 0;
         $this->container->bottomAnchor = 0;
-        $this->container->style = "-fx-background-color: #000010cF;";
+        $this->container->style = "-fx-background-color: " . $this->overlayBackground . ";";
         $this->container->on("click", function () {
             $this->container->hide();
         });

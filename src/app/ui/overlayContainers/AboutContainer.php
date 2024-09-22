@@ -1,6 +1,7 @@
 <?php
 namespace app\ui\overlayContainers;
 
+use framework;
 use app;
 use gui;
 
@@ -21,6 +22,13 @@ class AboutContainer extends AbstractNode
         $this->container->alignment = 'CENTER';
         $this->container->spacing = 10;
         $this->container->classes->add('about');
+        
+        $shadow = new DropShadowEffectBehaviour();
+        $shadow->offsetX = 0;
+        $shadow->offsetY = 2;
+        $shadow->radius = 2;
+        $shadow->color = '#000000';
+        $shadow->apply($this->container);
         
         $this->title = new UXLabelEx(AppModule::APP_TITLE);
         $this->title->width = $this->container->width;

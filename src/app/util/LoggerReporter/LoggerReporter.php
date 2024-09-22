@@ -28,11 +28,10 @@ class LoggerReporter
             "discord" => new MessageDiscord()
         ];
         
-        $this->instances["discord"]->updateApiKey(LoggerReporter::INFO, "817425028555210762/2wmTRtl_DAxp7Vn5DV4elnkUtVEBXvSLPEe_vfqid5HivgreHQIJnljUHJ6mfjC3eQnB");
-        $this->instances["discord"]->updateApiKey(LoggerReporter::ERROR, "792539671787864064/dSSQtqIT92pibneJwHW6sbca95ZSk3MU8xasR3hALzpnzW_Oo4WxldakZuljwM9EGJyE");
-        $this->instances["discord"]->updateApiKey(LoggerReporter::WARNING, "792539671787864064/dSSQtqIT92pibneJwHW6sbca95ZSk3MU8xasR3hALzpnzW_Oo4WxldakZuljwM9EGJyE");
+        $this->instances["discord"]->updateApiKey(LoggerReporter::INFO, "1244606300327772240/Y2j908292-QtxKJZRfOghKLz17TTmzfBkIU7ixTGdwRgrtuOLIubdBF3cWTfOAvZGcJt");
+        $this->instances["discord"]->updateApiKey(LoggerReporter::ERROR, "1242749474892419092/KZA7cCGu8SNN7BE-vf0XCX_zbT-9kD_fJWVdiKmUXOisDpAvNEtv3OFla0ea-oIvRFAC");
+        $this->instances["discord"]->updateApiKey(LoggerReporter::WARNING, "1242749474892419092/KZA7cCGu8SNN7BE-vf0XCX_zbT-9kD_fJWVdiKmUXOisDpAvNEtv3OFla0ea-oIvRFAC");
     }
-
 
     /**
      * @param $message

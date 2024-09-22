@@ -48,19 +48,31 @@ class FSTreeProvider implements IEvents
     public function setDirectory ($path) {
         $this->selectedDirectory = $path;
         
-        fs::scan($path, ['extensions' => ['zip'], 'callback' => function (File $file) {
-            $filePath = str::sub($file->getAbsoluteFile(), strlen($this->selectedDirectory) + 1);
-            $this->zipFiles[$file->getAbsoluteFile()] = new ZipFile($file);
-            $items = explode(File::DIRECTORY_SEPARATOR, $filePath);
-            
-            if ($file->isFile()) {
-                $this->treeHelper->makeTree($this->rootItem, $items, function ($node, bool $isDir) use ($filePath) {
-                    $this->applyIcon($node, ($isDir) ? FSTreeProvider::EMPTY_PATH_ELEMENT : $filePath);
-                });
-            }
-        }]);
+        app()->form("MainForm")->showPreloader();
         
-        $this->treeHelper->sort($this->rootItem);
+        $th = new Thread(function () {
+            $r = fs::scan($this->selectedDirectory, ['extensions' => ['zip'], 'callback' => function (File $file) {
+                $filePath = str::sub($file->getAbsoluteFile(), strlen($this->selectedDirectory) + 1);
+                $this->zipFiles[$file->getAbsoluteFile()] = new ZipFile($file);
+                $items = explode(File::DIRECTORY_SEPARATOR, $filePath);
+                
+                if ($file->isFile()) {
+                    uiLater(function () use ($items, $filePath) {
+                        $this->treeHelper->makeTree($this->rootItem, $items, function ($node, bool $isDir) use ($filePath) {
+                            $this->applyIcon($node, ($isDir) ? FSTreeProvider::EMPTY_PATH_ELEMENT : $filePath);
+                        });
+                    });
+                }
+            }]);
+            
+            uiLater(function () {
+                $this->treeHelper->sort($this->rootItem);
+                app()->form("MainForm")->hidePreloader();
+            });
+        });
+        $th->setDaemon(true);
+        $th->start();
+        
     }
     
     

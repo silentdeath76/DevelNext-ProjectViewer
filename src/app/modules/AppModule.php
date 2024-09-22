@@ -45,6 +45,12 @@ class AppModule extends AbstractModule
         $theme = app()->module("MainModule")->ini->get("theme") ?: 'light';
         // Чтобы форма не мелькала при ресайзе окна
         $form = $this->form("MainForm");
+        
+        $form->registerOperation(FXMLOperation::class);
+        $form->registerOperation(UnsupportedFilesOperation::class);
+        $form->registerOperation(ImageOperation::class);
+        $form->registerOperation(FontOperation::class);
+        
         $form->minWidth = AppModule::WINDOW_MIN_WIDTH;
         $form->minHeight = AppModule::WINDOW_MIN_HEIGHT;
         $form->opacity = 0;

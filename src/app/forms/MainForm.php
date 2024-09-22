@@ -1,6 +1,7 @@
 <?php
 namespace app\forms;
 
+use Error;
 use php\gui\UXTitledPaneWrapper;
 use Exception;
 use php\compress\ZipFile;
@@ -36,6 +37,9 @@ class MainForm extends AbstractForm
      * @var Fileinfo
      */
     public $fileInfoPanel;
+    
+    
+    use OpertaionTrait;
 
 
     /**
@@ -60,87 +64,23 @@ class MainForm extends AbstractForm
         
         $this->projectDir = $this->ini->get('ProjectDirectory');
         
-        $this->leftCotainer->content->add(new SelectDirectoryCombobox()->getNode());
+        $this->leftContainer->content->add(new SelectDirectoryCombobox()->getNode());
         
         try {
-            $this->fsTree->onFileSystem(function (StandartFileSystem $provider, $path = null) {
-                $this->fileInfoPanel->updateFilePath($path);
-                
-                $this->fileInfoPanel->updateFileIcon($provider, $path);
-                $this->updateFileinfo($provider, $path);
-            });
-            
-            $this->fsTree->onZipFileSystem(function (ZipFileSystem $provider, $zipPath, $path) {
-                $this->fileInfoPanel->updateFilePath($zipPath);
-                
-                if (!$provider->getZipInstance()->has($zipPath)) {
-                    $zipPath = str_replace('\\', '/', $zipPath);
-                    
-                    if (!$provider->getZipInstance()->has($zipPath)) {
-                        $zipPath = str_replace('/', '\\', $zipPath);
-                    }
-                }
-                
-                $this->fileInfoPanel->updateFileIcon($provider, $zipPath);
-                
-                if ($provider->isFile($zipPath)) {
-                    $provider->getZipInstance()->read($zipPath, function (array $stat, Stream $output) use ($zipPath) {
-                        $this->showMeta($stat);
-                        
-                        $ext = $this->getHighlightType(fs::ext($zipPath));
-                        
-                        if (fs::ext($zipPath) === 'fxml') {
-                            $output = (string) $output;
-                            $this->_showForm($output, $this->image);
-                            $this->tabPane->selectedIndex = 1;
-                        } else if ($ext == 'image') {
-                            $this->image->image = new UXImage($output);
-                            $output = "Binary";
-                            $this->tabPane->selectedIndex = 1;
-                        } else {
-                            switch (fs::ext($zipPath)) {
-                                case 'zip':
-                                case 'exe':
-                                case 'jar':
-                                case 'ttf':
-                                    $output = "Binary";
-                            }
-                            
-                            $this->tabPane->selectedIndex = 0;
-                        }
-        
-                        $this->showCodeInBrowser($output, $ext);
-                    });
-                    
-                    $this->updateFileinfo($provider, $zipPath);
-                } else if ($provider->isDirectory($zipPath)) {
-                    $this->fileInfoPanel->updateFileSize("unknown");
-                }
-            });
-            
+            $treeEvents = new FSTreeEvents();
+            $this->fsTree->onFileSystem([$treeEvents, 'onFileSystem']);
+            $this->fsTree->onZipFileSystem([$treeEvents, 'onZipFileSystem']);
         } catch (Exception $ex) {
             $this->errorAlert($ex);
         }
         
-        // splitter
-        $this->split = new UXSplitPane([$this->leftCotainer, $this->rightContainer]);
-        $this->split->position = [0, 0];
-        $this->split->topAnchor = 25;
-        $this->split->bottomAnchor = true;
-        $this->split->rightAnchor = true;
-        $this->split->leftAnchor = true;
 
+        $this->makeSplitter();
         $this->add($this->split);
+        UXSplitPane::setResizeWithParent($this->leftContainer, false);
+
         
-        UXSplitPane::setResizeWithParent($this->leftCotainer, false);
-        // end spliter
-        
-        // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 0.5 скунду чтобы не мелькало
-        timer::after(500, function () { $this->browser->show(); });
-        
-        $this->showCodeInBrowser('', 'html');
-        
-        // фикс мигания экрана если окно развернуто на весь екран и выбрана не светлая тема
+        // фикс мигания экрана если окно развернуто на весь экран и выбрана не светлая тема
         waitAsync(100, function () {
             if ($this->ini->get("maximized") == 1) {
                 $this->maximized = true;
@@ -224,7 +164,7 @@ class MainForm extends AbstractForm
             $contextRoot = new DirectoryContextMenu();
         
         if ($this->fsTree->getFileByNode($this->tree->focusedItem) === false) {
-            // чтобы контексттоное меню не появлялось на директориях в архиве
+            // чтобы контекстное меню не появлялось на директориях в архиве
             if ($this->tree->focusedItem->children->count() == 0) {
                 $context->showByNode($e);
             }
@@ -255,6 +195,19 @@ class MainForm extends AbstractForm
     function doClose(UXWindowEvent $e = null)
     {    
         $this->ini->set("splitter", $this->split->dividerPositions);
+    }
+
+    /**
+     * @event show 
+     */
+    function doShow(UXWindowEvent $e = null)
+    {    
+        // задержка у браузера перед отрисовкой страницы слишком долгая, по этому таймер в 0.5 скунду чтобы не мелькало
+        waitAsync(500, function () {
+            $this->browser->show();
+        });
+        
+        $this->showCodeInBrowser('', 'html');
     }
 
     
@@ -288,7 +241,7 @@ class MainForm extends AbstractForm
     }
     
     
-    private function showCodeInBrowser ($output, $ext = 'config') {
+    public function showCodeInBrowser ($output, $ext = 'config') {
         $output = str_replace(['<', '>'], ['&lt;', '&gt;'], $output); 
         $this->browser->engine->loadContent(
             str_replace(['${lang}', '${code}'], [$ext, $output], Stream::of('res://.data/web/highlight.html'))
@@ -296,7 +249,7 @@ class MainForm extends AbstractForm
     }
     
     
-    private function showMeta ($meta) {
+    public function showMeta ($meta) {
         $meta = $meta["size"];
         $types = [Localization::get('ui.sidepanel.fileSizeFromat.b'), Localization::get('ui.sidepanel.fileSizeFromat.kb'), Localization::get('ui.sidepanel.fileSizeFromat.mb'), Localization::get('ui.sidepanel.fileSizeFromat.gb')];
         
@@ -304,4 +257,15 @@ class MainForm extends AbstractForm
         
         $this->fileInfoPanel->updateFileSize(round($meta / pow(1024, $index), 2) . ' ' . $types[$index]);
     }
+    
+    private function makeSplitter ()
+    {
+        $this->split = new UXSplitPane([$this->leftContainer, $this->rightContainer]);
+        $this->split->position = [0, 0];
+        $this->split->topAnchor = 25;
+        $this->split->bottomAnchor = true;
+        $this->split->rightAnchor = true;
+        $this->split->leftAnchor = true;
+    }
+    
 }
