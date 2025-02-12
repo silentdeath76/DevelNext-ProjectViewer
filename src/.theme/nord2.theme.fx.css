@@ -1,0 +1,11 @@
+* {
+    -base-color: #192734;
+    -second-base-color: derive(-base-color, -20%);
+    -text-color: #c9cbce;
+    -second-text-color: #c9cbce;
+    -tab-selected-border-color: derive(-second-base-color, 25%);
+    -tree-arrow-color: #e87905;
+    -scroll-bar-color: derive(-second-base-color, 25%);
+    -icons-color: #e87905;
+    -border-base-color: derive(-second-base-color, 25%);
+}

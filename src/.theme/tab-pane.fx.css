@@ -1,6 +1,6 @@
 .tab-pane {
     -fx-tab-min-width: 130;
-    -fx-border-width: 0 0 0 1;
+    -fx-border-width: 0 0 0 0;
     -fx-border-color: -border-base-color;
 }
 
@@ -10,19 +10,26 @@
 
 .tab-pane .tab-header-area .tab-header-background {
     -fx-background-color: -base-color;
+    -fx-border-color: -border-base-color;
+    
+    -fx-border-width: 0 0 1 0;
+    -fx-border-insets: 0 13 0 0;
 }
 
 .tab-pane .tab {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
     -fx-border-radius: 0;
+    
+    -fx-border-color: -border-base-color, transparent;
+    -fx-border-width: 0 0 1 0, 1 1 1 1;
 }
 
 .tab-pane .tab:selected {
     -fx-background-color: -second-base-color;
     -fx-focus-color: transparent;
-    -fx-border-width: 2 0 0 0;
-    -fx-border-color: -tab-selected-border-color;
+    -fx-border-width: 2 0 0 0, 0 1 0 1, 2 1 1 1;
+    -fx-border-color: -tab-selected-border-color, -border-base-color, transparent;
 }
 
 .tab-pane .tab:selected .tab-label {
@@ -37,6 +44,8 @@
 
 .tab-pane .tab-content-area {
     -fx-background-color: -second-base-color;
+    -fx-border-color: -border-base-color;
+    -fx-border-width: 0 0 0 1;
 }
 
 .tab-pane .tab-header-area {
@@ -60,4 +69,9 @@
 
 .code-tab-icon {
     -fx-background-color: -icons-color;
+}
+
+.web-view .scroll-bar  {
+    -fx-border-color: -border-base-color;
+    -fx-border-width: 0 0 0 1;
 }

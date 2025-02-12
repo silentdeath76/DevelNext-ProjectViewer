@@ -7,5 +7,5 @@
     -tree-arrow-color: white;
     -scroll-bar-color: derive(-second-base-color, 25%);
     -icons-color: #ccc;
-    -border-base-color: #313131;
+    -border-base-color: derive(-second-base-color, 25%);
 }

@@ -22,8 +22,9 @@ class MainMenu extends AbstractNode
         
         $themeList = [
             "light" => Localization::get('ui.mainMenu.theme.light'),
-            "dark" => Localization::get('ui.mainMenu.theme.dark'),
-            "nord" => Localization::get('ui.mainMenu.theme.nord')
+            "dark"  => Localization::get('ui.mainMenu.theme.dark'),
+            "nord"  => Localization::get('ui.mainMenu.theme.nord'),
+            "nord2" => Localization::get('ui.mainMenu.theme.nord2'),
         ];
         
         foreach ($themeList as $theme => $text) {

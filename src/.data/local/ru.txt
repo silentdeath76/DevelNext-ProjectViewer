@@ -6,6 +6,7 @@ ui.mainMenu.theme=Цветовая схема
 ui.mainMenu.theme.light=Светлая
 ui.mainMenu.theme.dark=Темная
 ui.mainMenu.theme.nord=Nord
+ui.mainMenu.theme.nord2=Nord2
 ui.mainMenu.about=О программе
 
 ui.contextMenu.saveAs=Соранить как

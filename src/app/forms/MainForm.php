@@ -39,7 +39,7 @@ class MainForm extends AbstractForm
     public $fileInfoPanel;
     
     
-    use OpertaionTrait;
+    use OperationTrait;
 
 
     /**
@@ -216,17 +216,17 @@ class MainForm extends AbstractForm
         switch ($zipPath) {
             case 'axml':
             case 'fxml': $ext = 'xml'; break;
-            case 'php': $ext = 'php'; break;
-            case 'css': $ext = 'css'; break;
+            case 'php':  $ext = 'php'; break;
+            case 'css':  $ext = 'css'; break;
             case 'ico':
             case 'bmp':
             case 'png':
             case 'jpg':
-            case 'jpeg':$ext = 'image'; break;
-            case 'zip': $ext = 'zip'; break;
-            case 'exe': $ext = 'exe'; break;
+            case 'jpeg': $ext = 'image'; break;
+            case 'zip':  $ext = 'zip'; break;
+            case 'exe':  $ext = 'exe'; break;
             
-            default:    $ext = 'config';
+            default:     $ext = 'config';
         }
         
         return $ext;

@@ -11,14 +11,14 @@ use php\compress\ZipFile;
 class Dependency 
 {
     const DEFAULT_DEPENDENCY_PATH = '\DevelNextLibrary\bundles\\';
-    const DEPENDENCY_ICON_PATH = '.data/img/develnext/bundle/';
+    const DEPENDENCY_ICON_PATH    = '.data/img/develnext/bundle/';
     
     
-    private $linkIconWidth = 10;
+    private $linkIconWidth  = 10;
     private $linkIconHeight = 10;
     
-    private $iconWidth = 16;
-    private $iconHeight = 16;
+    private $iconWidth      = 16;
+    private $iconHeight     = 16;
     
     /**
      * @var ObjectStorage
@@ -46,10 +46,16 @@ class Dependency
             }
         }
         
+        $panels = $this->sortPanels($panels);
         
+        app()->form("MainForm")->fileInfoPanel->updateDependecyList($panels);
+    }
+    
+    private function sortPanels ($panels)
+    {
+        $containerWidtth = app()->form("MainForm")->fileInfoPanel->getWidth();
         $sort = [];
-        $pWidth = app()->form("MainForm")->fileInfoPanel->getWidth(); // 10 - padding 5px
-
+        
         foreach ($panels as $panel) {
             $panelWidth = $this->getPanelWidth($panel);
             
@@ -69,7 +75,7 @@ class Dependency
             } else {
                 foreach ($sort as $key => $sortPanels) {
                     if (count($sortPanels) === 1) {
-                        if (($sortPanels[0]["width"] + $panelWidth) < $pWidth) {
+                        if (($sortPanels[0]["width"] + $panelWidth) < $containerWidtth) {
                             $sort[$key][] = [
                                 "width" => $panelWidth,
                                 "panel" => $panel
@@ -82,7 +88,7 @@ class Dependency
                             $sWidth += $s_panel["width"];
                         }
                         
-                        if (($sWidth + $panelWidth) < $pWidth) {
+                        if (($sWidth + $panelWidth) < $containerWidtth) {
                             $sort[$key][] = [
                                 "width" => $panelWidth,
                                 "panel" => $panel
@@ -111,16 +117,18 @@ class Dependency
             }
         }
         
-        app()->form("MainForm")->fileInfoPanel->updateDependecyList($t);
+        return $t;
     }
     
     
-    private function getPanelWidth ($panel) {
+    private function getPanelWidth ($panel)
+    {
         return $panel->children->offsetGet(1)->font->calculateTextWidth($panel->children->offsetGet(1)->text) + 16;
     }
 
     
-    public function makeUi ($image, $name) {
+    public function makeUi ($image, $name)
+    {
         if (!($image instanceof UXImage)) {
             $image = new UXImage('res://.data/img/ui/image-16.png');
         }
@@ -130,7 +138,7 @@ class Dependency
         $panel->spacing = 5;
         
         $panel->add($view = new UXImageView($image));
-        $view->width = $this->iconWidth;
+        $view->width  = $this->iconWidth;
         $view->height = $this->iconHeight;
         
         $panel->add($label = new UXLabelEx($name));
@@ -141,10 +149,10 @@ class Dependency
         if (($url = $this->getLink($name)) != false) {
             $panel->add($link = new UXHBox);
             $link->classes->addAll(["link", "open-link-icon"]);
-            $link->cursor = 'HAND';
-            $link->maxWidth = $this->linkIconWidth;
+            $link->cursor    = 'HAND';
+            $link->maxWidth  = $this->linkIconWidth;
             $link->maxHeight = $this->linkIconHeight;
-            $link->minWidth = $this->linkIconWidth;
+            $link->minWidth  = $this->linkIconWidth;
             $link->minHeight = $this->linkIconHeight;
             $tooltip = UXTooltip::of(Localization::get('message.link.openInBrowser'));
             UXTooltip::install($link, $tooltip);
@@ -160,7 +168,8 @@ class Dependency
     }
     
     
-    private function getLink($name) {
+    private function getLink($name)
+    {
         static $json = json_decode(FileStream::of('res://.data/dependencys.json'), true);
         
         $found = null;
@@ -213,7 +222,8 @@ class Dependency
      * 
      * @param string $bundleName
      */
-    public function getIcon ($bundleName) {
+    public function getIcon ($bundleName)
+    {
         $name = 'res://.data/img/bundle/';
         
         switch ($bundleName) {
@@ -240,7 +250,8 @@ class Dependency
     /**
      * Иконки пользовательских пакетов, елси они были установленны в студии
      */
-    public function getBundleIcon ($bundleName) {
+    public function getBundleIcon ($bundleName)
+    {
     
         if (!($this->imageCache instanceof ObjectStorage)) {
             $this->imageCache = new ObjectStorage();
@@ -258,7 +269,6 @@ class Dependency
                 $image = null;
             
                 foreach ($zip->statAll() as $key => $stat) {
-                
                     if (str::startsWith($key, self::DEPENDENCY_ICON_PATH . $bundlename)) {
                         if ($stat["crc"] != 0){
                             $zip->read($stat["name"], function ($stat, MiscStream $stream) use (&$image) {
